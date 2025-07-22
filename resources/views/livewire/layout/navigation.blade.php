@@ -33,6 +33,15 @@ new class extends Component
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')" wire:navigate>
+                        {{ __('Clientes') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('envios.index')" :active="request()->routeIs('envios.*')" wire:navigate>
+                        {{ __('Envíos') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('resultados.index')" :active="request()->routeIs('resultados.*')" wire:navigate>
+                        {{ __('Resultados') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -83,6 +92,15 @@ new class extends Component
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
                 {{ __('Dashboard') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')" wire:navigate>
+                {{ __('Clientes') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('envios.index')" :active="request()->routeIs('envios.*')" wire:navigate>
+                {{ __('Envíos') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('resultados.index')" :active="request()->routeIs('resultados.*')" wire:navigate>
+                {{ __('Resultados') }}
             </x-responsive-nav-link>
         </div>
 

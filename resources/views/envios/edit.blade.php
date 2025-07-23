@@ -23,7 +23,7 @@
                         <div class="grid grid-cols-1 gap-6">
                             <div>
                                 <x-input-label for="cliente_id" :value="__('Cliente')" />
-                                <select id="cliente_id" name="cliente_id" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                <select id="cliente_id" name="cliente_id" class="select2-cliente block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                                     <option value="">Seleccionar cliente</option>
                                     @foreach($clientes as $cliente)
                                         <option value="{{ $cliente->id }}" {{ old('cliente_id', $envio->cliente_id) == $cliente->id ? 'selected' : '' }}>
@@ -36,7 +36,7 @@
 
                             <div>
                                 <x-input-label for="estado" :value="__('Estado')" />
-                                <select id="estado" name="estado" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
+                                <select id="estado" name="estado" class="select2-estado block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                                     <option value="pendiente" {{ old('estado', $envio->estado) == 'pendiente' ? 'selected' : '' }}>Pendiente</option>
                                     <option value="enviado" {{ old('estado', $envio->estado) == 'enviado' ? 'selected' : '' }}>Enviado</option>
                                     <option value="respondido" {{ old('estado', $envio->estado) == 'respondido' ? 'selected' : '' }}>Respondido</option>
@@ -89,7 +89,7 @@
 
                                     <div>
                                         <x-input-label for="respuesta_3" :value="__('Respuesta 3 (Tipo de obra)')" />
-                                        <select id="respuesta_3" name="respuesta_3" class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                        <select id="respuesta_3" name="respuesta_3" class="select2-tipo-obra block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
                                             <option value="">Seleccionar tipo de obra</option>
                                             <option value="Vivienda unifamiliar" {{ old('respuesta_3', $envio->respuesta_3) == 'Vivienda unifamiliar' ? 'selected' : '' }}>Vivienda unifamiliar</option>
                                             <option value="Edificio o proyecto vertical" {{ old('respuesta_3', $envio->respuesta_3) == 'Edificio o proyecto vertical' ? 'selected' : '' }}>Edificio o proyecto vertical</option>
@@ -119,4 +119,25 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Variables para restaurar valores después de errores de validación
+        @if(old('cliente_id'))
+            var clienteIdValue = '{{ old('cliente_id') }}';
+        @elseif($envio->cliente_id)
+            var clienteIdValue = '{{ $envio->cliente_id }}';
+        @endif
+        
+        @if(old('estado'))
+            var estadoValue = '{{ old('estado') }}';
+        @elseif($envio->estado)
+            var estadoValue = '{{ $envio->estado }}';
+        @endif
+        
+        @if(old('respuesta_3'))
+            var tipoObraValue = '{{ old('respuesta_3') }}';
+        @elseif($envio->respuesta_3)
+            var tipoObraValue = '{{ $envio->respuesta_3 }}';
+        @endif
+    </script>
 </x-app-layout> 

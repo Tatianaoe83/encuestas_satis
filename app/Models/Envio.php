@@ -16,6 +16,11 @@ class Envio extends Model
      */
     protected $fillable = [
         'cliente_id',
+        'whatsapp_number',
+        'twilio_message_sid',
+        'twilio_conversation_sid',
+        'whatsapp_message',
+        'whatsapp_responses',
         'pregunta_1',
         'pregunta_2',
         'pregunta_3',
@@ -27,6 +32,8 @@ class Envio extends Model
         'estado',
         'fecha_envio',
         'fecha_respuesta',
+        'whatsapp_sent_at',
+        'whatsapp_responded_at',
     ];
 
     /**
@@ -37,6 +44,9 @@ class Envio extends Model
     protected $casts = [
         'fecha_envio' => 'datetime',
         'fecha_respuesta' => 'datetime',
+        'whatsapp_sent_at' => 'datetime',
+        'whatsapp_responded_at' => 'datetime',
+        'whatsapp_responses' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

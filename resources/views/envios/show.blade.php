@@ -21,7 +21,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                         <!-- Información del Cliente -->
                         <div class="bg-gray-50 p-6 rounded-lg">
                             <h4 class="text-lg font-medium text-gray-900 mb-4">Información del Cliente</h4>
@@ -96,6 +96,40 @@
                                     <span class="text-sm font-medium text-gray-500">Fecha de Respuesta:</span>
                                     <p class="text-gray-900">{{ $envio->fecha_respuesta ? $envio->fecha_respuesta->format('d/m/Y H:i') : 'Sin respuesta' }}</p>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Información de WhatsApp -->
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-medium text-gray-900 mb-4">📱 Información de WhatsApp</h4>
+                            <div class="space-y-3">
+                                @if($envio->whatsapp_number)
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-500">Número WhatsApp:</span>
+                                        <p class="text-gray-900">{{ $envio->whatsapp_number }}</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-500">Message SID:</span>
+                                        <p class="text-gray-900 text-xs font-mono">{{ $envio->twilio_message_sid }}</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-sm font-medium text-gray-500">Enviado por WhatsApp:</span>
+                                        <p class="text-gray-900">{{ $envio->whatsapp_sent_at ? $envio->whatsapp_sent_at->format('d/m/Y H:i') : 'No enviado' }}</p>
+                                    </div>
+                                    @if($envio->whatsapp_responded_at)
+                                        <div>
+                                            <span class="text-sm font-medium text-gray-500">Respondido por WhatsApp:</span>
+                                            <p class="text-gray-900">{{ $envio->whatsapp_responded_at->format('d/m/Y H:i') }}</p>
+                                        </div>
+                                    @endif
+                                @else
+                                    <div class="text-center py-4">
+                                        <svg class="w-12 h-12 text-gray-400 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                        </svg>
+                                        <p class="text-gray-500">No enviado por WhatsApp</p>
+                                    </div>
+                                @endif
                             </div>
                         </div>
                     </div>

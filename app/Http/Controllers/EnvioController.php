@@ -4,10 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Envio;
 use App\Models\Cliente;
+use App\Services\TwilioService;
 use Illuminate\Http\Request;
 
 class EnvioController extends Controller
 {
+    protected $twilioService;
+
+    public function __construct(TwilioService $twilioService)
+    {
+        $this->twilioService = $twilioService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -96,6 +104,35 @@ class EnvioController extends Controller
 
         return redirect()->route('envios.index')
             ->with('success', 'Envío eliminado exitosamente.');
+    }
+
+    /**
+     * Enviar encuesta por WhatsApp usando Twilio.
+     */
+    public function enviarPorWhatsApp(Envio $envio)
+    {
+        try {
+            // Verificar que el cliente tenga número de celular
+            if (empty($envio->cliente->celular)) {
+                return redirect()->route('envios.index')
+                    ->with('error', 'El cliente no tiene número de celular registrado.');
+            }
+
+            // Enviar la encuesta por WhatsApp
+            $resultado = $this->twilioService->enviarEncuesta($envio);
+
+            if ($resultado) {
+                return redirect()->route('envios.index')
+                    ->with('success', 'Encuesta enviada exitosamente por WhatsApp.');
+            } else {
+                return redirect()->route('envios.index')
+                    ->with('error', 'Error al enviar la encuesta por WhatsApp.');
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->route('envios.index')
+                ->with('error', 'Error al enviar la encuesta: ' . $e->getMessage());
+        }
     }
 
     /**

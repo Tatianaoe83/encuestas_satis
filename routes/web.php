@@ -6,7 +6,7 @@ use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ResultadosController;
 use App\Http\Controllers\TwilioWebhookController;
 
-Route::view('/', 'welcome');
+Route::redirect('/', '/login');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

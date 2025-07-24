@@ -22,19 +22,20 @@ Route::resource('clientes', ClienteController::class)
 
 // Rutas para el módulo de envíos
 Route::resource('envios', EnvioController::class)
+    ->parameters(['envios' => 'idenvio'])
     ->middleware(['auth']);
 
 // Rutas adicionales para envíos
-Route::post('envios/{envio}/marcar-enviado', [EnvioController::class, 'marcarEnviado'])
+Route::post('envios/{idenvio}/marcar-enviado', [EnvioController::class, 'marcarEnviado'])
     ->name('envios.marcar-enviado')
     ->middleware(['auth']);
 
-Route::post('envios/{envio}/marcar-respondido', [EnvioController::class, 'marcarRespondido'])
+Route::post('envios/{idenvio}/marcar-respondido', [EnvioController::class, 'marcarRespondido'])
     ->name('envios.marcar-respondido')
     ->middleware(['auth']);
 
 // Ruta para enviar encuesta por WhatsApp
-Route::post('envios/{envio}/enviar-whatsapp', [EnvioController::class, 'enviarPorWhatsApp'])
+Route::post('envios/{idenvio}/enviar-whatsapp', [EnvioController::class, 'enviarPorWhatsApp'])
     ->name('envios.enviar-whatsapp')
     ->middleware(['auth']);
 

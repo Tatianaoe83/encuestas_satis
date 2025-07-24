@@ -39,8 +39,8 @@ class ResultadosController extends Controller
             ->get();
 
         // Top 5 asesores comerciales por envíos
-        $topAsesores = Cliente::select('asesor_comercial', DB::raw('count(envios.id) as total_envios'))
-            ->join('envios', 'clientes.id', '=', 'envios.cliente_id')
+        $topAsesores = Cliente::select('asesor_comercial', DB::raw('count(envios.idenvio) as total_envios'))
+            ->join('envios', 'clientes.idcliente', '=', 'envios.cliente_id')
             ->groupBy('asesor_comercial')
             ->orderByDesc('total_envios')
             ->limit(5)
@@ -166,13 +166,13 @@ class ResultadosController extends Controller
         // Estadísticas detalladas por asesor
         $estadisticasAsesores = Cliente::select(
                 'asesor_comercial',
-                DB::raw('count(envios.id) as total_envios'),
+                DB::raw('count(envios.idenvio) as total_envios'),
                 DB::raw('sum(case when envios.estado = "enviado" then 1 else 0 end) as enviados'),
                 DB::raw('sum(case when envios.estado = "respondido" then 1 else 0 end) as respondidos'),
                 DB::raw('sum(case when envios.estado = "pendiente" then 1 else 0 end) as pendientes'),
                 DB::raw('sum(case when envios.estado = "cancelado" then 1 else 0 end) as cancelados')
             )
-            ->join('envios', 'clientes.id', '=', 'envios.cliente_id')
+            ->join('envios', 'clientes.idcliente', '=', 'envios.cliente_id')
             ->groupBy('asesor_comercial')
             ->orderByDesc('total_envios')
             ->get()

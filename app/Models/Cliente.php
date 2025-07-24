@@ -14,6 +14,11 @@ class Cliente extends Model
      *
      * @var array<string>
      */
+    protected $table = 'clientes';
+    protected $primaryKey = 'idcliente';
+   
+
+
     protected $fillable = [
         'asesor_comercial',
         'razon_social',
@@ -38,6 +43,6 @@ class Cliente extends Model
      */
     public function envios()
     {
-        return $this->hasMany(Envio::class);
+        return $this->hasMany(Envio::class, 'cliente_id', 'idcliente');
     }
 } 

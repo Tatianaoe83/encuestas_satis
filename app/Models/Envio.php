@@ -14,6 +14,10 @@ class Envio extends Model
      *
      * @var array<string>
      */
+    protected $table = 'envios';
+    protected $primaryKey = 'idenvio';
+ 
+
     protected $fillable = [
         'cliente_id',
         'whatsapp_number',
@@ -56,6 +60,6 @@ class Envio extends Model
      */
     public function cliente()
     {
-        return $this->belongsTo(Cliente::class);
+        return $this->belongsTo(Cliente::class, 'cliente_id', 'idcliente');
     }
 } 

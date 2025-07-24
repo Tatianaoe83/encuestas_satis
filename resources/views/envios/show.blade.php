@@ -12,7 +12,7 @@
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-medium">Información del Envío</h3>
                         <div class="flex space-x-2">
-                            <a href="{{ route('envios.edit', $envio) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                            <a href="{{ route('envios.edit', $envio->idenvio) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                                 Editar
                             </a>
                             <a href="{{ route('envios.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">

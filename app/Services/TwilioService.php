@@ -25,19 +25,37 @@ class TwilioService
      */
     public function enviarEncuesta(Envio $envio)
     {
+        Log::info("Enviando encuesta por WhatsApp", [
+            'envio_id' => $envio->idenvio,
+            'cliente_id' => $envio->cliente_id
+        ]);
+        
         try {
             $cliente = $envio->cliente;
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
-            
+
+            Log::info("Número de WhatsApp", [
+                'numeroWhatsApp' => $numeroWhatsApp
+            ]);
+
             // Construir el mensaje de la encuesta
             $mensaje = $this->construirMensajeEncuesta($envio);
-            
-            // Enviar mensaje por WhatsApp
+            Log::info("Mensaje de encuesta", [
+                'mensaje' => $mensaje
+            ]);
+
+            // Enviar mensaje por WhatsApp usando el formato correcto
             $message = $this->client->messages->create(
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'body' => $mensaje
+                    'body' => $mensaje,
+                    // Si tienes un contentSid configurado, puedes usarlo así:
+                    // 'contentSid' => config('services.twilio.content_sid'),
+                    // 'contentVariables' => json_encode([
+                    //     '1' => $cliente->nombre_completo,
+                    //     '2' => date('d/m/Y')
+                    // ])
                 ]
             );
 
@@ -63,7 +81,14 @@ class TwilioService
         } catch (\Exception $e) {
             Log::error("Error enviando encuesta por WhatsApp", [
                 'envio_id' => $envio->id,
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Actualizar el estado del envío como fallido
+            $envio->update([
+                'estado' => 'error',
+                'whatsapp_error' => $e->getMessage()
             ]);
             
             return false;
@@ -234,9 +259,97 @@ class TwilioService
         
         // Asegurar que tenga el código de país (México: 52)
         if (strlen($numero) == 10) {
-            $numero = '52' . $numero;
+            $numero = '521' . $numero;
         }
         
         return $numero;
+    }
+
+    /**
+     * Método de prueba para verificar la conexión con Twilio
+     */
+    public function probarConexion($numeroPrueba = null)
+    {
+        try {
+            // Si no se proporciona número de prueba, usar uno por defecto
+            if (!$numeroPrueba) {
+                $numeroPrueba = '5219993778529'; // Número del ejemplo
+            }
+
+            $numeroWhatsApp = $this->formatearNumeroWhatsApp($numeroPrueba);
+
+            Log::info("Probando conexión con Twilio", [
+                'numero_original' => $numeroPrueba,
+                'numero_formateado' => $numeroWhatsApp,
+                'from_number' => $this->fromNumber
+            ]);
+
+            // Enviar mensaje de prueba
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'body' => "🧪 *Prueba de conexión*\n\nEste es un mensaje de prueba para verificar que la integración con Twilio funciona correctamente.\n\nFecha: " . now()->format('d/m/Y H:i:s') . "\n\n✅ Si recibes este mensaje, la configuración está correcta."
+                ]
+            );
+
+            Log::info("Prueba de conexión exitosa", [
+                'message_sid' => $message->sid,
+                'status' => $message->status
+            ]);
+
+            return [
+                'success' => true,
+                'message_sid' => $message->sid,
+                'status' => $message->status,
+                'numero_enviado' => $numeroWhatsApp
+            ];
+
+        } catch (\Exception $e) {
+            Log::error("Error en prueba de conexión", [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'numero_intentado' => $numeroWhatsApp ?? $numeroPrueba
+            ];
+        }
+    }
+
+    /**
+     * Verificar configuración de Twilio
+     */
+    public function verificarConfiguracion()
+    {
+        $config = [
+            'account_sid' => config('services.twilio.account_sid'),
+            'auth_token' => config('services.twilio.auth_token'),
+            'whatsapp_from' => config('services.twilio.whatsapp_from')
+        ];
+
+        $errores = [];
+        
+        if (empty($config['account_sid'])) {
+            $errores[] = 'TWILIO_ACCOUNT_SID no está configurado';
+        }
+        
+        if (empty($config['auth_token'])) {
+            $errores[] = 'TWILIO_AUTH_TOKEN no está configurado';
+        }
+        
+        if (empty($config['whatsapp_from'])) {
+            $errores[] = 'TWILIO_WHATSAPP_FROM no está configurado';
+        }
+
+        return [
+            'configuracion_completa' => empty($errores),
+            'errores' => $errores,
+            'config' => array_map(function($value) {
+                return $value ? 'Configurado' : 'No configurado';
+            }, $config)
+        ];
     }
 } 

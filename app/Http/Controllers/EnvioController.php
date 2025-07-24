@@ -40,7 +40,7 @@ class EnvioController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'cliente_id' => 'required|exists:clientes,id',
+            'cliente_id' => 'required|exists:clientes,idcliente',
         ]);
 
         // Crear el envío con las preguntas por defecto
@@ -60,8 +60,9 @@ class EnvioController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Envio $envio)
+    public function show($idenvio)
     {
+        $envio = Envio::findOrFail($idenvio);
         $envio->load('cliente');
         return view('envios.show', compact('envio'));
     }
@@ -69,8 +70,9 @@ class EnvioController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Envio $envio)
+    public function edit($idenvio)
     {
+        $envio = Envio::findOrFail($idenvio);
         $clientes = Cliente::all();
         return view('envios.edit', compact('envio', 'clientes'));
     }
@@ -78,8 +80,10 @@ class EnvioController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Envio $envio)
+    public function update(Request $request, $idenvio)
     {
+        $envio = Envio::findOrFail($idenvio);
+        
         $request->validate([
             'cliente_id' => 'required|exists:clientes,id',
             'estado' => 'required|in:pendiente,enviado,respondido,cancelado',
@@ -98,8 +102,9 @@ class EnvioController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Envio $envio)
+    public function destroy($idenvio)
     {
+        $envio = Envio::findOrFail($idenvio);
         $envio->delete();
 
         return redirect()->route('envios.index')
@@ -109,8 +114,10 @@ class EnvioController extends Controller
     /**
      * Enviar encuesta por WhatsApp usando Twilio.
      */
-    public function enviarPorWhatsApp(Envio $envio)
+    public function enviarPorWhatsApp($idenvio)
     {
+        $envio = Envio::findOrFail($idenvio);
+        
         try {
             // Verificar que el cliente tenga número de celular
             if (empty($envio->cliente->celular)) {
@@ -138,8 +145,9 @@ class EnvioController extends Controller
     /**
      * Marcar envío como enviado.
      */
-    public function marcarEnviado(Envio $envio)
+    public function marcarEnviado($idenvio)
     {
+        $envio = Envio::findOrFail($idenvio);
         $envio->update([
             'estado' => 'enviado',
             'fecha_envio' => now(),
@@ -152,8 +160,9 @@ class EnvioController extends Controller
     /**
      * Marcar envío como respondido.
      */
-    public function marcarRespondido(Envio $envio)
+    public function marcarRespondido($idenvio)
     {
+        $envio = Envio::findOrFail($idenvio);
         $envio->update([
             'estado' => 'respondido',
             'fecha_respuesta' => now(),

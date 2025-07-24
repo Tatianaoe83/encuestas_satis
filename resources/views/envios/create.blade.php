@@ -25,7 +25,7 @@
                                 <select id="cliente_id" name="cliente_id" class="select2-cliente block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required>
                                     <option value="">Seleccionar cliente</option>
                                     @foreach($clientes as $cliente)
-                                        <option value="{{ $cliente->id }}" {{ old('cliente_id') == $cliente->id ? 'selected' : '' }} data-celular="{{ $cliente->celular }}">
+                                        <option value="{{ $cliente->idcliente }}" {{ old('cliente_id') == $cliente->idcliente ? 'selected' : '' }} data-celular="{{ $cliente->celular }}">
                                             {{ $cliente->nombre_completo }} - {{ $cliente->razon_social }}
                                             @if($cliente->celular)
                                                 ({{ $cliente->celular }})

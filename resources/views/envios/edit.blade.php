@@ -16,7 +16,7 @@
                         </a>
                     </div>
 
-                    <form action="{{ route('envios.update', $envio) }}" method="POST" class="space-y-6">
+                    <form action="{{ route('envios.update', $envio->idenvio) }}" method="POST" class="space-y-6">
                         @csrf
                         @method('PUT')
 

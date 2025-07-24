@@ -22,6 +22,10 @@ class TwilioWebhookController extends Controller
     {
         try {
             // Verificar que la solicitud viene de Twilio
+            Log::info("Webhook recibido de Twilio", [
+                'request' => $request->all()
+            ]);
+            
             if (!$this->verificarFirmaTwilio($request)) {
                 Log::warning("Solicitud webhook no verificada como de Twilio");
                 return response('Unauthorized', 401);

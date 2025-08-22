@@ -30,24 +30,9 @@ Route::post('envios/{idenvio}/marcar-enviado', [EnvioController::class, 'marcarE
     ->name('envios.marcar-enviado')
     ->middleware(['auth']);
 
-Route::post('envios/{idenvio}/marcar-respondido', [EnvioController::class, 'marcarRespondido'])
+    Route::post('envios/{idenvio}/marcar-respondido', [EnvioController::class, 'marcarRespondido'])
     ->name('envios.marcar-respondido')
     ->middleware(['auth']);
-
-// Ruta para enviar encuesta por WhatsApp
-Route::post('envios/{idenvio}/enviar-whatsapp', [EnvioController::class, 'enviarPorWhatsApp'])
-    ->name('envios.enviar-whatsapp')
-    ->middleware(['auth']);
-
-// Rutas para webhooks de Twilio (sin autenticación)
-Route::post('webhook/twilio', [TwilioWebhookController::class, 'handleWebhook'])
-    ->name('webhook.twilio');
-
-Route::post('webhook/twilio/status', [TwilioWebhookController::class, 'handleStatusWebhook'])
-    ->name('webhook.twilio.status');
-
-Route::get('webhook/twilio/test', [TwilioWebhookController::class, 'test'])
-    ->name('webhook.twilio.test');
 
 // Ruta para visualización de resultados
 Route::get('resultados', [ResultadosController::class, 'index'])

@@ -19,7 +19,7 @@ class EnvioFactory extends Factory
     {
         return [
             'cliente_id' => Cliente::factory(),
-            'pregunta_1' => 'En una escala del 0 al 10, ¿qué probabilidad hay de que recomiende proser a un colega o contacto del sector construcción?',
+            'pregunta_1' => 'En una escala del 0 al 10, ¿qué probabilidad hay de que recomiende Konkret a un colega o contacto del sector construcción?',
             'pregunta_2' => '¿Cuál es la razón principal de tu calificación?',
             'pregunta_3' => '¿A qué tipo de obra se destinó este concreto?',
             'pregunta_4' => '¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?',

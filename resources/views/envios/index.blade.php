@@ -210,7 +210,7 @@
                                             
                                             @if($envio->estado === 'pendiente')
                                                 @if($envio->cliente->celular)
-                                                    <form action="{{ route('envios.enviar-whatsapp', $envio->idenvio) }}" method="POST" class="inline">
+                                                    <form action="{{ route('envios.enviar-whatsapp-flow', $envio->idenvio) }}" method="POST" class="inline">
                                                         @csrf
                                                         <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 transition-colors duration-200">
                                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -51,7 +51,7 @@
                                 <div class="space-y-4 text-sm">
                                     <div class="bg-white p-3 rounded border-l-4 border-blue-500">
                                         <h5 class="font-medium text-gray-900 mb-1">Pregunta 1 (Escala 0-10):</h5>
-                                        <p class="text-gray-700">En una escala del 0 al 10, ¿qué probabilidad hay de que recomiende proser a un colega o contacto del sector construcción?</p>
+                                        <p class="text-gray-700">En una escala del 0 al 10, ¿qué probabilidad hay de que recomiende Konkret a un colega o contacto del sector construcción?</p>
                                     </div>
 
                                     <div class="bg-white p-3 rounded border-l-4 border-blue-500">

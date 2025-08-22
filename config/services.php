@@ -40,6 +40,7 @@ return [
         'auth_token' => env('TWILIO_AUTH_TOKEN'),
         'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
         'content_sid' => env('TWILIO_CONTENT_SID'),
+        'studio_flow_sid' => env('TWILIO_STUDIO_FLOW_SID'),
     ],
 
 ];

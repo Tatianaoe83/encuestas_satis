@@ -137,7 +137,7 @@ class ResultadosController extends Controller
             // Datos
             foreach ($envios as $envio) {
                 fputcsv($file, [
-                    $envio->id,
+                    $envio->idenvio,
                     $envio->cliente->razon_social ?? '',
                     $envio->cliente->asesor_comercial ?? '',
                     $envio->pregunta_1,

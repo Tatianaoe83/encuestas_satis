@@ -119,6 +119,7 @@
                     <table class="w-full display responsive nowrap" id="tabla-envios" style="width: 100%;">
                         <thead >
                             <tr>
+                                <th>#</th>
                                 <th>Cliente</th>
                                 <th>Estado</th>
                                 <th>Fechas</th>
@@ -128,6 +129,7 @@
                         <tbody>
                             @forelse($envios as $envio)
                                 <tr>
+                                    <td class="px-6 py-4">{{ $envio->idenvio }}</td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
                                             <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-4">
@@ -173,6 +175,23 @@
                                                     Cancelado
                                                 </span>
                                                 @break
+                                            @case('en_proceso')
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                                    </svg>
+                                                    En proceso
+                                                </span>
+                                                @break
+                                            @case('completado')
+                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                                                    </svg>
+                                                    Completado
+                                                </span>
+                                                @break
+
                                         @endswitch
                                     </td>
                                     <td class="px-6 py-4">
@@ -208,16 +227,8 @@
                                                 Editar
                                             </a>
                                             
-                                            @if($envio->estado === 'pendiente')
-                                                <!-- Debug info -->
-                                                <div class="text-xs text-gray-500 mb-1 bg-yellow-100 p-1 rounded">
-                                                    <strong>DEBUG:</strong> 
-                                                    Cliente ID: {{ $envio->cliente->idcliente ?? 'N/A' }}, 
-                                                    Celular: "{{ $envio->cliente->celular ?? 'NULL' }}", 
-                                                    Estado: {{ $envio->estado }},
-                                                    Celular vacío: {{ empty($envio->cliente->celular) ? 'SÍ' : 'NO' }},
-                                                    Condición WhatsApp: {{ ($envio->estado === 'pendiente' && !empty($envio->cliente->celular)) ? 'SÍ' : 'NO' }}
-                                                </div>
+                                            @if($envio->estado == 'pendiente')
+                                    
                                                 
                                                 @if($envio->cliente->celular)
                                                     <form action="{{ route('envios.enviar-por-whatsapp', $envio->idenvio) }}" method="POST" class="inline">
@@ -296,7 +307,7 @@
                         },
                         pageLength: 10,
                         lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
-                        order: [[0, 'asc']],
+                        order: [[0, 'desc']],
                         columnDefs: [
                             {
                                 targets: -1,

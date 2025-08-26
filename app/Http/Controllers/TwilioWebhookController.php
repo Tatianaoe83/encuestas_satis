@@ -22,15 +22,7 @@ class TwilioWebhookController extends Controller
      */
     public function webhook(Request $request)
     {
-        Log::info('=== WEBHOOK TWILIO RECIBIDO ===', [
-            'timestamp' => now(),
-            'method' => $request->method(),
-            'url' => $request->url(),
-            'headers' => $request->headers->all(),
-            'body' => $request->all(),
-            'ip' => $request->ip()
-        ]);
-
+      
         try {
             // Extraer datos del webhook de Twilio
             $from = $request->input('From');
@@ -126,31 +118,63 @@ class TwilioWebhookController extends Controller
         ]);
 
         try {
+            // Extraer datos del webhook
+            $from = $request->input('From', 'TEST_FROM');
+            $body = $request->input('Body', 'TEST_BODY');
+            $messageSid = $request->input('MessageSid', 'TEST_' . time());
+            $to = $request->input('To', 'TEST_TO');
+
+            // Limpiar número de WhatsApp (remover prefijo whatsapp:)
+            $cleanFrom = str_replace('whatsapp:', '', $from);
+            
             // Guardar respuesta en la tabla de chat
             $respuesta = ChatRespuesta::create([
-                'message_sid' => $request->input('MessageSid', 'TEST_' . time()),
-                'from_number' => $request->input('From', 'TEST_FROM'),
-                'to_number' => $request->input('To', 'TEST_TO'),
-                'body' => $request->input('Body', 'TEST_BODY'),
+                'message_sid' => $messageSid,
+                'from_number' => $cleanFrom,
+                'to_number' => str_replace('whatsapp:', '', $to),
+                'body' => $body,
                 'status' => 'received',
                 'twilio_data' => $request->all()
             ]);
 
             Log::info('Respuesta de prueba guardada exitosamente', [
                 'id' => $respuesta->id,
-                'message_sid' => $respuesta->message_sid
+                'message_sid' => $messageSid,
+                'from' => $cleanFrom,
+                'body' => $body
             ]);
+
+            // Procesar respuesta y enviar siguiente pregunta (FLUJO COMPLETO)
+            $resultado = $this->twilioService->procesarRespuesta($cleanFrom, $body, $messageSid);
+
+            if ($resultado) {
+                Log::info('Respuesta procesada exitosamente en webhook test', [
+                    'from' => $cleanFrom,
+                    'message_sid' => $messageSid,
+                    'procesado' => $resultado
+                ]);
+            } else {
+                Log::warning('No se pudo procesar la respuesta en webhook test', [
+                    'from' => $cleanFrom,
+                    'message_sid' => $messageSid
+                ]);
+            }
 
             return response()->json([
                 'success' => true,
-                'message' => 'Webhook de prueba recibido y guardado',
-                'data' => $respuesta
+                'message' => 'Webhook de prueba recibido y procesado completamente',
+                'data' => [
+                    'chat_respuesta_id' => $respuesta->id,
+                    'procesado' => $resultado,
+                    'timestamp' => now()
+                ]
             ]);
 
         } catch (\Exception $e) {
-            Log::error('Error guardando respuesta de prueba', [
+            Log::error('Error en webhook test clean', [
                 'error' => $e->getMessage(),
-                'data' => $request->all()
+                'data' => $request->all(),
+                'trace' => $e->getTraceAsString()
             ]);
 
             return response()->json([

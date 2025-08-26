@@ -28,6 +28,11 @@ Route::resource('envios', EnvioController::class)
     ->middleware(['auth']);
 
 // Rutas adicionales para envíos
+
+Route::post('envios/{idenvio}/enviar-por-whatsapp', [EnvioController::class, 'enviarPorWhatsApp'])
+    ->name('envios.enviar-por-whatsapp')
+    ->middleware(['auth']);
+
 Route::post('envios/{idenvio}/marcar-enviado', [EnvioController::class, 'marcarEnviado'])
     ->name('envios.marcar-enviado')
     ->middleware(['auth']);
@@ -68,6 +73,10 @@ Route::prefix('chat')->group(function () {
     // Obtener solo las respuestas recibidas
     Route::get('/respuestas', [ChatController::class, 'obtenerRespuestas'])
         ->name('chat.respuestas');
+    
+    // Verificar configuración de Twilio
+    Route::get('/verificar-config', [ChatController::class, 'verificarConfiguracion'])
+        ->name('chat.verificar-config');
     
     // Webhook para recibir respuestas de Twilio
     Route::post('/webhook-respuesta', [ChatController::class, 'webhookRespuesta'])

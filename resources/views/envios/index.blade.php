@@ -209,8 +209,18 @@
                                             </a>
                                             
                                             @if($envio->estado === 'pendiente')
+                                                <!-- Debug info -->
+                                                <div class="text-xs text-gray-500 mb-1 bg-yellow-100 p-1 rounded">
+                                                    <strong>DEBUG:</strong> 
+                                                    Cliente ID: {{ $envio->cliente->idcliente ?? 'N/A' }}, 
+                                                    Celular: "{{ $envio->cliente->celular ?? 'NULL' }}", 
+                                                    Estado: {{ $envio->estado }},
+                                                    Celular vacío: {{ empty($envio->cliente->celular) ? 'SÍ' : 'NO' }},
+                                                    Condición WhatsApp: {{ ($envio->estado === 'pendiente' && !empty($envio->cliente->celular)) ? 'SÍ' : 'NO' }}
+                                                </div>
+                                                
                                                 @if($envio->cliente->celular)
-                                                    <form action="{{ route('chat.enviar', $envio->idenvio) }}" method="POST" class="inline">
+                                                    <form action="{{ route('envios.enviar-por-whatsapp', $envio->idenvio) }}" method="POST" class="inline">
                                                         @csrf
                                                         <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-green-700 bg-green-100 hover:bg-green-200 transition-colors duration-200">
                                                             <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

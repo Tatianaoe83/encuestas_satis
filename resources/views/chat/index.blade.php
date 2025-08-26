@@ -27,7 +27,7 @@
                     <form id="chatForm" class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Número de WhatsApp
+                                Número de WhatsApp <span class="text-red-500">*</span>
                             </label>
                             <input type="text" 
                                    id="to" 
@@ -35,6 +35,9 @@
                                    placeholder="+529961100930" 
                                    class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                                    required>
+                            <p class="text-xs text-gray-500 mt-1">
+                                Formato: +52 + número de 10 dígitos (ej: +529961100930)
+                            </p>
                         </div>
 
                         <div>
@@ -71,10 +74,17 @@
                                       required></textarea>
                         </div>
 
-                        <button type="submit" 
-                                class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
-                            📤 Enviar Mensaje
-                        </button>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button type="submit" 
+                                    class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors">
+                                📤 Enviar Mensaje
+                            </button>
+                            <button type="button" 
+                                    onclick="verificarConfiguracion()"
+                                    class="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors">
+                                🔧 Verificar Config
+                            </button>
+                        </div>
                     </form>
 
                     <!-- Resultado del envío -->
@@ -160,7 +170,20 @@
                     mostrarResultado('error', response.data.message);
                 }
             } catch (error) {
-                mostrarResultado('error', 'Error al enviar el mensaje: ' + (error.response?.data?.message || error.message));
+                let errorMessage = 'Error al enviar el mensaje';
+                
+                if (error.response?.data?.message) {
+                    errorMessage = error.response.data.message;
+                } else if (error.message) {
+                    errorMessage = error.message;
+                }
+                
+                // Mostrar detalles adicionales si están disponibles
+                if (error.response?.data?.error_details) {
+                    errorMessage += '\n\nDetalles técnicos: ' + error.response.data.error_details;
+                }
+                
+                mostrarResultado('error', errorMessage);
             }
         });
 
@@ -233,6 +256,21 @@
             } catch (error) {
                 document.getElementById('respuestas').innerHTML = 
                     '<div class="text-red-500 text-center py-8">Error al cargar las respuestas</div>';
+            }
+        }
+
+        // Verificar configuración de Twilio
+        async function verificarConfiguracion() {
+            try {
+                const response = await axios.get('/chat/verificar-config');
+                
+                if (response.data.success) {
+                    mostrarResultado('success', 'Configuración verificada correctamente');
+                } else {
+                    mostrarResultado('error', 'Error en la configuración: ' + response.data.message);
+                }
+            } catch (error) {
+                mostrarResultado('error', 'Error al verificar la configuración: ' + (error.response?.data?.message || error.message));
             }
         }
 

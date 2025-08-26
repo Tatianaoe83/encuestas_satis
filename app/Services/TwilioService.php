@@ -44,31 +44,31 @@ class TwilioService
                 'mensaje' => $mensaje
             ]);
 
-            // Verificar si estamos en modo de prueba
-            if (app()->environment('local') || config('app.debug')) {
-                Log::info("MODO PRUEBA: Simulando envío de WhatsApp");
-                
-                // Actualizar el envío con la información simulada
-                $envio->update([
-                    'whatsapp_number' => $numeroWhatsApp,
-                    'twilio_message_sid' => 'SIM_' . time(),
-                    'whatsapp_message' => $mensaje,
-                    'estado' => 'enviado',
-                    'fecha_envio' => now(),
-                    'whatsapp_sent_at' => now(),
-                    'pregunta_actual' => 1, // Marcar que estamos en la primera pregunta
-                ]);
-
-                Log::info("Primera pregunta simulada exitosamente", [
-                    'envio_id' => $envio->idenvio,
-                    'cliente' => $cliente->nombre_completo,
-                    'numero' => $numeroWhatsApp,
-                    'message_sid' => 'SIM_' . time(),
-                    'pregunta_actual' => 1
-                ]);
-
-                return true;
-            }
+            // Comentado temporalmente para forzar envío real
+            // if (app()->environment('local') || config('app.debug')) {
+            //     Log::info("MODO PRUEBA: Simulando envío de WhatsApp");
+            //     
+            //     // Actualizar el envío con la información simulada
+            //     $envio->update([
+            //         'whatsapp_number' => $numeroWhatsApp,
+            //         'twilio_message_sid' => 'SIM_' . time(),
+            //         'whatsapp_message' => $mensaje,
+            //         'estado' => 'enviado',
+            //         'fecha_envio' => now(),
+            //         'whatsapp_sent_at' => now(),
+            //         'pregunta_actual' => 1, // Marcar que estamos en la primera pregunta
+            //     ]);
+            //
+            //     Log::info("Primera pregunta simulada exitosamente", [
+            //         'envio_id' => $envio->idenvio,
+            //         'cliente' => $cliente->nombre_completo,
+            //         'numero' => $numeroWhatsApp,
+            //         'message_sid' => 'SIM_' . time(),
+            //         'pregunta_actual' => 1
+            //     ]);
+            //
+            //     return true;
+            // }
 
             // Envío real a Twilio
             $message = $this->client->messages->create(
@@ -81,7 +81,7 @@ class TwilioService
 
             // Actualizar el envío con la información de Twilio
             $envio->update([
-                'whatsapp_number' => $numeroWhatsApp,
+                'whatsapp_number' => 'whatsapp:'.$numeroWhatsApp,
                 'twilio_message_sid' => $message->sid,
                 'whatsapp_message' => $mensaje,
                 'estado' => 'enviado',
@@ -143,18 +143,14 @@ class TwilioService
                 // Enviar mensaje de agradecimiento
                 $mensaje = $this->construirMensajeAgradecimiento($envio);
                 
-                // Verificar si estamos en modo de prueba
-                if (app()->environment('local') || config('app.debug')) {
-                    Log::info("MODO PRUEBA: Simulando envío de mensaje de agradecimiento");
-                } else {
-                    $message = $this->client->messages->create(
-                        "whatsapp:{$numeroWhatsApp}",
-                        [
-                            'from' => "whatsapp:{$this->fromNumber}",
-                            'body' => $mensaje,
-                        ]
-                    );
-                }
+                // Envío real a Twilio
+                $message = $this->client->messages->create(
+                    "whatsapp:{$numeroWhatsApp}",
+                    [
+                        'from' => "whatsapp:{$this->fromNumber}",
+                        'body' => $mensaje,
+                    ]
+                );
                 
                 // Marcar como completado
                 $envio->update([
@@ -175,18 +171,14 @@ class TwilioService
             // Enviar siguiente pregunta
             $mensaje = $this->construirPregunta($envio, $siguientePregunta);
             
-            // Verificar si estamos en modo de prueba
-            if (app()->environment('local') || config('app.debug')) {
-                Log::info("MODO PRUEBA: Simulando envío de siguiente pregunta");
-            } else {
-                $message = $this->client->messages->create(
-                    "whatsapp:{$numeroWhatsApp}",
-                    [
-                        'from' => "whatsapp:{$this->fromNumber}",
-                        'body' => $mensaje,
-                    ]
-                );
-            }
+            // Envío real a Twilio
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'body' => $mensaje,
+                ]
+            );
             
             // Actualizar pregunta actual y estado
             $envio->update([
@@ -290,7 +282,7 @@ class TwilioService
         try {
             // Buscar el envío por el número de WhatsApp o por número de celular del cliente
             $envio = Envio::where(function($query) use ($from) {
-                $query->where('whatsapp_number', $from)
+                $query->where('whatsapp_number', 'whatsapp:'.$from)
                       ->orWhereHas('cliente', function($q) use ($from) {
                           $q->where('celular', 'LIKE', '%' . $from . '%');
                       });
@@ -495,6 +487,75 @@ class TwilioService
                 'success' => false,
                 'error' => $e->getMessage(),
                 'numero_intentado' => $numeroWhatsApp ?? $numeroPrueba
+            ];
+        }
+    }
+
+    /**
+     * Enviar mensaje directo por WhatsApp
+     */
+    public function enviarMensajeDirecto($numero, $mensaje, $nombre = null, $codigo = null)
+    {
+        try {
+            Log::info("Enviando mensaje directo por WhatsApp", [
+                'numero' => $numero,
+                'mensaje' => $mensaje,
+                'nombre' => $nombre,
+                'codigo' => $codigo
+            ]);
+
+            // Formatear número para WhatsApp
+            $numeroWhatsApp = $this->formatearNumeroWhatsApp($numero);
+
+            Log::info("Número formateado para WhatsApp", [
+                'numero_original' => $numero,
+                'numero_formateado' => $numeroWhatsApp
+            ]);
+
+            // Comentado temporalmente para forzar envío real
+            // if (app()->environment('local') || config('app.debug')) {
+            //     Log::info("MODO PRUEBA: Simulando envío de WhatsApp");
+            //     
+            //     return [
+            //         'success' => true,
+            //         'message_sid' => 'SIM_' . time(),
+            //         'status' => 'sent',
+            //         'numero_enviado' => $numeroWhatsApp
+            //     ];
+            // }
+
+            // Envío real a Twilio
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'body' => $mensaje,
+                ]
+            );
+
+            Log::info("Mensaje enviado exitosamente", [
+                'message_sid' => $message->sid,
+                'status' => $message->status,
+                'numero_enviado' => $numeroWhatsApp
+            ]);
+
+            return [
+                'success' => true,
+                'message_sid' => $message->sid,
+                'status' => $message->status,
+                'numero_enviado' => $numeroWhatsApp
+            ];
+
+        } catch (\Exception $e) {
+            Log::error("Error enviando mensaje directo por WhatsApp", [
+                'numero' => $numero,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
             ];
         }
     }

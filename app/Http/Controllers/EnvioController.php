@@ -23,6 +23,22 @@ class EnvioController extends Controller
     public function index()
     {
         $envios = Envio::with('cliente')->latest()->paginate(10);
+        
+        // Log para debug
+        \Log::info('Envíos cargados en index', [
+            'total' => $envios->count(),
+            'envios' => $envios->map(function($envio) {
+                return [
+                    'id' => $envio->idenvio,
+                    'estado' => $envio->estado,
+                    'cliente_id' => $envio->cliente_id,
+                    'cliente_nombre' => $envio->cliente->nombre_completo ?? 'N/A',
+                    'cliente_celular' => $envio->cliente->celular ?? 'NULL',
+                    'puede_whatsapp' => ($envio->estado === 'pendiente' && !empty($envio->cliente->celular))
+                ];
+            })
+        ]);
+        
         return view('envios.index', compact('envios'));
     }
 

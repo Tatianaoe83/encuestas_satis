@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Twilio\Rest\Client;
 use App\Models\ChatRespuesta;
+use App\Services\TwilioService;
 
 class ChatController extends Controller
 {
@@ -14,12 +15,21 @@ class ChatController extends Controller
      */
     public function enviarMensaje(Request $request)
     {
+        
         try {
+            // Log de los datos recibidos
+            Log::info('Datos recibidos en enviarMensaje', [
+                'request_data' => $request->all(),
+                'headers' => $request->headers->all()
+            ]);
+
             $request->validate([
-                'to' => 'required|string',
+                'to' => 'required|string|regex:/^\+?[0-9]{10,15}$/',
                 'mensaje' => 'required|string',
                 'nombre' => 'nullable|string',
                 'codigo' => 'nullable|string'
+            ], [
+                'to.regex' => 'El número de teléfono debe tener un formato válido (ej: +529961100930)'
             ]);
 
             $to = $request->input('to');
@@ -27,60 +37,103 @@ class ChatController extends Controller
             $nombre = $request->input('nombre', 'Usuario');
             $codigo = $request->input('codigo', 'CHAT');
 
-            // Formatear número de WhatsApp
-            if (!str_starts_with($to, 'whatsapp:')) {
-                $to = 'whatsapp:' . $to;
-            }
-
-            // Crear cliente de Twilio
-            $client = new Client(
-                config('services.twilio.account_sid'),
-                config('services.twilio.auth_token')
-            );
-
-            // Enviar mensaje
-            $message = $client->messages->create(
-                $to,
-                [
-                    'from' => config('services.twilio.whatsapp_from'),
-                    'body' => $mensaje
-                ]
-            );
-
-            // Registrar envío exitoso
-            Log::info('Mensaje enviado exitosamente', [
-                'message_sid' => $message->sid,
+            // Log de los datos procesados
+            Log::info('Datos procesados', [
                 'to' => $to,
                 'mensaje' => $mensaje,
                 'nombre' => $nombre,
-                'codigo' => $codigo,
-                'status' => $message->status,
-                'timestamp' => now()
+                'codigo' => $codigo
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Mensaje enviado exitosamente',
-                'data' => [
-                    'message_sid' => $message->sid,
-                    'to' => $to,
-                    'status' => $message->status,
-                    'timestamp' => now()
-                ]
+            // Formatear número de WhatsApp
+            $numeroOriginal = $to;
+            
+            // Remover caracteres no numéricos excepto el +
+            $numeroLimpio = preg_replace('/[^0-9+]/', '', $to);
+            
+            // Asegurar que tenga el código de país (México: +52)
+            if (!str_starts_with($numeroLimpio, '+')) {
+                if (strlen($numeroLimpio) == 10) {
+                    $numeroLimpio = '+52' . $numeroLimpio;
+                } else {
+                    $numeroLimpio = '+' . $numeroLimpio;
+                }
+            }
+            
+            // Agregar prefijo whatsapp: si no lo tiene
+            if (!str_starts_with($numeroLimpio, 'whatsapp:')) {
+                $to = 'whatsapp:' . $numeroLimpio;
+            } else {
+                $to = $numeroLimpio;
+            }
+            
+            Log::info('Número formateado para WhatsApp', [
+                'numero_original' => $numeroOriginal,
+                'numero_limpio' => $numeroLimpio,
+                'numero_final' => $to
             ]);
+
+            // Usar TwilioService para enviar el mensaje
+            $twilioService = new TwilioService();
+            
+            // Enviar mensaje usando TwilioService
+            $resultado = $twilioService->enviarMensajeDirecto($numeroLimpio, $mensaje, $nombre, $codigo);
+            
+            if ($resultado['success']) {
+                Log::info('Mensaje enviado exitosamente', [
+                    'message_sid' => $resultado['message_sid'],
+                    'to' => $numeroLimpio,
+                    'mensaje' => $mensaje,
+                    'nombre' => $nombre,
+                    'codigo' => $codigo,
+                    'status' => $resultado['status'],
+                    'timestamp' => now()
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Mensaje enviado exitosamente',
+                    'data' => [
+                        'message_sid' => $resultado['message_sid'],
+                        'to' => $numeroLimpio,
+                        'status' => $resultado['status'],
+                        'timestamp' => now()
+                    ]
+                ]);
+            } else {
+                throw new \Exception($resultado['error']);
+            }
 
         } catch (\Exception $e) {
-            // Registrar error
+            // Registrar error con más detalles
             Log::error('Error enviando mensaje', [
                 'error' => $e->getMessage(),
+                'error_class' => get_class($e),
                 'to' => $to ?? 'N/A',
                 'mensaje' => $mensaje ?? 'N/A',
-                'timestamp' => now()
+                'timestamp' => now(),
+                'trace' => $e->getTraceAsString()
             ]);
+
+            // Determinar el tipo de error para dar un mensaje más específico
+            $errorMessage = 'Error enviando mensaje';
+            
+            if (strpos($e->getMessage(), 'The to field is required') !== false) {
+                $errorMessage = 'El campo "to" (número de teléfono) es requerido y debe tener un formato válido';
+            } elseif (strpos($e->getMessage(), 'Unauthorized') !== false) {
+                $errorMessage = 'Error de autenticación con Twilio. Verifica las credenciales configuradas';
+            } elseif (strpos($e->getMessage(), 'Invalid phone number') !== false) {
+                $errorMessage = 'El número de teléfono tiene un formato inválido. Debe incluir el código de país (+52 para México)';
+            } elseif (strpos($e->getMessage(), 'whatsapp_from') !== false) {
+                $errorMessage = 'Error en la configuración del número de WhatsApp de origen. Verifica TWILIO_WHATSAPP_FROM';
+            } else {
+                $errorMessage .= ': ' . $e->getMessage();
+            }
 
             return response()->json([
                 'success' => false,
-                'message' => 'Error enviando mensaje: ' . $e->getMessage()
+                'message' => $errorMessage,
+                'error_details' => $e->getMessage()
             ], 500);
         }
     }
@@ -145,6 +198,43 @@ class ChatController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error obteniendo respuestas: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Verificar configuración de Twilio
+     */
+    public function verificarConfiguracion()
+    {
+        try {
+            $twilioService = new \App\Services\TwilioService();
+            $configuracion = $twilioService->verificarConfiguracion();
+            
+            if ($configuracion['configuracion_completa']) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Configuración de Twilio verificada correctamente',
+                    'data' => $configuracion
+                ]);
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Configuración de Twilio incompleta',
+                    'errors' => $configuracion['errores'],
+                    'data' => $configuracion
+                ], 400);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Error verificando configuración de Twilio', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error verificando configuración: ' . $e->getMessage()
             ], 500);
         }
     }

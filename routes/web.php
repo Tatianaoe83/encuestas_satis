@@ -5,6 +5,8 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ResultadosController;
 use App\Http\Controllers\TwilioWebhookController;
+use App\Http\Controllers\ChatController;
+use Illuminate\Http\Request;
 
 Route::redirect('/', '/login');
 
@@ -47,4 +49,34 @@ Route::get('resultados/detalle', [ResultadosController::class, 'detalle'])
     ->name('resultados.detalle')
     ->middleware(['auth']);
 
+    
 require __DIR__.'/auth.php';
+
+// Incluir rutas de webhook
+require __DIR__.'/webhook.php';
+
+// Rutas para el chat y mensajería
+Route::prefix('chat')->group(function () {
+    // Enviar mensaje de chat
+    Route::post('/enviar', [ChatController::class, 'enviarMensaje'])
+        ->name('chat.enviar');
+    
+    // Obtener historial de mensajes
+    Route::get('/historial', [ChatController::class, 'obtenerHistorial'])
+        ->name('chat.historial');
+    
+    // Obtener solo las respuestas recibidas
+    Route::get('/respuestas', [ChatController::class, 'obtenerRespuestas'])
+        ->name('chat.respuestas');
+    
+    // Webhook para recibir respuestas de Twilio
+    Route::post('/webhook-respuesta', [ChatController::class, 'webhookRespuesta'])
+        ->name('chat.webhook-respuesta');
+});
+
+// Ruta para mostrar la interfaz de chat
+Route::get('/chat', function () {
+    return view('chat.index');
+})->name('chat.index');
+
+

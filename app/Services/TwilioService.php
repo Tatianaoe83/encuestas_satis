@@ -38,24 +38,44 @@ class TwilioService
                 'numeroWhatsApp' => $numeroWhatsApp
             ]);
 
-            // Construir el mensaje de la encuesta
-            $mensaje = $this->construirMensajeEncuesta($envio);
-            Log::info("Mensaje de encuesta", [
+            // Enviar solo la primera pregunta
+            $mensaje = $this->construirPrimeraPregunta($envio);
+            Log::info("Primera pregunta enviada", [
                 'mensaje' => $mensaje
             ]);
 
-            // Enviar mensaje por WhatsApp usando el formato correcto
+            // Verificar si estamos en modo de prueba
+            if (app()->environment('local') || config('app.debug')) {
+                Log::info("MODO PRUEBA: Simulando envío de WhatsApp");
+                
+                // Actualizar el envío con la información simulada
+                $envio->update([
+                    'whatsapp_number' => $numeroWhatsApp,
+                    'twilio_message_sid' => 'SIM_' . time(),
+                    'whatsapp_message' => $mensaje,
+                    'estado' => 'enviado',
+                    'fecha_envio' => now(),
+                    'whatsapp_sent_at' => now(),
+                    'pregunta_actual' => 1, // Marcar que estamos en la primera pregunta
+                ]);
+
+                Log::info("Primera pregunta simulada exitosamente", [
+                    'envio_id' => $envio->idenvio,
+                    'cliente' => $cliente->nombre_completo,
+                    'numero' => $numeroWhatsApp,
+                    'message_sid' => 'SIM_' . time(),
+                    'pregunta_actual' => 1
+                ]);
+
+                return true;
+            }
+
+            // Envío real a Twilio
             $message = $this->client->messages->create(
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
                     'body' => $mensaje,
-                    // Si tienes un contentSid configurado, puedes usarlo así:
-                    // 'contentSid' => config('services.twilio.content_sid'),
-                    // 'contentVariables' => json_encode([
-                    //     '1' => $cliente->nombre_completo,
-                    //     '2' => date('d/m/Y')
-                    // ])
                 ]
             );
 
@@ -67,20 +87,22 @@ class TwilioService
                 'estado' => 'enviado',
                 'fecha_envio' => now(),
                 'whatsapp_sent_at' => now(),
+                'pregunta_actual' => 1, // Marcar que estamos en la primera pregunta
             ]);
 
-            Log::info("Encuesta enviada exitosamente", [
-                'envio_id' => $envio->id,
+            Log::info("Primera pregunta enviada exitosamente", [
+                'envio_id' => $envio->idenvio,
                 'cliente' => $cliente->nombre_completo,
                 'numero' => $numeroWhatsApp,
-                'message_sid' => $message->sid
+                'message_sid' => $message->sid,
+                'pregunta_actual' => 1
             ]);
 
             return true;
 
         } catch (\Exception $e) {
             Log::error("Error enviando encuesta por WhatsApp", [
-                'envio_id' => $envio->id,
+                'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
@@ -96,47 +118,205 @@ class TwilioService
     }
 
     /**
+     * Enviar siguiente pregunta basada en la respuesta anterior
+     */
+    public function enviarSiguientePregunta(Envio $envio, $respuestaAnterior)
+    {
+        try {
+            $cliente = $envio->cliente;
+            $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+            
+            // Determinar qué pregunta enviar
+            $preguntaActual = $envio->pregunta_actual ?? 1;
+            $siguientePregunta = $preguntaActual + 1;
+            
+            // Si ya respondió la pregunta actual, guardar la respuesta
+            if ($preguntaActual <= 4) {
+                $campoRespuesta = "respuesta_{$preguntaActual}";
+                $envio->update([
+                    $campoRespuesta => $respuestaAnterior
+                ]);
+            }
+            
+            // Si es la última pregunta o ya se completó
+            if ($siguientePregunta > 4) {
+                // Enviar mensaje de agradecimiento
+                $mensaje = $this->construirMensajeAgradecimiento($envio);
+                
+                // Verificar si estamos en modo de prueba
+                if (app()->environment('local') || config('app.debug')) {
+                    Log::info("MODO PRUEBA: Simulando envío de mensaje de agradecimiento");
+                } else {
+                    $message = $this->client->messages->create(
+                        "whatsapp:{$numeroWhatsApp}",
+                        [
+                            'from' => "whatsapp:{$this->fromNumber}",
+                            'body' => $mensaje,
+                        ]
+                    );
+                }
+                
+                // Marcar como completado
+                $envio->update([
+                    'estado' => 'completado',
+                    'fecha_respuesta' => now(),
+                    'whatsapp_responded_at' => now(),
+                    'pregunta_actual' => 4
+                ]);
+                
+                Log::info("Encuesta completada", [
+                    'envio_id' => $envio->idenvio,
+                    'numero' => $numeroWhatsApp
+                ]);
+                
+                return true;
+            }
+            
+            // Enviar siguiente pregunta
+            $mensaje = $this->construirPregunta($envio, $siguientePregunta);
+            
+            // Verificar si estamos en modo de prueba
+            if (app()->environment('local') || config('app.debug')) {
+                Log::info("MODO PRUEBA: Simulando envío de siguiente pregunta");
+            } else {
+                $message = $this->client->messages->create(
+                    "whatsapp:{$numeroWhatsApp}",
+                    [
+                        'from' => "whatsapp:{$this->fromNumber}",
+                        'body' => $mensaje,
+                    ]
+                );
+            }
+            
+            // Actualizar pregunta actual y estado
+            $envio->update([
+                'pregunta_actual' => $siguientePregunta,
+                'whatsapp_message' => $mensaje,
+                'estado' => 'en_proceso' // Marcar como en proceso mientras se contesta
+            ]);
+            
+            Log::info("Siguiente pregunta enviada", [
+                'envio_id' => $envio->idenvio,
+                'pregunta_actual' => $siguientePregunta,
+                'numero' => $numeroWhatsApp
+            ]);
+            
+            return true;
+            
+        } catch (\Exception $e) {
+            Log::error("Error enviando siguiente pregunta", [
+                'envio_id' => $envio->idenvio,
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Construir la primera pregunta
+     */
+    protected function construirPrimeraPregunta(Envio $envio)
+    {
+        $cliente = $envio->cliente;
+        
+        $mensaje = "🏗️ *Encuesta de Satisfacción - Proser*\n\n";
+        $mensaje .= "Hola {$cliente->nombre_completo},\n\n";
+        $mensaje .= "Gracias por confiar en Proser. Nos gustaría conocer tu opinión sobre nuestro servicio.\n\n";
+        $mensaje .= "Te enviaré 4 preguntas una por una para facilitar tu respuesta.\n\n";
+        $mensaje .= "📝 *Pregunta 1 de 4:*\n";
+        $mensaje .= "En una escala del 0 al 10, ¿qué probabilidad hay de que recomiende proser a un colega o contacto del sector construcción?\n\n";
+        $mensaje .= "Responde solo con un número del 0 al 10.";
+
+        return $mensaje;
+    }
+
+    /**
+     * Construir pregunta específica
+     */
+    protected function construirPregunta(Envio $envio, $numeroPregunta)
+    {
+        $cliente = $envio->cliente;
+        
+        switch ($numeroPregunta) {
+            case 2:
+                $mensaje = "📝 *Pregunta 2 de 4:*\n";
+                $mensaje .= "¿Cuál es la razón principal de tu calificación?\n\n";
+                $mensaje .= "Responde con tu razón.";
+                break;
+                
+            case 3:
+                $mensaje = "📝 *Pregunta 3 de 4:*\n";
+                $mensaje .= "¿A qué tipo de obra se destinó este concreto?\n\n";
+                $mensaje .= "Opciones:\n";
+                $mensaje .= "• Vivienda unifamiliar\n";
+                $mensaje .= "• Edificio vertical\n";
+                $mensaje .= "• Obra vial\n";
+                $mensaje .= "• Obra industrial\n";
+                $mensaje .= "• Otro\n\n";
+                $mensaje .= "Responde con una de las opciones o describe tu caso.";
+                break;
+                
+            case 4:
+                $mensaje = "📝 *Pregunta 4 de 4:*\n";
+                $mensaje .= "¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?\n\n";
+                $mensaje .= "Responde con tu sugerencia o escribe 'N/A' si no tienes sugerencias.";
+                break;
+                
+            default:
+                $mensaje = "❓ Pregunta no válida";
+        }
+
+        return $mensaje;
+    }
+
+    /**
+     * Construir mensaje de agradecimiento
+     */
+    protected function construirMensajeAgradecimiento(Envio $envio)
+    {
+        $mensaje = "✅ *¡Gracias por completar nuestra encuesta!*\n\n";
+        $mensaje .= "Hemos recibido todas tus respuestas y las tendremos en cuenta para mejorar nuestros servicios.\n\n";
+        $mensaje .= "Si tienes alguna consulta adicional, no dudes en contactarnos.\n\n";
+        $mensaje .= "¡Que tengas un excelente día! 🏗️";
+
+        return $mensaje;
+    }
+
+    /**
      * Procesar respuesta recibida por WhatsApp
      */
     public function procesarRespuesta($from, $body, $messageSid)
     {
         try {
-            // Buscar el envío por el número de WhatsApp
-            $envio = Envio::where('whatsapp_number', $from)
-                         ->where('estado', 'enviado')
-                         ->latest()
-                         ->first();
+            // Buscar el envío por el número de WhatsApp o por número de celular del cliente
+            $envio = Envio::where(function($query) use ($from) {
+                $query->where('whatsapp_number', $from)
+                      ->orWhereHas('cliente', function($q) use ($from) {
+                          $q->where('celular', 'LIKE', '%' . $from . '%');
+                      });
+            })
+            ->whereIn('estado', ['enviado', 'en_proceso'])
+            ->latest()
+            ->first();
 
             if (!$envio) {
                 Log::warning("No se encontró envío para el número: {$from}");
                 return false;
             }
 
-            // Procesar la respuesta según el formato esperado
-            $respuestas = $this->parsearRespuesta($body);
-            
-            // Actualizar el envío con las respuestas
-            $envio->update([
-                'respuesta_1' => $respuestas['pregunta_1'] ?? null,
-                'respuesta_2' => $respuestas['pregunta_2'] ?? null,
-                'respuesta_3' => $respuestas['pregunta_3'] ?? null,
-                'respuesta_4' => $respuestas['pregunta_4'] ?? null,
-                'whatsapp_responses' => $respuestas,
-                'estado' => 'respondido',
-                'fecha_respuesta' => now(),
-                'whatsapp_responded_at' => now(),
-            ]);
+            // Procesar la respuesta y enviar siguiente pregunta
+            $resultado = $this->enviarSiguientePregunta($envio, $body);
 
-            // Enviar mensaje de confirmación
-            $this->enviarConfirmacion($from, $envio);
+            if ($resultado) {
+                Log::info("Respuesta procesada exitosamente", [
+                    'envio_id' => $envio->idenvio,
+                    'numero' => $from,
+                    'respuesta' => $body,
+                    'pregunta_actual' => $envio->pregunta_actual
+                ]);
+            }
 
-            Log::info("Respuesta procesada exitosamente", [
-                'envio_id' => $envio->id,
-                'numero' => $from,
-                'respuestas' => $respuestas
-            ]);
-
-            return true;
+            return $resultado;
 
         } catch (\Exception $e) {
             Log::error("Error procesando respuesta de WhatsApp", [

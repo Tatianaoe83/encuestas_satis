@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\TwilioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\ChatRespuesta;
+use App\Models\Envio;
+use App\Services\TwilioService;
 
 class TwilioWebhookController extends Controller
 {
@@ -16,135 +18,200 @@ class TwilioWebhookController extends Controller
     }
 
     /**
-     * Manejar webhook de mensajes entrantes de WhatsApp
+     * Webhook principal para recibir respuestas de Twilio
      */
-    public function handleWebhook(Request $request)
+    public function webhook(Request $request)
     {
-        try {
-            // Verificar que la solicitud viene de Twilio
-            Log::info("Webhook recibido de Twilio", [
-                'request' => $request->all()
-            ]);
-            
-            if (!$this->verificarFirmaTwilio($request)) {
-                Log::warning("Solicitud webhook no verificada como de Twilio");
-                return response('Unauthorized', 401);
-            }
+        Log::info('=== WEBHOOK TWILIO RECIBIDO ===', [
+            'timestamp' => now(),
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'headers' => $request->headers->all(),
+            'body' => $request->all(),
+            'ip' => $request->ip()
+        ]);
 
-            // Obtener datos del mensaje
+        try {
+            // Extraer datos del webhook de Twilio
             $from = $request->input('From');
             $body = $request->input('Body');
             $messageSid = $request->input('MessageSid');
-            $messageStatus = $request->input('MessageStatus');
+            $to = $request->input('To');
 
-            Log::info("Webhook recibido de Twilio", [
-                'from' => $from,
-                'body' => $body,
-                'message_sid' => $messageSid,
-                'status' => $messageStatus
-            ]);
-
-            // Solo procesar mensajes entrantes (no de estado)
-            if ($messageStatus === 'received') {
-                // Remover el prefijo "whatsapp:" del número
-                $numero = str_replace('whatsapp:', '', $from);
+            // Validar datos requeridos
+            if (!$from || !$body || !$messageSid) {
+                Log::warning('Datos incompletos en webhook', [
+                    'from' => $from,
+                    'body' => $body,
+                    'message_sid' => $messageSid
+                ]);
                 
-                // Procesar la respuesta
-                $resultado = $this->twilioService->procesarRespuesta($numero, $body, $messageSid);
-                
-                if ($resultado) {
-                    return response('OK', 200);
-                } else {
-                    return response('Error processing message', 500);
-                }
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Datos incompletos'
+                ], 400);
             }
 
-            return response('OK', 200);
+            // Limpiar número de WhatsApp (remover prefijo whatsapp:)
+            $cleanFrom = str_replace('whatsapp:', '', $from);
+            
+            // Guardar respuesta en la tabla de chat
+            $chatRespuesta = ChatRespuesta::create([
+                'message_sid' => $messageSid,
+                'from_number' => $cleanFrom,
+                'to_number' => str_replace('whatsapp:', '', $to),
+                'body' => $body,
+                'status' => 'received',
+                'twilio_data' => $request->all()
+            ]);
+
+            Log::info('Respuesta de chat guardada', [
+                'id' => $chatRespuesta->id,
+                'from' => $cleanFrom,
+                'body' => $body
+            ]);
+
+            // Procesar respuesta y enviar siguiente pregunta
+            $resultado = $this->twilioService->procesarRespuesta($cleanFrom, $body, $messageSid);
+
+            if ($resultado) {
+                Log::info('Respuesta procesada exitosamente', [
+                    'from' => $cleanFrom,
+                    'message_sid' => $messageSid
+                ]);
+            } else {
+                Log::warning('No se pudo procesar la respuesta', [
+                    'from' => $cleanFrom,
+                    'message_sid' => $messageSid
+                ]);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Webhook procesado correctamente',
+                'data' => [
+                    'chat_respuesta_id' => $chatRespuesta->id,
+                    'procesado' => $resultado,
+                    'timestamp' => now()
+                ]
+            ]);
 
         } catch (\Exception $e) {
-            Log::error("Error procesando webhook de Twilio", [
+            Log::error('Error procesando webhook de Twilio', [
                 'error' => $e->getMessage(),
-                'request_data' => $request->all()
+                'trace' => $e->getTraceAsString(),
+                'data' => $request->all()
             ]);
-            
-            return response('Internal Server Error', 500);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error interno del servidor',
+                'error' => $e->getMessage()
+            ], 500);
         }
     }
 
     /**
-     * Manejar webhook de estado de mensajes
+     * Webhook de prueba limpio para testing
      */
-    public function handleStatusWebhook(Request $request)
+    public function webhookTestClean(Request $request)
+    {
+        Log::info('=== WEBHOOK TEST LIMPIO RECIBIDO ===', [
+            'timestamp' => now(),
+            'method' => $request->method(),
+            'url' => $request->url(),
+            'headers' => $request->headers->all(),
+            'body' => $request->all(),
+            'ip' => $request->ip()
+        ]);
+
+        try {
+            // Guardar respuesta en la tabla de chat
+            $respuesta = ChatRespuesta::create([
+                'message_sid' => $request->input('MessageSid', 'TEST_' . time()),
+                'from_number' => $request->input('From', 'TEST_FROM'),
+                'to_number' => $request->input('To', 'TEST_TO'),
+                'body' => $request->input('Body', 'TEST_BODY'),
+                'status' => 'received',
+                'twilio_data' => $request->all()
+            ]);
+
+            Log::info('Respuesta de prueba guardada exitosamente', [
+                'id' => $respuesta->id,
+                'message_sid' => $respuesta->message_sid
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Webhook de prueba recibido y guardado',
+                'data' => $respuesta
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error guardando respuesta de prueba', [
+                'error' => $e->getMessage(),
+                'data' => $request->all()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Obtener estado de un envío específico
+     */
+    public function getEstadoEnvio(Request $request)
     {
         try {
-            // Verificar que la solicitud viene de Twilio
-            if (!$this->verificarFirmaTwilio($request)) {
-                Log::warning("Solicitud de estado webhook no verificada como de Twilio");
-                return response('Unauthorized', 401);
+            $whatsappNumber = $request->input('whatsapp_number');
+            
+            if (!$whatsappNumber) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Número de WhatsApp requerido'
+                ], 400);
             }
 
-            $messageSid = $request->input('MessageSid');
-            $messageStatus = $request->input('MessageStatus');
-            $errorCode = $request->input('ErrorCode');
-            $errorMessage = $request->input('ErrorMessage');
+            $envio = Envio::where('whatsapp_number', $whatsappNumber)
+                         ->latest()
+                         ->first();
 
-            Log::info("Estado de mensaje actualizado", [
-                'message_sid' => $messageSid,
-                'status' => $messageStatus,
-                'error_code' => $errorCode,
-                'error_message' => $errorMessage
+            if (!$envio) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontró envío para este número'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'envio_id' => $envio->idenvio,
+                    'estado' => $envio->estado,
+                    'pregunta_actual' => $envio->pregunta_actual,
+                    'fecha_envio' => $envio->fecha_envio,
+                    'fecha_respuesta' => $envio->fecha_respuesta,
+                    'respuestas' => [
+                        'respuesta_1' => $envio->respuesta_1,
+                        'respuesta_2' => $envio->respuesta_2,
+                        'respuesta_3' => $envio->respuesta_3,
+                        'respuesta_4' => $envio->respuesta_4,
+                    ]
+                ]
             ]);
-
-            // Aquí podrías actualizar el estado del mensaje en tu base de datos
-            // si necesitas hacer seguimiento del estado de entrega
-
-            return response('OK', 200);
 
         } catch (\Exception $e) {
-            Log::error("Error procesando webhook de estado", [
-                'error' => $e->getMessage(),
-                'request_data' => $request->all()
+            Log::error('Error obteniendo estado del envío', [
+                'error' => $e->getMessage()
             ]);
-            
-            return response('Internal Server Error', 500);
-        }
-    }
 
-    /**
-     * Verificar la firma de Twilio para autenticar el webhook
-     */
-    protected function verificarFirmaTwilio(Request $request)
-    {
-        $twilioSignature = $request->header('X-Twilio-Signature');
-        $url = $request->fullUrl();
-        $params = $request->all();
-        
-        // Ordenar los parámetros alfabéticamente
-        ksort($params);
-        
-        // Construir la cadena de parámetros
-        $paramString = '';
-        foreach ($params as $key => $value) {
-            $paramString .= $key . $value;
+            return response()->json([
+                'success' => false,
+                'message' => 'Error interno del servidor'
+            ], 500);
         }
-        
-        // Construir la cadena a firmar
-        $stringToSign = $url . $paramString;
-        
-        // Generar la firma esperada
-        $expectedSignature = base64_encode(hash_hmac('sha1', $stringToSign, config('services.twilio.auth_token'), true));
-        
-        return hash_equals($expectedSignature, $twilioSignature);
-    }
-
-    /**
-     * Endpoint de prueba para verificar que el webhook funciona
-     */
-    public function test()
-    {
-        return response()->json([
-            'message' => 'Webhook endpoint is working',
-            'timestamp' => now()
-        ]);
     }
 } 

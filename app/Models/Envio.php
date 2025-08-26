@@ -34,6 +34,7 @@ class Envio extends Model
         'respuesta_3',
         'respuesta_4',
         'estado',
+        'pregunta_actual',
         'fecha_envio',
         'fecha_respuesta',
         'whatsapp_sent_at',

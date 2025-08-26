@@ -119,6 +119,7 @@ class EnvioController extends Controller
     {
         $envio = Envio::findOrFail($idenvio);
         
+        
         try {
             // Verificar que el cliente tenga número de celular
             if (empty($envio->cliente->celular)) {
@@ -143,40 +144,8 @@ class EnvioController extends Controller
         }
     }
 
-    /**
-     * Enviar encuesta por WhatsApp usando un flow específico de Twilio Studio.
-     */
-    public function enviarPorWhatsAppFlow($idenvio)
-    {
-        $envio = Envio::findOrFail($idenvio);
-        
-        try {
-            // Verificar que el cliente tenga número de celular
-            if (empty($envio->cliente->celular)) {
-                return redirect()->route('envios.index')
-                    ->with('error', 'El cliente no tiene número de celular registrado.');
-            }
-
-            // Flow específico de Twilio Studio - solo el Flow SID
-            $flowUrl = "FW8b7e7f437ec83fe1daf9b148acc1ca19";
-            
-            // Enviar la encuesta usando el flow específico
-            $resultado = $this->twilioService->enviarEncuestaFlowEspecifico($envio, $flowUrl);
-
-            if ($resultado) {
-                return redirect()->route('envios.index')
-                    ->with('success', 'Encuesta enviada exitosamente usando Twilio Studio Flow.');
-            } else {
-                return redirect()->route('envios.index')
-                    ->with('error', 'Error al enviar la encuesta usando Twilio Studio Flow.');
-            }
-
-        } catch (\Exception $e) {
-            return redirect()->route('envios.index')
-                    ->with('error', 'Error al enviar la encuesta: ' . $e->getMessage());
-        }
-    }
-
+ 
+  
     /**
      * Marcar envío como enviado.
      */

@@ -30,17 +30,24 @@ new class extends Component
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                    <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('clientes.index')" :active="request()->routeIs('clientes.*')" wire:navigate>
+
+                    <x-nav-link href="{{ route('clientes.index') }}" :active="request()->routeIs('clientes.*')">
                         {{ __('Clientes') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('envios.index')" :active="request()->routeIs('envios.*')" wire:navigate>
+
+                    <x-nav-link href="{{ route('envios.index') }}" :active="request()->routeIs('envios.*')">
                         {{ __('Envíos') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('resultados.index')" :active="request()->routeIs('resultados.*')" wire:navigate>
+
+                    <x-nav-link href="{{ route('resultados.index') }}" :active="request()->routeIs('resultados.*')">
                         {{ __('Resultados') }}
+                    </x-nav-link>
+
+                    <x-nav-link href="{{ route('chat.index') }}" :active="request()->routeIs('chat.*')">
+                        {{ __('💬 Chat') }}
                     </x-nav-link>
                 </div>
             </div>

@@ -349,11 +349,29 @@ class TwilioService
             Log::info("Iniciando búsqueda de envío", [
                 'from' => $from,
                 'envio_id_extraido' => $envioId,
-                'respuesta_id_extraido' => $respuestaId
+                'respuesta_id_extraido' => $respuestaId,
+                'message_sid' => $messageSid
             ]);
             
-            if ($envioId) {
-                // Primero intentar por ID de la encuesta
+            // PRIMERA PRIORIDAD: Buscar por message_sid (más específico)
+            if ($messageSid) {
+                $envio = Envio::where('twilio_message_sid', $messageSid)
+                    ->whereIn('estado', ['enviado', 'en_proceso'])
+                    ->first();
+                
+                if ($envio) {
+                    Log::info("Envío encontrado por message_sid", [
+                        'envio_id' => $envio->idenvio,
+                        'message_sid' => $messageSid,
+                        'whatsapp_number' => $envio->whatsapp_number
+                    ]);
+                } else {
+                    Log::info("No se encontró envío por message_sid", ['message_sid_buscado' => $messageSid]);
+                }
+            }
+            
+            if (!$envio && $envioId) {
+                // SEGUNDA PRIORIDAD: Buscar por ID de la encuesta
                 $envio = Envio::where('idenvio', $envioId)
                     ->whereIn('estado', ['enviado', 'en_proceso'])
                     ->first();
@@ -501,10 +519,38 @@ class TwilioService
                     'from' => $from,
                     'body' => $body,
                     'envio_id_extraido' => $envioId,
+                    'message_sid' => $messageSid,
                     'numero_limpio' => str_replace(['+', '52'], '', $from)
                 ]);
                 return false;
             }
+            
+            // VALIDACIÓN CRÍTICA: Verificar que el envío encontrado corresponda al número correcto
+            $numeroEnvio = $envio->whatsapp_number;
+            $numeroRespuesta = $from;
+            
+            // Limpiar ambos números para comparación
+            $numeroEnvioLimpio = preg_replace('/[^0-9]/', '', $numeroEnvio);
+            $numeroRespuestaLimpio = preg_replace('/[^0-9]/', '', $numeroRespuesta);
+            
+            if ($numeroEnvioLimpio !== $numeroRespuestaLimpio) {
+                Log::warning("Número de respuesta no coincide con el envío", [
+                    'envio_id' => $envio->idenvio,
+                    'numero_envio' => $numeroEnvio,
+                    'numero_envio_limpio' => $numeroEnvioLimpio,
+                    'numero_respuesta' => $numeroRespuesta,
+                    'numero_respuesta_limpio' => $numeroRespuestaLimpio,
+                    'message_sid' => $messageSid
+                ]);
+                return false;
+            }
+            
+            Log::info("Validación de número exitosa", [
+                'envio_id' => $envio->idenvio,
+                'numero_envio' => $numeroEnvio,
+                'numero_respuesta' => $numeroRespuesta,
+                'coinciden' => true
+            ]);
 
             Log::info("Envío encontrado exitosamente", [
                 'envio_id' => $envio->idenvio,

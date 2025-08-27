@@ -10,9 +10,13 @@ use Illuminate\Http\Request;
 
 Route::redirect('/', '/login');
 
-Route::view('dashboard', 'dashboard')
+Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::get('dashboard/estadisticas-tiempo-real', [App\Http\Controllers\DashboardController::class, 'estadisticasTiempoReal'])
+    ->middleware(['auth'])
+    ->name('dashboard.estadisticas-tiempo-real');
 
 Route::view('profile', 'profile')
     ->middleware(['auth'])

@@ -50,7 +50,7 @@
                                 
                                 <div class="space-y-4 text-sm">
                                     <div class="bg-white p-3 rounded border-l-4 border-blue-500">
-                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 1 (Escala 0-10):</h5>
+                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 1 (Escala 1-10):</h5>
                                         <p class="text-gray-700">{{ $envio->pregunta_1 }}</p>
                                     </div>
 
@@ -60,12 +60,12 @@
                                     </div>
 
                                     <div class="bg-white p-3 rounded border-l-4 border-blue-500">
-                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 3 (Opcional - Segmentación):</h5>
+                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 3 (Segmentación):</h5>
                                         <p class="text-gray-700">{{ $envio->pregunta_3 }}</p>
                                     </div>
 
                                     <div class="bg-white p-3 rounded border-l-4 border-blue-500">
-                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 4 (Opcional - Mejoras):</h5>
+                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 4 (Opcional):</h5>
                                         <p class="text-gray-700">{{ $envio->pregunta_4 }}</p>
                                     </div>
                                 </div>

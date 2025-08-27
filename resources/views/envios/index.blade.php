@@ -42,8 +42,8 @@
                 <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-green-100 text-sm font-medium">Enviados</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'enviado')->count() }}</p>
+                            <p class="text-green-100 text-sm font-medium">Completados</p>
+                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'completado')->count() }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -56,11 +56,11 @@
                     </div>
                 </div>
 
-                <div class="bg-purple-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-red-600 rounded-xl shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-purple-100 text-sm font-medium">Respondidos</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'respondido')->count() }}</p>
+                            <p class="text-red-100 text-sm font-medium">Cancelados</p>
+                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'cancelado')->count() }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

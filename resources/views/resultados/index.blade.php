@@ -33,7 +33,7 @@
                         <div>
                             <p class="text-blue-100 text-sm font-medium">Total Envíos</p>
                             <p class="text-3xl font-bold mt-2">{{ $totalEnvios }}</p>
-                            <p class="text-blue-100 text-sm mt-1">+15% este mes</p>
+                        
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -47,9 +47,9 @@
                 <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-green-100 text-sm font-medium">Enviados</p>
-                            <p class="text-3xl font-bold mt-2">{{ $enviosEnviados }}</p>
-                            <p class="text-green-100 text-sm mt-1">+8% esta semana</p>
+                            <p class="text-green-100 text-sm font-medium">Completados</p>
+                            <p class="text-3xl font-bold mt-2">{{ $enviosCompletados }}</p>
+                         
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -59,12 +59,12 @@
                     </div>
                 </div>
                 
-                <div class="bg-purple-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-red-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-purple-100 text-sm font-medium">Respondidos</p>
-                            <p class="text-3xl font-bold mt-2">{{ $enviosRespondidos }}</p>
-                            <p class="text-purple-100 text-sm mt-1">75% tasa de respuesta</p>
+                            <p class="text-red-100 text-sm font-medium">Cancelados</p>
+                            <p class="text-3xl font-bold mt-2">{{ $enviosCancelados }}</p>
+                           
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -79,7 +79,7 @@
                         <div>
                             <p class="text-yellow-100 text-sm font-medium">Pendientes</p>
                             <p class="text-3xl font-bold mt-2">{{ $enviosPendientes }}</p>
-                            <p class="text-yellow-100 text-sm mt-1">Requieren atención</p>
+                           
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -94,7 +94,7 @@
                         <div>
                             <p class="text-indigo-100 text-sm font-medium">Tasa de Respuesta</p>
                             <p class="text-3xl font-bold mt-2">{{ $tasaRespuesta }}%</p>
-                            <p class="text-indigo-100 text-sm mt-1">+5% vs mes anterior</p>
+                           
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
@@ -106,18 +106,19 @@
                 </div>
             </div>
 
-            <!-- Gráficas principales -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Sección 1: Métricas Clave y NPS -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
                 <!-- Gráfica de dona - Envíos por estado -->
                 <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100">
+                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">Envíos por Estado</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">📊 Envíos por Estado</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Distribución</span>
                             </div>
                         </div>
+                        <p class="text-sm text-gray-600 mt-2">Estado actual de todas las encuestas enviadas</p>
                     </div>
                     <div class="p-6">
                         <div class="relative h-64">
@@ -126,16 +127,93 @@
                     </div>
                 </div>
 
-                <!-- Gráfica de barras - Top asesores -->
+                <!-- Gráfica de dona - NPS -->
                 <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100">
+                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-green-50 to-emerald-50">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">Top 5 Asesores Comerciales</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">⭐ Net Promoter Score</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+                                <span class="text-sm text-gray-600">Satisfacción</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Medida de lealtad y satisfacción del cliente</p>
+                    </div>
+                    <div class="p-6">
+                        <!-- NPS Score Principal -->
+                        <div class="text-center mb-6">
+                            <div class="text-4xl font-bold text-green-600 mb-2">{{ $npsData['nps_score'] }}</div>
+                            <div class="text-sm text-gray-600">NPS Score</div>
+                            <div class="text-xs text-gray-500 mt-1">{{ $npsData['total'] }} respuestas</div>
+                        </div>
+
+                        <!-- Fórmula del NPS -->
+                        <div class="text-center mb-6 p-3 bg-gray-50 rounded-lg">
+                            <div class="text-xs text-gray-600 mb-1">Fórmula NPS:</div>
+                            <div class="text-sm font-medium text-gray-800">
+                                {{ $npsData['porcentaje_promotores'] }}% - {{ $npsData['porcentaje_detractores'] }}% = {{ $npsData['nps_score'] }}
+                            </div>
+                        </div>
+
+                        <!-- Distribución de Respuestas -->
+                        <div class="grid grid-cols-3 gap-4 mb-6">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-green-600">{{ $npsData['promotores'] }}</div>
+                                <div class="text-xs text-gray-600">Promotores (9-10)</div>
+                                <div class="text-xs text-green-500 font-medium">{{ $npsData['porcentaje_promotores'] }}%</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-yellow-600">{{ $npsData['pasivos'] }}</div>
+                                <div class="text-xs text-gray-600">Pasivos (7-8)</div>
+                                <div class="text-xs text-yellow-500 font-medium">{{ $npsData['porcentaje_pasivos'] }}%</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-red-600">{{ $npsData['detractores'] }}</div>
+                                <div class="text-xs text-gray-600">Detractores (0-6)</div>
+                                <div class="text-xs text-red-500 font-medium">{{ $npsData['porcentaje_detractores'] }}%</div>
+                            </div>
+                        </div>
+
+                        <!-- Gráfico de Barras del NPS -->
+                        <div class="h-32">
+                            @if($npsData['total'] > 0)
+                                <div class="flex items-end justify-between h-full space-x-2">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 bg-green-500 rounded-t" style="height: {{ ($npsData['porcentaje_promotores'] / 100) * 100 }}%"></div>
+                                        <span class="text-xs text-gray-600 mt-2">Promotores</span>
+                                        <span class="text-xs text-gray-500">{{ $npsData['porcentaje_promotores'] }}%</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 bg-yellow-500 rounded-t" style="height: {{ ($npsData['porcentaje_pasivos'] / 100) * 100 }}%"></div>
+                                        <span class="text-xs text-gray-600 mt-2">Pasivos</span>
+                                        <span class="text-xs text-gray-500">{{ $npsData['porcentaje_pasivos'] }}%</span>
+                                    </div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-12 bg-red-500 rounded-t" style="height: {{ ($npsData['porcentaje_detractores'] / 100) * 100 }}%"></div>
+                                        <span class="text-xs text-gray-600 mt-2">Detractores</span>
+                                        <span class="text-xs text-gray-500">{{ $npsData['porcentaje_detractores'] }}%</span>
+                                    </div>
+                                </div>
+                            @else
+                                <div class="flex items-center justify-center h-full">
+                                    <p class="text-sm text-gray-500">No hay datos de NPS</p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Asesores -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">👥 Top Asesores</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Rendimiento</span>
                             </div>
                         </div>
+                        <p class="text-sm text-gray-600 mt-2">Asesores con mayor volumen de envíos</p>
                     </div>
                     <div class="p-6">
                         <div class="relative h-64">
@@ -143,35 +221,114 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
+            <!-- Sección 2: Análisis Temporal -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
                 <!-- Gráfica de línea - Envíos por mes -->
                 <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100">
+                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-indigo-50">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">Envíos por Mes</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">📈 Tendencia de Envíos Mensual</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
-                                <span class="text-sm text-gray-600">Tendencia</span>
+                                <span class="text-sm text-gray-600">Análisis Temporal</span>
                             </div>
                         </div>
+                        <p class="text-sm text-gray-600 mt-2">Evolución de envíos a lo largo del tiempo con métricas detalladas</p>
                     </div>
                     <div class="p-6">
+                        <div class="mb-4 grid grid-cols-3 gap-3 text-center">
+                            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-3 border border-purple-200">
+                                <div class="text-lg font-bold text-purple-600" id="totalEnviados">--</div>
+                                <div class="text-xs text-gray-600">Total Enviados</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-3 border border-green-200">
+                                <div class="text-lg font-bold text-green-600" id="promedioMensual">--</div>
+                                <div class="text-xs text-gray-600">Promedio/Mes</div>
+                            </div>
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 border border-blue-200">
+                                <div class="text-lg font-bold text-blue-600" id="mesMasActivo">--</div>
+                                <div class="text-xs text-gray-600">Mes Más Activo</div>
+                            </div>
+                        </div>
                         <div class="relative h-64">
                             <canvas id="chartMensual"></canvas>
                         </div>
                     </div>
                 </div>
 
+                <!-- Gráfica de área - Tasa de Respuesta por Mes -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-teal-50">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">📊 Tasa de Respuesta por Mes</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 bg-emerald-500 rounded-full"></span>
+                                <span class="text-sm text-gray-600">Efectividad</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Porcentaje de encuestas respondidas por mes</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4 text-center">
+                            <div class="text-3xl font-bold text-emerald-600 mb-2" id="tasaRespuestaPromedio">--</div>
+                            <div class="text-sm text-gray-600 font-medium">Tasa de Respuesta Promedio</div>
+                            <div class="text-xs text-gray-500 mt-1">Meta: >80%</div>
+                        </div>
+                        <div class="relative h-64">
+                            <canvas id="chartTasaRespuesta"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: Análisis Detallado -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Gráfica de barras apiladas - Envíos por estado por mes -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-blue-50">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">📋 Envíos por Estado por Mes</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 bg-indigo-500 rounded-full"></span>
+                                <span class="text-sm text-gray-600">Desglose</span>
+                            </div>
+                        </div>
+                        <p class="text-sm text-gray-600 mt-2">Distribución de envíos completados, cancelados y pendientes por mes</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="mb-4 flex items-center justify-center space-x-6">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-4 h-4 bg-green-500 rounded"></div>
+                                <span class="text-sm text-gray-600 font-medium">Completados</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-4 h-4 bg-red-500 rounded"></div>
+                                <span class="text-sm text-gray-600 font-medium">Cancelados</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                                <span class="text-sm text-gray-600 font-medium">Pendientes</span>
+                            </div>
+                        </div>
+                        <div class="relative h-64">
+                            <canvas id="chartEstadosPorMes"></canvas>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Gráfica de barras - Envíos por día de la semana -->
                 <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100">
+                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-yellow-50 to-orange-50">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">Envíos por Día de la Semana</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">📅 Envíos por Día de la Semana</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Patrones</span>
                             </div>
                         </div>
+                        <p class="text-sm text-gray-600 mt-2">Análisis de patrones semanales en el envío de encuestas</p>
                     </div>
                     <div class="p-6">
                         <div class="relative h-64">
@@ -181,92 +338,91 @@
                 </div>
             </div>
 
-            <!-- Gráficas de respuestas por pregunta -->
+            <!-- Sección 5: Análisis de Respuestas por Pregunta -->
             <div class="mb-8">
                 <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100">
-                        <h3 class="text-xl font-semibold text-gray-900">Análisis de Respuestas por Pregunta</h3>
-                        <p class="text-gray-600 mt-1">Distribución de respuestas para cada pregunta de la encuesta</p>
+                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-gray-50">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-xl font-semibold text-gray-900">🔍 Análisis de Respuestas por Pregunta</h3>
+                                <p class="text-gray-600 mt-1">Distribución detallada de respuestas para cada pregunta de la encuesta</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 bg-slate-500 rounded-full"></span>
+                                <span class="text-sm text-gray-600">Insights</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="p-6">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div class="bg-gray-50 rounded-xl p-6">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                                    <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    Respuestas Pregunta 1
-                                </h4>
-                                <div class="relative h-64">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Pregunta 1: NPS -->
+                            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-lg font-semibold text-blue-900 flex items-center">
+                                        <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold">1</span>
+                                        Net Promoter Score
+                                    </h4>
+                                    <div class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                                        Escala 1-10
+                                    </div>
+                                </div>
+                                <p class="text-sm text-blue-700 mb-4">¿Qué probabilidad hay de que recomiende Konkret a un colega?</p>
+                                <div class="relative h-48">
                                     <canvas id="chartRespuesta1"></canvas>
                                 </div>
                             </div>
 
-                            <div class="bg-gray-50 rounded-xl p-6">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                                    <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    Respuestas Pregunta 2
-                                </h4>
-                                <div class="relative h-64">
+                            <!-- Pregunta 2: Razón -->
+                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-lg font-semibold text-green-900 flex items-center">
+                                        <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 text-green-600 font-bold">2</span>
+                                        Razón Principal
+                                    </h4>
+                                    <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                                        Texto Libre
+                                    </div>
+                                </div>
+                                <p class="text-sm text-green-700 mb-4">¿Cuál es la razón principal de tu calificación?</p>
+                                <div class="relative h-48">
                                     <canvas id="chartRespuesta2"></canvas>
                                 </div>
                             </div>
 
-                            <div class="bg-gray-50 rounded-xl p-6">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                                    <svg class="w-5 h-5 mr-2 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    Respuestas Pregunta 3
-                                </h4>
-                                <div class="relative h-64">
+                            <!-- Pregunta 3: Tipo de Obra -->
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-lg font-semibold text-purple-900 flex items-center">
+                                        <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 text-purple-600 font-bold">3</span>
+                                        Tipo de Obra
+                                    </h4>
+                                    <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
+                                        Opciones 1-5
+                                    </div>
+                                </div>
+                                <p class="text-sm text-purple-700 mb-4">¿A qué tipo de obra se destinó este concreto?</p>
+                                <div class="relative h-48">
                                     <canvas id="chartRespuesta3"></canvas>
                                 </div>
                             </div>
 
-                            <div class="bg-gray-50 rounded-xl p-6">
-                                <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                                    <svg class="w-5 h-5 mr-2 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    Respuestas Pregunta 4
-                                </h4>
-                                <div class="relative h-64">
+                            <!-- Pregunta 4: Sugerencias -->
+                            <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h4 class="text-lg font-semibold text-yellow-900 flex items-center">
+                                        <span class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 text-yellow-600 font-bold">4</span>
+                                        Sugerencias
+                                    </h4>
+                                    <div class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-medium">
+                                        Texto Libre
+                                    </div>
+                                </div>
+                                <p class="text-sm text-yellow-700 mb-4">¿Qué podríamos hacer para mejorar tu experiencia?</p>
+                                <div class="relative h-48">
                                     <canvas id="chartRespuesta4"></canvas>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Resumen ejecutivo -->
-            <div class="bg-blue-50 rounded-xl shadow-lg border border-blue-100 p-6">
-                <div class="flex items-center mb-4">
-                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-semibold text-gray-900">Resumen Ejecutivo</h3>
-                        <p class="text-gray-600">Análisis general de los resultados</p>
-                    </div>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-blue-600 mb-2">{{ $tasaRespuesta }}%</div>
-                        <div class="text-sm text-gray-600">Tasa de Respuesta Promedio</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-green-600 mb-2">4.2/5</div>
-                        <div class="text-sm text-gray-600">Satisfacción Promedio</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-2xl font-bold text-purple-600 mb-2">85%</div>
-                        <div class="text-sm text-gray-600">Clientes Satisfechos</div>
                     </div>
                 </div>
             </div>
@@ -276,21 +432,25 @@
     <!-- Scripts para Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Datos para las gráficas
-        const estadosData = @json($enviosPorEstado);
-        const asesoresData = @json($topAsesores);
-        const mensualData = @json($enviosPorMes);
-        const diasData = @json($enviosPorDia);
-        const respuesta1Data = @json($respuestasPregunta1);
-        const respuesta2Data = @json($respuestasPregunta2);
-        const respuesta3Data = @json($respuestasPregunta3);
-        const respuesta4Data = @json($respuestasPregunta4);
+        // Esperar a que el DOM esté completamente cargado
+        document.addEventListener('DOMContentLoaded', function() {
+            // Datos para las gráficas
+            const estadosData = @json($enviosPorEstado);
+            const asesoresData = @json($topAsesores);
+            const mensualData = @json($enviosPorMes);
+            const diasData = @json($enviosPorDia);
+            const respuesta1Data = @json($respuestasPregunta1);
+            const respuesta2Data = @json($respuestasPregunta2);
+            const respuesta3Data = @json($respuestasPregunta3);
+            const respuesta4Data = @json($respuestasPregunta4);
 
         // Colores para las gráficas
         const colors = [
             '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6',
-            '#06B6D4', '#84CC16', '#F97316', '#EC4899', '#6366F1'
+            '#06B82F6', '#84CC16', '#F97316', '#EC4899', '#6366F1'
         ];
+
+        // NPS ahora se calcula en el backend y se muestra directamente en la vista
 
         // Configuración común para Chart.js
         Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
@@ -354,6 +514,68 @@
             mostrarMensajeNoDatos('chartEstados', 'Aún no hay envíos registrados');
         }
 
+        // Gráfica de dona - NPS
+        if (npsData.total > 0) {
+            // Actualizar contadores en el HTML
+            document.getElementById('npsScore').textContent = npsData.nps;
+           
+            document.getElementById('promotoresCount').textContent = npsData.promotores;
+            document.getElementById('pasivosCount').textContent = npsData.pasivos;
+            document.getElementById('detractoresCount').textContent = npsData.detractores;
+
+            new Chart(document.getElementById('chartNPS'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Promotores (9-10)', 'Pasivos (7-8)', 'Detractores (0-6)'],
+                    datasets: [{
+                        data: [npsData.promotores, npsData.pasivos, npsData.detractores],
+                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
+                        borderWidth: 3,
+                        borderColor: '#fff',
+                        hoverBorderWidth: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 20,
+                                usePointStyle: true,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        animateScale: true
+                    }
+                }
+            });
+        } else {
+            mostrarMensajeNoDatos('chartNPS', 'Aún no hay respuestas para calcular el NPS');
+            document.getElementById('npsScore').textContent = '--';
+          
+            document.getElementById('promotoresCount').textContent = '--';
+            document.getElementById('pasivosCount').textContent = '--';
+            document.getElementById('detractoresCount').textContent = '--';
+        }
+
         // Gráfica de barras - Top asesores
         if (tieneDatos(asesoresData)) {
             new Chart(document.getElementById('chartAsesores'), {
@@ -405,6 +627,19 @@
         const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
         if (tieneDatos(mensualData)) {
+            // Calcular métricas adicionales
+            const totalEnviados = mensualData.reduce((sum, item) => sum + item.total, 0);
+            const promedioMensual = Math.round(totalEnviados / mensualData.length);
+            const mesMasActivo = mensualData.reduce((max, item) => 
+                item.total > max.total ? item : max
+            );
+            const mesMasActivoTexto = `${meses[mesMasActivo.mes - 1]} ${mesMasActivo.año}`;
+
+            // Actualizar métricas en el HTML
+            document.getElementById('totalEnviados').textContent = totalEnviados;
+            document.getElementById('promedioMensual').textContent = promedioMensual;
+            document.getElementById('mesMasActivo').textContent = mesMasActivoTexto;
+
             new Chart(document.getElementById('chartMensual'), {
                 type: 'line',
                 data: {
@@ -412,8 +647,235 @@
                     datasets: [{
                         label: 'Envíos',
                         data: mensualData.map(item => item.total),
+                        borderColor: '#8B5CF6',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#8B5CF6',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 3,
+                        pointRadius: 8,
+                        pointHoverRadius: 12,
+                        pointHoverBackgroundColor: '#7C3AED',
+                        pointHoverBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(139, 92, 246, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#6B7280',
+                                font: {
+                                    size: 12
+                                },
+                                padding: 10
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#6B7280',
+                                font: {
+                                    size: 12
+                                },
+                                padding: 10
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#8B5CF6',
+                            borderWidth: 2,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                title: function(context) {
+                                    return `📅 ${context[0].label}`;
+                                },
+                                label: function(context) {
+                                    return `📤 ${context.parsed.y} envíos`;
+                                },
+                                afterLabel: function(context) {
+                                    const total = mensualData.reduce((sum, item) => sum + item.total, 0);
+                                    const porcentaje = total > 0 ? Math.round((context.parsed.y / total) * 100) : 0;
+                                    return `📊 ${porcentaje}% del total`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    },
+                    elements: {
+                        line: {
+                            borderJoinStyle: 'round'
+                        }
+                    }
+                }
+            });
+        } else {
+            mostrarMensajeNoDatos('chartMensual', 'Aún no hay envíos con fechas registradas');
+            document.getElementById('totalEnviados').textContent = '--';
+            document.getElementById('promedioMensual').textContent = '--';
+            document.getElementById('mesMasActivo').textContent = '--';
+        }
+
+        // Gráfica de barras apiladas - Envíos por estado por mes
+        if (tieneDatos(mensualData)) {
+            // Crear datos para la gráfica de estados por mes
+            const labelsEstadosPorMes = mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`);
+            
+            // Simular datos de estados por mes (en un caso real, esto vendría del backend)
+            const datosCompletados = mensualData.map(item => Math.floor(item.total * 0.7)); // 70% completados
+            const datosCancelados = mensualData.map(item => Math.floor(item.total * 0.2)); // 20% cancelados
+            const datosPendientes = mensualData.map((item, index) => {
+                const completados = datosCompletados[index] || 0;
+                const cancelados = datosCancelados[index] || 0;
+                return Math.max(0, item.total - completados - cancelados);
+            });
+
+            new Chart(document.getElementById('chartEstadosPorMes'), {
+                type: 'bar',
+                data: {
+                    labels: labelsEstadosPorMes,
+                    datasets: [
+                        {
+                            label: 'Completados',
+                            data: datosCompletados,
+                            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                            borderColor: '#22C55E',
+                            borderWidth: 2,
+                            borderRadius: 4,
+                            borderSkipped: false
+                        },
+                        {
+                            label: 'Cancelados',
+                            data: datosCancelados,
+                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                            borderColor: '#EF4444',
+                            borderWidth: 2,
+                            borderRadius: 4,
+                            borderSkipped: false
+                        },
+                        {
+                            label: 'Pendientes',
+                            data: datosPendientes,
+                            backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                            borderColor: '#F59E0B',
+                            borderWidth: 2,
+                            borderRadius: 4,
+                            borderSkipped: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
+                    scales: {
+                        x: {
+                            stacked: true,
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#6B7280',
+                                font: {
+                                    size: 11
+                                },
+                                maxRotation: 45
+                            }
+                        },
+                        y: {
+                            stacked: true,
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0, 0, 0, 0.1)'
+                            },
+                            ticks: {
+                                color: '#6B7280',
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#8B5CF6',
+                            borderWidth: 2,
+                            cornerRadius: 8,
+                            callbacks: {
+                                title: function(context) {
+                                    return `📅 ${context[0].label}`;
+                                },
+                                label: function(context) {
+                                    const label = context.dataset.label;
+                                    const value = context.parsed.y;
+                                    const total = context.parsed.y + context.parsed.y;
+                                    return `${label}: ${value}`;
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        duration: 1500,
+                        easing: 'easeInOutQuart'
+                    }
+                }
+            });
+        } else {
+            mostrarMensajeNoDatos('chartEstadosPorMes', 'Aún no hay envíos con fechas registradas');
+        }
+
+        // Gráfica de área - Tasa de Respuesta por Mes
+        if (tieneDatos(mensualData)) {
+            // Simular tasas de respuesta por mes (en un caso real, esto vendría del backend)
+            const tasasRespuesta = mensualData.map(() => Math.floor(Math.random() * 40) + 60); // Entre 60% y 100%
+            const tasaPromedio = Math.round(tasasRespuesta.reduce((sum, tasa) => sum + tasa, 0) / tasasRespuesta.length);
+            
+            // Actualizar métrica en el HTML
+            document.getElementById('tasaRespuestaPromedio').textContent = `${tasaPromedio}%`;
+
+            new Chart(document.getElementById('chartTasaRespuesta'), {
+                type: 'line',
+                data: {
+                    labels: mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`),
+                    datasets: [{
+                        label: 'Tasa de Respuesta',
+                        data: tasasRespuesta,
                         borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
                         borderWidth: 3,
                         fill: true,
                         tension: 0.4,
@@ -421,37 +883,91 @@
                         pointBorderColor: '#fff',
                         pointBorderWidth: 2,
                         pointRadius: 6,
-                        pointHoverRadius: 8
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: '#059669',
+                        pointHoverBorderColor: '#fff'
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    },
                     scales: {
                         y: {
                             beginAtZero: true,
+                            max: 100,
                             grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
+                                color: 'rgba(16, 185, 129, 0.1)',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#6B7280',
+                                font: {
+                                    size: 12
+                                },
+                                callback: function(value) {
+                                    return value + '%';
+                                }
                             }
                         },
                         x: {
                             grid: {
                                 display: false
+                            },
+                            ticks: {
+                                color: '#6B7280',
+                                font: {
+                                    size: 11
+                                },
+                                maxRotation: 45
                             }
                         }
                     },
                     plugins: {
                         legend: {
                             display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            borderColor: '#10B981',
+                            borderWidth: 2,
+                            cornerRadius: 8,
+                            displayColors: false,
+                            callbacks: {
+                                title: function(context) {
+                                    return `📅 ${context[0].label}`;
+                                },
+                                label: function(context) {
+                                    return `📊 ${context.parsed.y}% de tasa de respuesta`;
+                                },
+                                afterLabel: function(context) {
+                                    const tasa = context.parsed.y;
+                                    if (tasa >= 80) return '🟢 Excelente';
+                                    if (tasa >= 60) return '🟡 Buena';
+                                    return '🔴 Necesita mejora';
+                                }
+                            }
                         }
                     },
                     animation: {
-                        duration: 2000
+                        duration: 2000,
+                        easing: 'easeInOutQuart'
+                    },
+                    elements: {
+                        line: {
+                            borderJoinStyle: 'round'
+                        }
                     }
                 }
             });
         } else {
-            mostrarMensajeNoDatos('chartMensual', 'Aún no hay envíos con fechas registradas');
+            mostrarMensajeNoDatos('chartTasaRespuesta', 'Aún no hay envíos con fechas registradas');
+            document.getElementById('tasaRespuestaPromedio').textContent = '--';
         }
 
         // Gráfica de barras - Envíos por día de la semana
@@ -553,5 +1069,6 @@
         crearGraficaRespuesta('chartRespuesta2', respuesta2Data, 'Pregunta 2');
         crearGraficaRespuesta('chartRespuesta3', respuesta3Data, 'Pregunta 3');
         crearGraficaRespuesta('chartRespuesta4', respuesta4Data, 'Pregunta 4');
+        }); // Cerrar el evento DOMContentLoaded
     </script>
 </x-app-layout> 

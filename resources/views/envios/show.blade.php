@@ -139,7 +139,7 @@
                         <h4 class="text-lg font-medium text-gray-900 mb-4">Preguntas y Respuestas del Envío</h4>
                         <div class="space-y-4">
                             <div class="bg-white p-4 rounded border">
-                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 1 (Escala 0-10):</h5>
+                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 1 (Escala 1-10):</h5>
                                 <p class="text-gray-700 mb-3">{{ $envio->pregunta_1 }}</p>
                                 @if($envio->respuesta_1)
                                     <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
@@ -165,14 +165,14 @@
                             </div>
                             
                             <div class="bg-white p-4 rounded border">
-                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 3 (Opcional - Segmentación):</h5>
+                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 3 (Segmentación):</h5>
                                 <p class="text-gray-700 mb-3">{{ $envio->pregunta_3 }}</p>
                                 <ul class="text-gray-600 mb-3 ml-4 list-disc">
-                                    <li>Vivienda unifamiliar</li>
-                                    <li>Edificio o proyecto vertical</li>
-                                    <li>Obra vial o infraestructura</li>
-                                    <li>Obra industrial</li>
-                                    <li>Otro (especificar)</li>
+                                    <li>1. Vivienda unifamiliar</li>
+                                    <li>2. Edificio o proyecto vertical</li>
+                                    <li>3. Obra vial o infraestructura</li>
+                                    <li>4. Obra industrial</li>
+                                    <li>5. Otro</li>
                                 </ul>
                                 @if($envio->respuesta_3)
                                     <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
@@ -185,7 +185,7 @@
                             </div>
                             
                             <div class="bg-white p-4 rounded border">
-                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 4 (Opcional - Mejoras):</h5>
+                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 4 (Opcional):</h5>
                                 <p class="text-gray-700 mb-3">{{ $envio->pregunta_4 }}</p>
                                 @if($envio->respuesta_4)
                                     <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">

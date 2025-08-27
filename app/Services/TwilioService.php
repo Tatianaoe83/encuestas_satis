@@ -240,8 +240,10 @@ class TwilioService
         $mensaje .= "En una escala del 1 al 10, ¿qué probabilidad hay de que recomiende Konkret a un colega o contacto del sector construcción?\n\n";
         $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
         $mensaje .= "---\n";
-        $mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-        $mensaje .= "📱 *Tu número: " . ($cliente->celular ?? 'N/A') . "*";
+        //$mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+        // $mensaje .= "📱 *Tu número: " . ($cliente->celular ?? 'N/A') . "*";
+        // Agregar información oculta usando caracteres invisibles
+        $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($cliente->celular ?? 'N/A') . "\u{200B}";
 
         return $mensaje;
     }
@@ -260,8 +262,10 @@ class TwilioService
                 $mensaje .= "¿Cuál es la razón principal de tu calificación?\n\n";
                 $mensaje .= "Responde con tu razón.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *Respuesta ID: {$identificador}*";
+                //$mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                //$mensaje .= "🔑 *Respuesta ID: {$identificador}*";
+                // Agregar información oculta usando caracteres invisibles
+                $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
                 break;
                 
             case 3:
@@ -276,8 +280,10 @@ class TwilioService
                 $mensaje .= "5️⃣. Otro\n\n";
                 $mensaje .= "Responde del 1 al 5 con una de las opciones.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *Respuesta ID: {$identificador}*";
+                //$mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                //$mensaje .= "🔑 *Respuesta ID: {$identificador}*";
+                // Agregar información oculta usando caracteres invisibles
+                $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
                 break;
                 
             case 4:
@@ -285,8 +291,10 @@ class TwilioService
                 $mensaje .= "¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?\n\n";
                 $mensaje .= "Responde con tu sugerencia o escribe 'N/A' si no tienes sugerencias.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *Respuesta ID: {$identificador}*";
+                //$mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                //$mensaje .= "🔑 *Respuesta ID: {$identificador}*";
+                // Agregar información oculta usando caracteres invisibles
+                $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
                 break;
                 
             default:
@@ -305,6 +313,8 @@ class TwilioService
         $mensaje .= "Hemos recibido todas tus respuestas y las tendremos en cuenta para mejorar nuestros servicios.\n\n";
         $mensaje .= "Si tienes alguna consulta adicional, no dudes en contactarnos.\n\n";
         $mensaje .= "¡Que tengas un excelente día! 🏗️";
+        // Agregar información oculta usando caracteres invisibles
+        $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
 
         return $mensaje;
     }
@@ -707,6 +717,8 @@ class TwilioService
             
             // Agregar instrucciones para reenviar la respuesta
             $mensajeCompleto = $mensajeError . "\n\n" . $this->construirInstruccionesReenvio($envio);
+            // Agregar información oculta usando caracteres invisibles
+            $mensajeCompleto .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
             
             Log::info("Enviando mensaje de error", [
                 'envio_id' => $envio->idenvio,

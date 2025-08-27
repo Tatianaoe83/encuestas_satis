@@ -146,6 +146,7 @@ class ResultadosController extends Controller
                 DB::raw('count(envios.idenvio) as total_envios'),
                 DB::raw('sum(case when envios.estado = "completado" then 1 else 0 end) as completados'),
                 DB::raw('sum(case when envios.estado = "cancelado" then 1 else 0 end) as cancelados'),
+                DB::raw('sum(case when envios.estado = "pendiente" then 1 else 0 end) as pendientes')
             )
             ->join('envios', 'clientes.idcliente', '=', 'envios.cliente_id')
             ->groupBy('asesor_comercial')

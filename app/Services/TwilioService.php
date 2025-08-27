@@ -240,10 +240,10 @@ class TwilioService
         $mensaje .= "En una escala del 1 al 10, ¿qué probabilidad hay de que recomiende Konkret a un colega o contacto del sector construcción?\n\n";
         $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
         $mensaje .= "---\n";
-        //$mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-        // $mensaje .= "📱 *Tu número: " . ($cliente->celular ?? 'N/A') . "*";
+        $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+        $mensaje .= "📱 *Tu número: " . ($cliente->celular ?? 'N/A') . "*";
         // Agregar información oculta usando caracteres invisibles
-        $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($cliente->celular ?? 'N/A') . "\u{200B}";
+        //$mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($cliente->celular ?? 'N/A') . "\u{200B}";
 
         return $mensaje;
     }
@@ -262,10 +262,10 @@ class TwilioService
                 $mensaje .= "¿Cuál es la razón principal de tu calificación?\n\n";
                 $mensaje .= "Responde con tu razón.\n\n";
                 $mensaje .= "---\n";
-                //$mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                //$mensaje .= "🔑 *Respuesta ID: {$identificador}*";
+                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
                 // Agregar información oculta usando caracteres invisibles
-                $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
+               
                 break;
                 
             case 3:
@@ -280,10 +280,10 @@ class TwilioService
                 $mensaje .= "5️⃣. Otro\n\n";
                 $mensaje .= "Responde del 1 al 5 con una de las opciones.\n\n";
                 $mensaje .= "---\n";
-                //$mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                //$mensaje .= "🔑 *Respuesta ID: {$identificador}*";
-                // Agregar información oculta usando caracteres invisibles
-                $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
+                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+               
+               
                 break;
                 
             case 4:
@@ -291,10 +291,10 @@ class TwilioService
                 $mensaje .= "¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?\n\n";
                 $mensaje .= "Responde con tu sugerencia o escribe 'N/A' si no tienes sugerencias.\n\n";
                 $mensaje .= "---\n";
-                //$mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                //$mensaje .= "🔑 *Respuesta ID: {$identificador}*";
+                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
                 // Agregar información oculta usando caracteres invisibles
-                $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
+               
                 break;
                 
             default:
@@ -314,7 +314,7 @@ class TwilioService
         $mensaje .= "Si tienes alguna consulta adicional, no dudes en contactarnos.\n\n";
         $mensaje .= "¡Que tengas un excelente día! 🏗️";
         // Agregar información oculta usando caracteres invisibles
-        $mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
+        //$mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
 
         return $mensaje;
     }
@@ -344,12 +344,12 @@ class TwilioService
             ]);
 
             // Intentar extraer el ID de la encuesta del mensaje si está disponible
-            if (preg_match('/🆔 \*ID Encuesta: (\d+)\*/', $body, $matches)) {
+            if (preg_match('/🆔 \*# de Encuesta: (\d+)\*/', $body, $matches)) {
                 $envioId = $matches[1];
                 Log::info("ID de encuesta extraído del mensaje", ['envio_id' => $envioId]);
             }
             
-            if (preg_match('/🔑 \*Respuesta ID: ([A-Za-z0-9]+)\*/', $body, $matches)) {
+            if (preg_match('/🔑 \*# de Respuesta: ([A-Za-z0-9]+)\*/', $body, $matches)) {
                 $respuestaId = $matches[1];
                 Log::info("ID de respuesta extraído del mensaje", ['respuesta_id' => $respuestaId]);
             }

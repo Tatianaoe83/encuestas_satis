@@ -237,8 +237,8 @@ class TwilioService
         $mensaje .= "Gracias por confiar en nosotros. Nos gustaría conocer tu opinión sobre nuestro servicio.\n\n";
         $mensaje .= "Te enviaré 4 preguntas una por una para facilitar tu respuesta.\n\n";
         $mensaje .= "📝 *Pregunta 1 de 4:*\n";
-        $mensaje .= "En una escala del 0 al 10, ¿qué probabilidad hay de que recomiende Konkret a un colega o contacto del sector construcción?\n\n";
-        $mensaje .= "Responde solo con un número del 0 al 10.\n\n";
+        $mensaje .= "En una escala del 1 al 10, ¿qué probabilidad hay de que recomiende Konkret a un colega o contacto del sector construcción?\n\n";
+        $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
         $mensaje .= "---\n";
         $mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
         $mensaje .= "📱 *Tu número: " . ($cliente->celular ?? 'N/A') . "*";
@@ -265,15 +265,16 @@ class TwilioService
                 break;
                 
             case 3:
+                
                 $mensaje = "📝 *Pregunta 3 de 4:*\n";
                 $mensaje .= "¿A qué tipo de obra se destinó este concreto?\n\n";
                 $mensaje .= "Opciones:\n";
-                $mensaje .= "• Vivienda unifamiliar\n";
-                $mensaje .= "• Edificio vertical\n";
-                $mensaje .= "• Obra vial\n";
-                $mensaje .= "• Obra industrial\n";
-                $mensaje .= "• Otro\n\n";
-                $mensaje .= "Responde con una de las opciones o describe tu caso.\n\n";
+                $mensaje .= "1️⃣. Vivienda unifamiliar\n";
+                $mensaje .= "2️⃣. Edificio vertical\n";
+                $mensaje .= "3️⃣. Obra vial\n";
+                $mensaje .= "4️⃣. Obra industrial\n";
+                $mensaje .= "5️⃣. Otro\n\n";
+                $mensaje .= "Responde del 1 al 5 con una de las opciones.\n\n";
                 $mensaje .= "---\n";
                 $mensaje .= "🆔 *ID Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
                 $mensaje .= "🔑 *Respuesta ID: {$identificador}*";
@@ -562,6 +563,15 @@ class TwilioService
                 'whatsapp_number' => $envio->whatsapp_number ?? 'N/A'
             ]);
 
+            // Validar la respuesta antes de procesarla
+            $validacion = $this->validarRespuesta($envio, $body);
+            
+            if (!$validacion['valida']) {
+                // Enviar mensaje de error y solicitar respuesta válida
+                $this->enviarMensajeError($envio, $validacion['mensaje']);
+                return false;
+            }
+            
             // Guardar la respuesta recibida
             $this->guardarRespuesta($envio, $body, $respuestaId);
 
@@ -590,6 +600,162 @@ class TwilioService
             ]);
             
             return false;
+        }
+    }
+
+    /**
+     * Validar la respuesta del cliente según la pregunta actual
+     */
+    protected function validarRespuesta(Envio $envio, $respuesta)
+    {
+        $preguntaActual = $envio->pregunta_actual ?? 1;
+        
+        Log::info("Validando respuesta", [
+            'envio_id' => $envio->idenvio,
+            'pregunta_actual' => $preguntaActual,
+            'respuesta' => $respuesta
+        ]);
+        
+        switch ($preguntaActual) {
+            case 1:
+                // Validar que sea un número del 1 al 10
+                $respuestaLimpia = trim($respuesta);
+                
+                // Verificar si es un número
+                if (!is_numeric($respuestaLimpia)) {
+                    return [
+                        'valida' => false,
+                        'mensaje' => "❌ *Respuesta no válida*\n\nPara la pregunta 1, debes responder con un número del 1 al 10.\n\nEjemplos válidos: 5, 8, 10\n\nPor favor, responde solo con un número."
+                    ];
+                }
+                
+                $numero = (int) $respuestaLimpia;
+                
+                // Verificar rango del 1 al 10
+                if ($numero < 1 || $numero > 10) {
+                    return [
+                        'valida' => false,
+                        'mensaje' => "❌ *Número fuera de rango*\n\nPara la pregunta 1, debes responder con un número del 1 al 10.\n\nTu respuesta: {$numero}\n\nPor favor, responde con un número entre 1 y 10."
+                    ];
+                }
+                
+                return ['valida' => true, 'mensaje' => ''];
+                
+            case 2:
+                // Validar que no esté vacía y tenga al menos 3 caracteres
+                $respuestaLimpia = trim($respuesta);
+                
+                if (strlen($respuestaLimpia) < 3) {
+                    return [
+                        'valida' => false,
+                        'mensaje' => "❌ *Respuesta muy corta*\n\nPara la pregunta 2, por favor explica tu razón con más detalle (mínimo 3 caracteres).\n\nTu respuesta actual: '{$respuestaLimpia}'"
+                    ];
+                }
+                
+                return ['valida' => true, 'mensaje' => ''];
+                
+            case 3:
+                // Validar que sea un número del 1 al 5
+                $respuestaLimpia = trim($respuesta);
+                
+                // Verificar si es un número
+                if (!is_numeric($respuestaLimpia)) {
+                    return [
+                        'valida' => false,
+                        'mensaje' => "❌ *Respuesta no válida*\n\nPara la pregunta 3, debes responder con un número del 1 al 5.\n\nOpciones disponibles:\n1️⃣. Vivienda unifamiliar\n2️⃣. Edificio vertical\n3️⃣. Obra vial\n4️⃣. Obra industrial\n5️⃣. Otro\n\nPor favor, responde solo con un número."
+                    ];
+                }
+                
+                $numero = (int) $respuestaLimpia;
+                
+                // Verificar rango del 1 al 5
+                if ($numero < 1 || $numero > 5) {
+                    return [
+                        'valida' => false,
+                        'mensaje' => "❌ *Número fuera de rango*\n\nPara la pregunta 3, debes responder con un número del 1 al 5.\n\nTu respuesta: {$numero}\n\nOpciones disponibles:\n1️⃣. Vivienda unifamiliar\n2️⃣. Edificio vertical\n3️⃣. Obra vial\n4️⃣. Obra industrial\n5️⃣. Otro\n\nPor favor, responde con un número entre 1 y 5."
+                    ];
+                }
+                
+                return ['valida' => true, 'mensaje' => ''];
+                
+            case 4:
+                // Validar que no esté vacía
+                $respuestaLimpia = trim($respuesta);
+                
+                if (empty($respuestaLimpia)) {
+                    return [
+                        'valida' => false,
+                        'mensaje' => "❌ *Respuesta vacía*\n\nPara la pregunta 4, por favor escribe tu sugerencia o 'N/A' si no tienes sugerencias."
+                    ];
+                }
+                
+                return ['valida' => true, 'mensaje' => ''];
+                
+            default:
+                return ['valida' => true, 'mensaje' => ''];
+        }
+    }
+
+    /**
+     * Enviar mensaje de error al cliente
+     */
+    protected function enviarMensajeError(Envio $envio, $mensajeError)
+    {
+        try {
+            $cliente = $envio->cliente;
+            $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+            
+            // Agregar instrucciones para reenviar la respuesta
+            $mensajeCompleto = $mensajeError . "\n\n" . $this->construirInstruccionesReenvio($envio);
+            
+            Log::info("Enviando mensaje de error", [
+                'envio_id' => $envio->idenvio,
+                'numero' => $numeroWhatsApp,
+                'mensaje_error' => $mensajeError
+            ]);
+            
+            // Envío real a Twilio
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'body' => $mensajeCompleto,
+                ]
+            );
+            
+            Log::info("Mensaje de error enviado exitosamente", [
+                'envio_id' => $envio->idenvio,
+                'numero' => $numeroWhatsApp,
+                'message_sid' => $message->sid
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error("Error enviando mensaje de error", [
+                'envio_id' => $envio->idenvio,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * Construir instrucciones para reenviar la respuesta
+     */
+    protected function construirInstruccionesReenvio(Envio $envio)
+    {
+        $preguntaActual = $envio->pregunta_actual ?? 1;
+        
+        switch ($preguntaActual) {
+            case 1:
+                return "📝 *Reenvía tu respuesta:*\nResponde solo con un número del 1 al 10.";
+            case 2:
+                return "📝 *Reenvía tu respuesta:*\nExplica tu razón con más detalle.";
+            case 3:
+                return "📝 *Reenvía tu respuesta:*\nResponde solo con un número del 1 al 5.";
+            case 4:
+                return "📝 *Reenvía tu respuesta:*\nEscribe tu sugerencia o 'N/A'.";
+            default:
+                return "📝 *Reenvía tu respuesta:*\nPor favor, responde de nuevo.";
         }
     }
 
@@ -681,9 +847,9 @@ class TwilioService
         $mensaje .= "Gracias por confiar en Proser. Nos gustaría conocer tu opinión sobre nuestro servicio.\n\n";
         $mensaje .= "*Por favor responde las siguientes preguntas:*\n\n";
         
-        $mensaje .= "1️⃣ *Pregunta 1 (Escala 0-10):*\n";
-        $mensaje .= "En una escala del 0 al 10, ¿qué probabilidad hay de que recomiende proser a un colega o contacto del sector construcción?\n";
-        $mensaje .= "Responde solo con un número del 0 al 10.\n\n";
+        $mensaje .= "1️⃣ *Pregunta 1 (Escala 1-10):*\n";
+        $mensaje .= "En una escala del 1 al 10, ¿qué probabilidad hay de que recomiende proser a un colega o contacto del sector construcción?\n";
+        $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
         
         $mensaje .= "2️⃣ *Pregunta 2:*\n";
         $mensaje .= "¿Cuál es la razón principal de tu calificación?\n\n";
@@ -696,7 +862,7 @@ class TwilioService
         $mensaje .= "¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?\n\n";
         
         $mensaje .= "*Formato de respuesta:*\n";
-        $mensaje .= "1. [número del 0 al 10]\n";
+        $mensaje .= "1. [número del 1 al 10]\n";
         $mensaje .= "2. [tu razón]\n";
         $mensaje .= "3. [tipo de obra]\n";
         $mensaje .= "4. [sugerencia de mejora]\n\n";

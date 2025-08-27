@@ -54,6 +54,14 @@ Route::get('resultados/exportar', [ResultadosController::class, 'exportar'])
     ->name('resultados.exportar')
     ->middleware(['auth']);
 
+Route::get('resultados/exportar-nps', [ResultadosController::class, 'exportarNPS'])
+    ->name('resultados.exportar-nps')
+    ->middleware(['auth']);
+
+Route::get('resultados/exportar-estadisticas', [ResultadosController::class, 'exportarEstadisticas'])
+    ->name('resultados.exportar-estadisticas')
+    ->middleware(['auth']);
+
 Route::get('resultados/detalle', [ResultadosController::class, 'detalle'])
     ->name('resultados.detalle')
     ->middleware(['auth']);

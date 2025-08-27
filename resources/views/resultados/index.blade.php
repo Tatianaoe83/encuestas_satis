@@ -18,7 +18,13 @@
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Exportar CSV
+                    Exportar encuestas
+                </a>
+                <a href="{{ route('resultados.exportar-nps') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Exportar NPS
                 </a>
             </div>
         </div>
@@ -444,631 +450,561 @@
             const respuesta3Data = @json($respuestasPregunta3);
             const respuesta4Data = @json($respuestasPregunta4);
 
-        // Colores para las gráficas
-        const colors = [
-            '#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6',
-            '#06B82F6', '#84CC16', '#F97316', '#EC4899', '#6366F1'
-        ];
+            // Configuración común para Chart.js
+            Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
+            Chart.defaults.color = '#6B7280';
 
-        // NPS ahora se calcula en el backend y se muestra directamente en la vista
+            // Función para verificar si hay datos
+            function tieneDatos(data) {
+                return data && data.length > 0;
+            }
 
-        // Configuración común para Chart.js
-        Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
-        Chart.defaults.color = '#6B7280';
-
-        // Función para verificar si hay datos
-        function tieneDatos(data) {
-            return data && data.length > 0;
-        }
-
-        // Función para mostrar mensaje de no datos
-        function mostrarMensajeNoDatos(elementId, mensaje) {
-            const canvas = document.getElementById(elementId);
-            const container = canvas.parentElement;
-            container.innerHTML = `
-                <div class="flex flex-col items-center justify-center h-64">
-                    <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
-                        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
+            // Función para mostrar mensaje de no datos
+            function mostrarMensajeNoDatos(elementId, mensaje) {
+                const canvas = document.getElementById(elementId);
+                const container = canvas.parentElement;
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center h-64">
+                        <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
+                            <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No hay datos disponibles</h3>
+                        <p class="text-gray-500">${mensaje}</p>
                     </div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">No hay datos disponibles</h3>
-                    <p class="text-gray-500">${mensaje}</p>
-                </div>
-            `;
-        }
+                `;
+            }
 
-        // Gráfica de dona - Envíos por estado
-        if (tieneDatos(estadosData)) {
-            new Chart(document.getElementById('chartEstados'), {
-                type: 'doughnut',
-                data: {
-                    labels: estadosData.map(item => item.estado.charAt(0).toUpperCase() + item.estado.slice(1)),
-                    datasets: [{
-                        data: estadosData.map(item => item.total),
-                        backgroundColor: colors.slice(0, estadosData.length),
-                        borderWidth: 3,
-                        borderColor: '#fff',
-                        hoverBorderWidth: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true
-                            }
-                        }
+            // Gráfica de dona - Envíos por estado
+            if (tieneDatos(estadosData)) {
+                new Chart(document.getElementById('chartEstados'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: estadosData.map(item => item.estado.charAt(0).toUpperCase() + item.estado.slice(1)),
+                        datasets: [{
+                            data: estadosData.map(item => item.total),
+                            backgroundColor: ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6'],
+                            borderWidth: 3,
+                            borderColor: '#fff',
+                            hoverBorderWidth: 4
+                        }]
                     },
-                    animation: {
-                        animateRotate: true,
-                        animateScale: true
-                    }
-                }
-            });
-        } else {
-            mostrarMensajeNoDatos('chartEstados', 'Aún no hay envíos registrados');
-        }
-
-        // Gráfica de dona - NPS
-        if (npsData.total > 0) {
-            // Actualizar contadores en el HTML
-            document.getElementById('npsScore').textContent = npsData.nps;
-           
-            document.getElementById('promotoresCount').textContent = npsData.promotores;
-            document.getElementById('pasivosCount').textContent = npsData.pasivos;
-            document.getElementById('detractoresCount').textContent = npsData.detractores;
-
-            new Chart(document.getElementById('chartNPS'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Promotores (9-10)', 'Pasivos (7-8)', 'Detractores (0-6)'],
-                    datasets: [{
-                        data: [npsData.promotores, npsData.pasivos, npsData.detractores],
-                        backgroundColor: ['#10B981', '#F59E0B', '#EF4444'],
-                        borderWidth: 3,
-                        borderColor: '#fff',
-                        hoverBorderWidth: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: {
-                                padding: 20,
-                                usePointStyle: true,
-                                font: {
-                                    size: 12
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    padding: 20,
+                                    usePointStyle: true
                                 }
                             }
                         },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-                                    return `${label}: ${value} (${percentage}%)`;
+                        animation: {
+                            animateRotate: true,
+                            animateScale: true
+                        }
+                    }
+                });
+            } else {
+                mostrarMensajeNoDatos('chartEstados', 'Aún no hay envíos registrados');
+            }
+
+            // Gráfica de barras - Top asesores
+            if (tieneDatos(asesoresData)) {
+                new Chart(document.getElementById('chartAsesores'), {
+                    type: 'bar',
+                    data: {
+                        labels: asesoresData.map(item => item.asesor_comercial),
+                        datasets: [{
+                            label: 'Total Envíos',
+                            data: asesoresData.map(item => item.total_envios),
+                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                            borderColor: '#3B82F6',
+                            borderWidth: 2,
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
                                 }
                             }
-                        }
-                    },
-                    animation: {
-                        animateRotate: true,
-                        animateScale: true
-                    }
-                }
-            });
-        } else {
-            mostrarMensajeNoDatos('chartNPS', 'Aún no hay respuestas para calcular el NPS');
-            document.getElementById('npsScore').textContent = '--';
-          
-            document.getElementById('promotoresCount').textContent = '--';
-            document.getElementById('pasivosCount').textContent = '--';
-            document.getElementById('detractoresCount').textContent = '--';
-        }
-
-        // Gráfica de barras - Top asesores
-        if (tieneDatos(asesoresData)) {
-            new Chart(document.getElementById('chartAsesores'), {
-                type: 'bar',
-                data: {
-                    labels: asesoresData.map(item => item.asesor_comercial),
-                    datasets: [{
-                        label: 'Total Envíos',
-                        data: asesoresData.map(item => item.total_envios),
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        borderColor: '#3B82F6',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
                         },
-                        x: {
-                            grid: {
+                        plugins: {
+                            legend: {
                                 display: false
                             }
+                        },
+                        animation: {
+                            duration: 2000
                         }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    animation: {
-                        duration: 2000
                     }
-                }
-            });
-        } else {
-            mostrarMensajeNoDatos('chartAsesores', 'Aún no hay asesores con envíos');
-        }
+                });
+            } else {
+                mostrarMensajeNoDatos('chartAsesores', 'Aún no hay asesores con envíos');
+            }
 
-        // Gráfica de línea - Envíos por mes
-        const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-        const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+            // Gráfica de línea - Envíos por mes
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
-        if (tieneDatos(mensualData)) {
-            // Calcular métricas adicionales
-            const totalEnviados = mensualData.reduce((sum, item) => sum + item.total, 0);
-            const promedioMensual = Math.round(totalEnviados / mensualData.length);
-            const mesMasActivo = mensualData.reduce((max, item) => 
-                item.total > max.total ? item : max
-            );
-            const mesMasActivoTexto = `${meses[mesMasActivo.mes - 1]} ${mesMasActivo.año}`;
+            if (tieneDatos(mensualData)) {
+                // Calcular métricas adicionales
+                const totalEnviados = mensualData.reduce((sum, item) => sum + item.total, 0);
+                const promedioMensual = Math.round(totalEnviados / mensualData.length);
+                const mesMasActivo = mensualData.reduce((max, item) => 
+                    item.total > max.total ? item : max
+                );
+                const mesMasActivoTexto = `${meses[mesMasActivo.mes - 1]} ${mesMasActivo.año}`;
 
-            // Actualizar métricas en el HTML
-            document.getElementById('totalEnviados').textContent = totalEnviados;
-            document.getElementById('promedioMensual').textContent = promedioMensual;
-            document.getElementById('mesMasActivo').textContent = mesMasActivoTexto;
+                // Actualizar métricas en el HTML
+                document.getElementById('totalEnviados').textContent = totalEnviados;
+                document.getElementById('promedioMensual').textContent = promedioMensual;
+                document.getElementById('mesMasActivo').textContent = mesMasActivoTexto;
 
-            new Chart(document.getElementById('chartMensual'), {
-                type: 'line',
-                data: {
-                    labels: mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`),
-                    datasets: [{
-                        label: 'Envíos',
-                        data: mensualData.map(item => item.total),
-                        borderColor: '#8B5CF6',
-                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
-                        borderWidth: 4,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#8B5CF6',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 3,
-                        pointRadius: 8,
-                        pointHoverRadius: 12,
-                        pointHoverBackgroundColor: '#7C3AED',
-                        pointHoverBorderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(139, 92, 246, 0.1)',
-                                drawBorder: false
-                            },
-                            ticks: {
-                                color: '#6B7280',
-                                font: {
-                                    size: 12
-                                },
-                                padding: 10
-                            }
-                        },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#6B7280',
-                                font: {
-                                    size: 12
-                                },
-                                padding: 10
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
+                new Chart(document.getElementById('chartMensual'), {
+                    type: 'line',
+                    data: {
+                        labels: mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`),
+                        datasets: [{
+                            label: 'Envíos',
+                            data: mensualData.map(item => item.total),
                             borderColor: '#8B5CF6',
-                            borderWidth: 2,
-                            cornerRadius: 8,
-                            displayColors: false,
-                            callbacks: {
-                                title: function(context) {
-                                    return `📅 ${context[0].label}`;
+                            backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                            borderWidth: 4,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#8B5CF6',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 3,
+                            pointRadius: 8,
+                            pointHoverRadius: 12,
+                            pointHoverBackgroundColor: '#7C3AED',
+                            pointHoverBorderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(139, 92, 246, 0.1)',
+                                    drawBorder: false
                                 },
-                                label: function(context) {
-                                    return `📤 ${context.parsed.y} envíos`;
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 12
+                                    },
+                                    padding: 10
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
                                 },
-                                afterLabel: function(context) {
-                                    const total = mensualData.reduce((sum, item) => sum + item.total, 0);
-                                    const porcentaje = total > 0 ? Math.round((context.parsed.y / total) * 100) : 0;
-                                    return `📊 ${porcentaje}% del total`;
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 12
+                                    },
+                                    padding: 10
                                 }
                             }
-                        }
-                    },
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeInOutQuart'
-                    },
-                    elements: {
-                        line: {
-                            borderJoinStyle: 'round'
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#8B5CF6',
+                                borderWidth: 2,
+                                cornerRadius: 8,
+                                displayColors: false,
+                                callbacks: {
+                                    title: function(context) {
+                                        return `📅 ${context[0].label}`;
+                                    },
+                                    label: function(context) {
+                                        return `📤 ${context.parsed.y} envíos`;
+                                    },
+                                    afterLabel: function(context) {
+                                        const total = mensualData.reduce((sum, item) => sum + item.total, 0);
+                                        const porcentaje = total > 0 ? Math.round((context.parsed.y / total) * 100) : 0;
+                                        return `📊 ${porcentaje}% del total`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeInOutQuart'
+                        },
+                        elements: {
+                            line: {
+                                borderJoinStyle: 'round'
+                            }
                         }
                     }
-                }
-            });
-        } else {
-            mostrarMensajeNoDatos('chartMensual', 'Aún no hay envíos con fechas registradas');
-            document.getElementById('totalEnviados').textContent = '--';
-            document.getElementById('promedioMensual').textContent = '--';
-            document.getElementById('mesMasActivo').textContent = '--';
-        }
+                });
+            } else {
+                mostrarMensajeNoDatos('chartMensual', 'Aún no hay envíos con fechas registradas');
+                document.getElementById('totalEnviados').textContent = '--';
+                document.getElementById('promedioMensual').textContent = '--';
+                document.getElementById('mesMasActivo').textContent = '--';
+            }
 
-        // Gráfica de barras apiladas - Envíos por estado por mes
-        if (tieneDatos(mensualData)) {
-            // Crear datos para la gráfica de estados por mes
-            const labelsEstadosPorMes = mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`);
-            
-            // Simular datos de estados por mes (en un caso real, esto vendría del backend)
-            const datosCompletados = mensualData.map(item => Math.floor(item.total * 0.7)); // 70% completados
-            const datosCancelados = mensualData.map(item => Math.floor(item.total * 0.2)); // 20% cancelados
-            const datosPendientes = mensualData.map((item, index) => {
-                const completados = datosCompletados[index] || 0;
-                const cancelados = datosCancelados[index] || 0;
-                return Math.max(0, item.total - completados - cancelados);
-            });
+            // Gráfica de barras apiladas - Envíos por estado por mes
+            if (tieneDatos(mensualData)) {
+                // Crear datos para la gráfica de estados por mes
+                const labelsEstadosPorMes = mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`);
+                
+                // Simular datos de estados por mes (en un caso real, esto vendría del backend)
+                const datosCompletados = mensualData.map(item => Math.floor(item.total * 0.7)); // 70% completados
+                const datosCancelados = mensualData.map(item => Math.floor(item.total * 0.2)); // 20% cancelados
+                const datosPendientes = mensualData.map((item, index) => {
+                    const completados = datosCompletados[index] || 0;
+                    const cancelados = datosCancelados[index] || 0;
+                    return Math.max(0, item.total - completados - cancelados);
+                });
 
-            new Chart(document.getElementById('chartEstadosPorMes'), {
-                type: 'bar',
-                data: {
-                    labels: labelsEstadosPorMes,
-                    datasets: [
-                        {
-                            label: 'Completados',
-                            data: datosCompletados,
-                            backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                            borderColor: '#22C55E',
-                            borderWidth: 2,
-                            borderRadius: 4,
-                            borderSkipped: false
+                new Chart(document.getElementById('chartEstadosPorMes'), {
+                    type: 'bar',
+                    data: {
+                        labels: labelsEstadosPorMes,
+                        datasets: [
+                            {
+                                label: 'Completados',
+                                data: datosCompletados,
+                                backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                                borderColor: '#22C55E',
+                                borderWidth: 2,
+                                borderRadius: 4,
+                                borderSkipped: false
+                            },
+                            {
+                                label: 'Cancelados',
+                                data: datosCancelados,
+                                backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                                borderColor: '#EF4444',
+                                borderWidth: 2,
+                                borderRadius: 4,
+                                borderSkipped: false
+                            },
+                            {
+                                label: 'Pendientes',
+                                data: datosPendientes,
+                                backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                                borderColor: '#F59E0B',
+                                borderWidth: 2,
+                                borderRadius: 4,
+                                borderSkipped: false
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
                         },
-                        {
-                            label: 'Cancelados',
-                            data: datosCancelados,
-                            backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                            borderColor: '#EF4444',
-                            borderWidth: 2,
-                            borderRadius: 4,
-                            borderSkipped: false
+                        scales: {
+                            x: {
+                                stacked: true,
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 11
+                                    },
+                                    maxRotation: 45
+                                }
+                            },
+                            y: {
+                                stacked: true,
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                },
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
                         },
-                        {
-                            label: 'Pendientes',
-                            data: datosPendientes,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#8B5CF6',
+                                borderWidth: 2,
+                                cornerRadius: 8,
+                                callbacks: {
+                                    title: function(context) {
+                                        return `📅 ${context[0].label}`;
+                                    },
+                                    label: function(context) {
+                                        const label = context.dataset.label;
+                                        const value = context.parsed.y;
+                                        return `${label}: ${value}`;
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 1500,
+                            easing: 'easeInOutQuart'
+                        }
+                    }
+                });
+            } else {
+                mostrarMensajeNoDatos('chartEstadosPorMes', 'Aún no hay envíos con fechas registradas');
+            }
+
+            // Gráfica de área - Tasa de Respuesta por Mes
+            if (tieneDatos(mensualData)) {
+                // Simular tasas de respuesta por mes (en un caso real, esto vendría del backend)
+                const tasasRespuesta = mensualData.map(() => Math.floor(Math.random() * 40) + 60); // Entre 60% y 100%
+                const tasaPromedio = Math.round(tasasRespuesta.reduce((sum, tasa) => sum + tasa, 0) / tasasRespuesta.length);
+                
+                // Actualizar métrica en el HTML
+                document.getElementById('tasaRespuestaPromedio').textContent = `${tasaPromedio}%`;
+
+                new Chart(document.getElementById('chartTasaRespuesta'), {
+                    type: 'line',
+                    data: {
+                        labels: mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`),
+                        datasets: [{
+                            label: 'Tasa de Respuesta',
+                            data: tasasRespuesta,
+                            borderColor: '#10B981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.2)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointBackgroundColor: '#10B981',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            pointRadius: 6,
+                            pointHoverRadius: 8,
+                            pointHoverBackgroundColor: '#059669',
+                            pointHoverBorderColor: '#fff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                grid: {
+                                    color: 'rgba(16, 185, 129, 0.1)',
+                                    drawBorder: false
+                                },
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 12
+                                    },
+                                    callback: function(value) {
+                                        return value + '%';
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                },
+                                ticks: {
+                                    color: '#6B7280',
+                                    font: {
+                                        size: 11
+                                    },
+                                    maxRotation: 45
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff',
+                                borderColor: '#10B981',
+                                borderWidth: 2,
+                                cornerRadius: 8,
+                                displayColors: false,
+                                callbacks: {
+                                    title: function(context) {
+                                        return `📅 ${context[0].label}`;
+                                    },
+                                    label: function(context) {
+                                        return `📊 ${context.parsed.y}% de tasa de respuesta`;
+                                    },
+                                    afterLabel: function(context) {
+                                        const tasa = context.parsed.y;
+                                        if (tasa >= 80) return '🟢 Excelente';
+                                        if (tasa >= 60) return '🟡 Buena';
+                                        return '🔴 Necesita mejora';
+                                    }
+                                }
+                            }
+                        },
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeInOutQuart'
+                        },
+                        elements: {
+                            line: {
+                                borderJoinStyle: 'round'
+                            }
+                        }
+                    }
+                });
+            } else {
+                mostrarMensajeNoDatos('chartTasaRespuesta', 'Aún no hay envíos con fechas registradas');
+                document.getElementById('tasaRespuestaPromedio').textContent = '--';
+            }
+
+            // Gráfica de barras - Envíos por día de la semana
+            if (tieneDatos(diasData)) {
+                const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+                
+                new Chart(document.getElementById('chartDias'), {
+                    type: 'bar',
+                    data: {
+                        labels: diasData.map(item => diasSemana[item.dia_semana - 1]),
+                        datasets: [{
+                            label: 'Envíos',
+                            data: diasData.map(item => item.total),
                             backgroundColor: 'rgba(245, 158, 11, 0.8)',
                             borderColor: '#F59E0B',
                             borderWidth: 2,
-                            borderRadius: 4,
+                            borderRadius: 8,
                             borderSkipped: false
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
+                        }]
                     },
-                    scales: {
-                        x: {
-                            stacked: true,
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#6B7280',
-                                font: {
-                                    size: 11
-                                },
-                                maxRotation: 45
-                            }
-                        },
-                        y: {
-                            stacked: true,
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            },
-                            ticks: {
-                                color: '#6B7280',
-                                font: {
-                                    size: 12
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
                                 }
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            borderColor: '#8B5CF6',
-                            borderWidth: 2,
-                            cornerRadius: 8,
-                            callbacks: {
-                                title: function(context) {
-                                    return `📅 ${context[0].label}`;
-                                },
-                                label: function(context) {
-                                    const label = context.dataset.label;
-                                    const value = context.parsed.y;
-                                    const total = context.parsed.y + context.parsed.y;
-                                    return `${label}: ${value}`;
-                                }
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 1500,
-                        easing: 'easeInOutQuart'
-                    }
-                }
-            });
-        } else {
-            mostrarMensajeNoDatos('chartEstadosPorMes', 'Aún no hay envíos con fechas registradas');
-        }
-
-        // Gráfica de área - Tasa de Respuesta por Mes
-        if (tieneDatos(mensualData)) {
-            // Simular tasas de respuesta por mes (en un caso real, esto vendría del backend)
-            const tasasRespuesta = mensualData.map(() => Math.floor(Math.random() * 40) + 60); // Entre 60% y 100%
-            const tasaPromedio = Math.round(tasasRespuesta.reduce((sum, tasa) => sum + tasa, 0) / tasasRespuesta.length);
-            
-            // Actualizar métrica en el HTML
-            document.getElementById('tasaRespuestaPromedio').textContent = `${tasaPromedio}%`;
-
-            new Chart(document.getElementById('chartTasaRespuesta'), {
-                type: 'line',
-                data: {
-                    labels: mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`),
-                    datasets: [{
-                        label: 'Tasa de Respuesta',
-                        data: tasasRespuesta,
-                        borderColor: '#10B981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.2)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#10B981',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8,
-                        pointHoverBackgroundColor: '#059669',
-                        pointHoverBorderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    interaction: {
-                        intersect: false,
-                        mode: 'index'
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100,
-                            grid: {
-                                color: 'rgba(16, 185, 129, 0.1)',
-                                drawBorder: false
                             },
-                            ticks: {
-                                color: '#6B7280',
-                                font: {
-                                    size: 12
-                                },
-                                callback: function(value) {
-                                    return value + '%';
+                            x: {
+                                grid: {
+                                    display: false
                                 }
                             }
                         },
-                        x: {
-                            grid: {
-                                display: false
-                            },
-                            ticks: {
-                                color: '#6B7280',
-                                font: {
-                                    size: 11
-                                },
-                                maxRotation: 45
-                            }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        },
-                        tooltip: {
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                            titleColor: '#fff',
-                            bodyColor: '#fff',
-                            borderColor: '#10B981',
-                            borderWidth: 2,
-                            cornerRadius: 8,
-                            displayColors: false,
-                            callbacks: {
-                                title: function(context) {
-                                    return `📅 ${context[0].label}`;
-                                },
-                                label: function(context) {
-                                    return `📊 ${context.parsed.y}% de tasa de respuesta`;
-                                },
-                                afterLabel: function(context) {
-                                    const tasa = context.parsed.y;
-                                    if (tasa >= 80) return '🟢 Excelente';
-                                    if (tasa >= 60) return '🟡 Buena';
-                                    return '🔴 Necesita mejora';
-                                }
-                            }
-                        }
-                    },
-                    animation: {
-                        duration: 2000,
-                        easing: 'easeInOutQuart'
-                    },
-                    elements: {
-                        line: {
-                            borderJoinStyle: 'round'
-                        }
-                    }
-                }
-            });
-        } else {
-            mostrarMensajeNoDatos('chartTasaRespuesta', 'Aún no hay envíos con fechas registradas');
-            document.getElementById('tasaRespuestaPromedio').textContent = '--';
-        }
-
-        // Gráfica de barras - Envíos por día de la semana
-        if (tieneDatos(diasData)) {
-            new Chart(document.getElementById('chartDias'), {
-                type: 'bar',
-                data: {
-                    labels: diasData.map(item => diasSemana[item.dia_semana - 1]),
-                    datasets: [{
-                        label: 'Envíos',
-                        data: diasData.map(item => item.total),
-                        backgroundColor: 'rgba(245, 158, 11, 0.8)',
-                        borderColor: '#F59E0B',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
-                            }
-                        },
-                        x: {
-                            grid: {
+                        plugins: {
+                            legend: {
                                 display: false
                             }
+                        },
+                        animation: {
+                            duration: 2000
                         }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    animation: {
-                        duration: 2000
                     }
-                }
-            });
-        } else {
-            mostrarMensajeNoDatos('chartDias', 'Aún no hay envíos con fechas registradas');
-        }
-
-        // Gráficas de respuestas por pregunta
-        function crearGraficaRespuesta(elementId, data, titulo) {
-            if (!tieneDatos(data)) {
-                mostrarMensajeNoDatos(elementId, 'Aún no hay respuestas para esta pregunta');
-                return;
+                });
+            } else {
+                mostrarMensajeNoDatos('chartDias', 'Aún no hay envíos con fechas registradas');
             }
 
-            new Chart(document.getElementById(elementId), {
-                type: 'bar',
-                data: {
-                    labels: data.map(item => item.respuesta_1 || item.respuesta_2 || item.respuesta_3 || item.respuesta_4),
-                    datasets: [{
-                        label: 'Respuestas',
-                        data: data.map(item => item.total),
-                        backgroundColor: 'rgba(139, 92, 246, 0.8)',
-                        borderColor: '#8B5CF6',
-                        borderWidth: 2,
-                        borderRadius: 8,
-                        borderSkipped: false
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: {
-                                color: 'rgba(0, 0, 0, 0.1)'
+            // Gráficas de respuestas por pregunta
+            function crearGraficaRespuesta(elementId, data, titulo) {
+                if (!tieneDatos(data)) {
+                    mostrarMensajeNoDatos(elementId, 'Aún no hay respuestas para esta pregunta');
+                    return;
+                }
+
+                new Chart(document.getElementById(elementId), {
+                    type: 'bar',
+                    data: {
+                        labels: data.map(item => item.respuesta_1 || item.respuesta_2 || item.respuesta_3 || item.respuesta_4),
+                        datasets: [{
+                            label: 'Respuestas',
+                            data: data.map(item => item.total),
+                            backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                            borderColor: '#8B5CF6',
+                            borderWidth: 2,
+                            borderRadius: 8,
+                            borderSkipped: false
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: {
+                                    color: 'rgba(0, 0, 0, 0.1)'
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
                             }
                         },
-                        x: {
-                            grid: {
+                        plugins: {
+                            legend: {
                                 display: false
                             }
+                        },
+                        animation: {
+                            duration: 2000
                         }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    },
-                    animation: {
-                        duration: 2000
                     }
-                }
-            });
-        }
+                });
+            }
 
-        crearGraficaRespuesta('chartRespuesta1', respuesta1Data, 'Pregunta 1');
-        crearGraficaRespuesta('chartRespuesta2', respuesta2Data, 'Pregunta 2');
-        crearGraficaRespuesta('chartRespuesta3', respuesta3Data, 'Pregunta 3');
-        crearGraficaRespuesta('chartRespuesta4', respuesta4Data, 'Pregunta 4');
+            crearGraficaRespuesta('chartRespuesta1', respuesta1Data, 'Pregunta 1');
+            crearGraficaRespuesta('chartRespuesta2', respuesta2Data, 'Pregunta 2');
+            crearGraficaRespuesta('chartRespuesta3', respuesta3Data, 'Pregunta 3');
+            crearGraficaRespuesta('chartRespuesta4', respuesta4Data, 'Pregunta 4');
         }); // Cerrar el evento DOMContentLoaded
     </script>
 </x-app-layout> 

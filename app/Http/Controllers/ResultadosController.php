@@ -6,6 +6,10 @@ use App\Models\Envio;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Exports\EncuestasExport;
+use App\Exports\NPSExport;
+use App\Exports\EstadisticasExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ResultadosController extends Controller
 {
@@ -106,64 +110,32 @@ class ResultadosController extends Controller
 
     public function exportar(Request $request)
     {
-        $envios = Envio::with('cliente')
-            ->orderBy('created_at', 'desc')
-            ->get();
-
-        $filename = 'resultados_envios_' . date('Y-m-d_H-i-s') . '.csv';
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $filename = "encuestas_satisfaccion_{$timestamp}.xlsx";
         
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-        ];
+        return Excel::download(new EncuestasExport(), $filename);
+    }
 
-        $callback = function() use ($envios) {
-            $file = fopen('php://output', 'w');
-            
-            // Encabezados del CSV
-            fputcsv($file, [
-                'ID',
-                'Cliente',
-                'Asesor Comercial',
-                'Pregunta 1',
-                'Pregunta 2', 
-                'Pregunta 3',
-                'Pregunta 4',
-                'Respuesta 1',
-                'Respuesta 2',
-                'Respuesta 3',
-                'Respuesta 4',
-                'Estado',
-                'Fecha Envío',
-                'Fecha Respuesta',
-                'Fecha Creación'
-            ]);
+    /**
+     * Exporta estadísticas resumidas en formato Excel
+     */
+    public function exportarEstadisticas(Request $request)
+    {
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $filename = "estadisticas_generales_{$timestamp}.xlsx";
+        
+        return Excel::download(new EstadisticasExport(), $filename);
+    }
 
-            // Datos
-            foreach ($envios as $envio) {
-                fputcsv($file, [
-                    $envio->idenvio,
-                    $envio->cliente->razon_social ?? '',
-                    $envio->cliente->asesor_comercial ?? '',
-                    $envio->pregunta_1,
-                    $envio->pregunta_2,
-                    $envio->pregunta_3,
-                    $envio->pregunta_4,
-                    $envio->respuesta_1,
-                    $envio->respuesta_2,
-                    $envio->respuesta_3,
-                    $envio->respuesta_4,
-                    $envio->estado,
-                    $envio->fecha_envio ? $envio->fecha_envio->format('Y-m-d H:i:s') : '',
-                    $envio->fecha_respuesta ? $envio->fecha_respuesta->format('Y-m-d H:i:s') : '',
-                    $envio->created_at->format('Y-m-d H:i:s')
-                ]);
-            }
-
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
+    /**
+     * Exporta solo los datos del NPS en formato Excel
+     */
+    public function exportarNPS(Request $request)
+    {
+        $timestamp = now()->format('Y-m-d_H-i-s');
+        $filename = "nps_encuestas_{$timestamp}.xlsx";
+        
+        return Excel::download(new NPSExport(), $filename);
     }
 
     public function detalle()

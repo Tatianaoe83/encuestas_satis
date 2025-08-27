@@ -117,7 +117,7 @@
                                 <div class="text-xs text-gray-600">Detractores (0-6)</div>
                                 <div class="text-xs text-red-500 font-medium">{{ $npsPromedio['porcentaje_detractores'] }}%</div>
                             </div>
-                        </div>
+                                </div>
 
                         <!-- Fórmula del NPS -->
                         <div class="text-center mb-4 p-3 bg-gray-50 rounded-lg">
@@ -172,29 +172,29 @@
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-100">
                                 @forelse($enviosPorEstado->take(5) as $estado)
-                                    <tr class="hover:bg-gray-50 transition-colors duration-200">
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center">
+                                <tr class="hover:bg-gray-50 transition-colors duration-200">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
                                                 <div class="w-8 h-8 {{ $estado->estado === 'completado' ? 'bg-green-100' : ($estado->estado === 'enviado' ? 'bg-blue-100' : 'bg-yellow-100') }} rounded-full flex items-center justify-center mr-3">
                                                     <span class="{{ $estado->estado === 'completado' ? 'text-green-600' : ($estado->estado === 'enviado' ? 'text-blue-600' : 'text-yellow-600') }} font-medium text-sm">{{ strtoupper(substr($estado->estado, 0, 1)) }}</span>
-                                                </div>
-                                                <div>
+                                            </div>
+                                            <div>
                                                     <div class="text-sm font-medium text-gray-900">{{ ucfirst($estado->estado) }}</div>
                                                     <div class="text-sm text-gray-500">{{ $estado->total }} envíos</div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <div class="flex items-center">
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center">
                                                 <div class="w-16 bg-gray-200 rounded-full h-2">
                                                     @php
                                                         $porcentaje = $totalEnvios > 0 ? ($estado->total / $totalEnvios) * 100 : 0;
                                                     @endphp
                                                     <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
-                                                </div>
-                                                <span class="ml-2 text-sm font-medium text-gray-900">{{ round($porcentaje, 1) }}%</span>
                                             </div>
-                                        </td>
+                                                <span class="ml-2 text-sm font-medium text-gray-900">{{ round($porcentaje, 1) }}%</span>
+                                        </div>
+                                    </td>
                                         <td class="px-6 py-4 text-sm text-gray-500">
                                             @if($estado->estado === 'completado')
                                                 <span class="text-green-600">✓ Completado</span>
@@ -203,14 +203,14 @@
                                             @else
                                                 <span class="text-yellow-600">⏳ Pendiente</span>
                                             @endif
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                                 @empty
                                     <tr>
                                         <td colspan="3" class="px-6 py-4 text-center text-gray-500">
                                             No hay datos para mostrar
-                                        </td>
-                                    </tr>
+                                    </td>
+                                </tr>
                                 @endforelse
                             </tbody>
                         </table>

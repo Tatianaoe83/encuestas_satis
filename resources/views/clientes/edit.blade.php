@@ -47,8 +47,21 @@
 
                             <div>
                                 <x-input-label for="celular" :value="__('Celular')" />
-                                <x-text-input id="celular" class="block mt-1 w-full" type="text" name="celular" :value="old('celular', $cliente->celular)" required />
+                                <x-text-input 
+                                    id="celular" 
+                                    class="block mt-1 w-full" 
+                                    type="tel" 
+                                    name="celular" 
+                                    :value="old('celular', $cliente->celular)" 
+                                    required 
+                                    maxlength="10"
+                                    pattern="[0-9]{10}"
+                                    placeholder="10 dígitos"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"
+                                    title="Ingresa exactamente 10 dígitos numéricos"
+                                />
                                 <x-input-error :messages="$errors->get('celular')" class="mt-2" />
+                                <p class="text-xs text-gray-500 mt-1">Formato: 10 dígitos (ej: 9991234567)</p>
                             </div>
 
                             <div>

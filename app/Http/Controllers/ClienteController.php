@@ -34,8 +34,11 @@ class ClienteController extends Controller
             'razon_social' => 'required|string|max:255',
             'nombre_completo' => 'required|string|max:255',
             'puesto' => 'required|string|max:255',
-            'celular' => 'required|string|max:20',
+            'celular' => 'required|string|size:10|regex:/^[0-9]+$/',
             'correo' => 'required|email|max:255',
+        ], [
+            'celular.size' => 'El celular debe tener exactamente 10 dígitos.',
+            'celular.regex' => 'El celular solo debe contener números.',
         ]);
 
         Cliente::create($request->all());
@@ -70,8 +73,11 @@ class ClienteController extends Controller
             'razon_social' => 'required|string|max:255',
             'nombre_completo' => 'required|string|max:255',
             'puesto' => 'required|string|max:255',
-            'celular' => 'required|string|max:20',
+            'celular' => 'required|string|size:10|regex:/^[0-9]+$/',
             'correo' => 'required|email|max:255',
+        ], [
+            'celular.size' => 'El celular debe tener exactamente 10 dígitos.',
+            'celular.regex' => 'El celular solo debe contener números.',
         ]);
 
         $cliente->update($request->all());

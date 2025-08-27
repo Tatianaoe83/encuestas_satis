@@ -46,9 +46,9 @@ new class extends Component
                         {{ __('Resultados') }}
                     </x-nav-link>
 
-                    <x-nav-link href="{{ route('chat.index') }}" :active="request()->routeIs('chat.*')">
+                    <!-- <x-nav-link href="{{ route('chat.index') }}" :active="request()->routeIs('chat.*')">
                         {{ __('💬 Chat') }}
-                    </x-nav-link>
+                    </x-nav-link> -->
                 </div>
             </div>
 

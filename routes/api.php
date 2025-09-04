@@ -63,3 +63,22 @@ Route::post('/webhook-test', function(Request $request) {
 
 // Ruta para obtener estado de un envío
 Route::get('/envio/estado', [TwilioWebhookController::class, 'getEstadoEnvio']);
+
+// Ruta para ejecutar comando de timers
+Route::post('/ejecutar-comando-timers', function() {
+    try {
+        \Artisan::call('timers:verificar');
+        $output = \Artisan::output();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Comando ejecutado exitosamente',
+            'output' => $output
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Error ejecutando comando: ' . $e->getMessage()
+        ], 500);
+    }
+});

@@ -51,29 +51,26 @@
                                 <div class="space-y-4 text-sm">
                                     <div class="bg-white p-3 rounded border-l-4 border-blue-500">
                                         <h5 class="font-medium text-gray-900 mb-1">Pregunta 1 (Escala 1-10):</h5>
-                                        <p class="text-gray-700">En una escala del 1 al 10, ¿qué probabilidad hay de que recomiende Konkret a un colega o contacto del sector construcción?</p>
-                                    </div>
-
-                                    <div class="bg-white p-3 rounded border-l-4 border-blue-500">
-                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 2 (Abierta):</h5>
-                                        <p class="text-gray-700">¿Cuál es la razón principal de tu calificación?</p>
-                                    </div>
-
-                                    <div class="bg-white p-3 rounded border-l-4 border-blue-500">
-                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 3 (Segmentación):</h5>
-                                        <p class="text-gray-700">¿A qué tipo de obra se destinó este concreto?</p>
-                                        <ul class="text-gray-600 mt-1 ml-4 list-disc">
-                                            <li>1. Vivienda unifamiliar</li>
-                                            <li>2. Edificio o proyecto vertical</li>
-                                            <li>3. Obra vial o infraestructura</li>
-                                            <li>4. Obra industrial</li>
-                                            <li>5. Otro</li>
+                                        <p class="text-gray-700">En una escala del 1-10, ¿Cómo calificarías nuestro servicio con base en los siguientes puntos?</p>
+                                        <p class="text-gray-600 mt-2 text-xs italic">Se enviará una pregunta por una para calificar cada punto:</p>
+                                        <ul class="text-gray-600 mt-1 ml-4 list-disc text-xs">
+                                            <li>1.1. Calidad del producto</li>
+                                            <li>1.2. Puntualidad de entrega</li>
+                                            <li>1.3. Trato del asesor comercial</li>
+                                            <li>1.4. Precio</li>
+                                            <li>1.5. Rapidez en programación</li>
                                         </ul>
                                     </div>
 
                                     <div class="bg-white p-3 rounded border-l-4 border-blue-500">
-                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 4 (Opcional):</h5>
-                                        <p class="text-gray-700">¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?</p>
+                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 2 (Si/No):</h5>
+                                        <p class="text-gray-700">¿Recomendarías a Konkret?</p>
+                                    </div>
+
+                                    <div class="bg-white p-3 rounded border-l-4 border-orange-500">
+                                        <h5 class="font-medium text-gray-900 mb-1">Pregunta 3 (Opcional - Abierta):</h5>
+                                        <p class="text-gray-700">¿Qué podríamos hacer para mejorar tu experiencia?</p>
+                                        <p class="text-gray-600 mt-1 text-xs italic">Solo se muestra si responde "No" a la pregunta 2</p>
                                     </div>
                                 </div>
                             </div>

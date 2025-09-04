@@ -33,69 +33,71 @@ class TwilioService
         try {
             $cliente = $envio->cliente;
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+            $contentSid = config('services.twilio.content_sid');
 
             Log::info("Número de WhatsApp", [
-                'numeroWhatsApp' => $numeroWhatsApp
+                'numeroWhatsApp' => $numeroWhatsApp,
+                'content_sid' => $contentSid
             ]);
 
-            // Enviar solo la primera pregunta
-            $mensaje = $this->construirPrimeraPregunta($envio);
-            Log::info("Primera pregunta enviada", [
-                'mensaje' => $mensaje
+            if (!$contentSid) {
+                throw new \Exception('Content SID no está configurado');
+            }
+
+            Log::info("Enviando contenido aprobado", [
+                'envio_id' => $envio->idenvio,
+                'content_sid' => $contentSid
             ]);
 
-            // Comentado temporalmente para forzar envío real
-            // if (app()->environment('local') || config('app.debug')) {
-            //     Log::info("MODO PRUEBA: Simulando envío de WhatsApp");
-            //     
-            //     // Actualizar el envío con la información simulada
-            //     $envio->update([
-            //         'whatsapp_number' => $numeroWhatsApp,
-            //         'twilio_message_sid' => 'SIM_' . time(),
-            //         'whatsapp_message' => $mensaje,
-            //         'estado' => 'enviado',
-            //         'fecha_envio' => now(),
-            //         'whatsapp_sent_at' => now(),
-            //         'pregunta_actual' => 1, // Marcar que estamos en la primera pregunta
-            //     ]);
-            //
-            //     Log::info("Primera pregunta simulada exitosamente", [
-            //         'envio_id' => $envio->idenvio,
-            //         'cliente' => $cliente->nombre_completo,
-            //         'numero' => $numeroWhatsApp,
-            //         'message_sid' => 'SIM_' . time(),
-            //         'pregunta_actual' => 1
-            //     ]);
-            //
-            //     return true;
-            // }
+            // Preparar variables de contenido
+            $contentVariables = [
+                'nombre' => $cliente->nombre_completo ?? 'Cliente',
+                'encuesta' => (string) ($envio->idenvio ?? '0')
+            ];
+            
+            Log::info("Variables de contenido preparadas", [
+                'content_variables' => $contentVariables
+            ]);
 
-            // Envío real a Twilio
             $message = $this->client->messages->create(
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'body' => $mensaje,
+                    'contentSid' => $contentSid,
+                    'contentVariables' => json_encode($contentVariables)
                 ]
             );
 
-            // Actualizar el envío con la información de Twilio
+            $tiempoExpiracion = now()->addMinutes(30);
+
+            // Actualizar el envío
             $envio->update([
                 'whatsapp_number' => 'whatsapp:'.$numeroWhatsApp,
                 'twilio_message_sid' => $message->sid,
-                'whatsapp_message' => $mensaje,
-                'estado' => 'enviado',
+                'content_sid' => $contentSid,
+                'estado' => 'esperando_respuesta',
                 'fecha_envio' => now(),
                 'whatsapp_sent_at' => now(),
-                'pregunta_actual' => 1, // Marcar que estamos en la primera pregunta
+                'esperando_respuesta_desde' => now(),
+                'tiempo_espera_minutos' => 30,
+                'tiempo_expiracion' => $tiempoExpiracion,
+                'timer_activo' => true,
+                'estado_timer' => 'activo'
             ]);
 
-            Log::info("Primera pregunta enviada exitosamente", [
+            Log::info("Contenido aprobado enviado y timer configurado", [
+                'envio_id' => $envio->idenvio,
+                'pregunta_actual' => null,
+                'estado' => 'esperando_respuesta'
+            ]);
+
+            Log::info("Contenido aprobado enviado exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'cliente' => $cliente->nombre_completo,
                 'numero' => $numeroWhatsApp,
                 'message_sid' => $message->sid,
-                'pregunta_actual' => 1
+                'tiempo_expiracion' => $tiempoExpiracion,
+                'estado' => 'esperando_respuesta'
             ]);
 
             return true;
@@ -107,10 +109,12 @@ class TwilioService
                 'trace' => $e->getTraceAsString()
             ]);
             
-            // Actualizar el estado del envío como fallido
+            // Actualizar estado como fallido
             $envio->update([
                 'estado' => 'error',
-                'whatsapp_error' => $e->getMessage()
+                'whatsapp_error' => $e->getMessage(),
+                'timer_activo' => false,
+                'estado_timer' => 'error'
             ]);
             
             return false;
@@ -126,9 +130,10 @@ class TwilioService
             $cliente = $envio->cliente;
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
             
-            // Determinar qué pregunta enviar
-            $preguntaActual = $envio->pregunta_actual ?? 1;
-            $siguientePregunta = $preguntaActual + 1;
+            $preguntaActual = $envio->pregunta_actual ?? 1.1;
+            
+            // Determinar siguiente pregunta
+            $siguientePregunta = $this->determinarSiguientePregunta($preguntaActual, $respuestaAnterior);
             
             Log::info("Procesando siguiente pregunta", [
                 'envio_id' => $envio->idenvio,
@@ -137,8 +142,7 @@ class TwilioService
                 'respuesta_anterior' => $respuestaAnterior
             ]);
             
-            // Si es la última pregunta o ya se completó
-            if ($siguientePregunta > 4) {
+            if ($siguientePregunta === 'completado') {
                 // Enviar mensaje de agradecimiento
                 $mensaje = $this->construirMensajeAgradecimiento($envio);
                 
@@ -147,7 +151,6 @@ class TwilioService
                     'numero' => $numeroWhatsApp
                 ]);
                 
-                // Envío real a Twilio
                 $message = $this->client->messages->create(
                     "whatsapp:{$numeroWhatsApp}",
                     [
@@ -156,7 +159,6 @@ class TwilioService
                     ]
                 );
                 
-                // Marcar como completado
                 $envio->update([
                     'estado' => 'completado',
                     'fecha_respuesta' => now(),
@@ -173,7 +175,6 @@ class TwilioService
                 return true;
             }
             
-            // Enviar siguiente pregunta
             $mensaje = $this->construirPregunta($envio, $siguientePregunta);
             
             Log::info("Enviando siguiente pregunta", [
@@ -191,11 +192,10 @@ class TwilioService
                 ]
             );
             
-            // Actualizar pregunta actual y estado
             $envio->update([
                 'pregunta_actual' => $siguientePregunta,
                 'whatsapp_message' => $mensaje,
-                'estado' => 'en_proceso' // Marcar como en proceso mientras se contesta
+                'estado' => 'en_proceso'
             ]);
             
             Log::info("Siguiente pregunta enviada exitosamente", [
@@ -218,33 +218,147 @@ class TwilioService
     }
 
     /**
+     * Determinar la siguiente pregunta basada en la estructura nueva
+     */
+    protected function determinarSiguientePregunta($preguntaActual, $respuestaAnterior = null)
+    {
+        // Convertir a string para manejar valores decimales correctamente
+        $preguntaStr = (string) $preguntaActual;
+        
+        switch ($preguntaStr) {
+            case '1.1':
+            case '1.0':
+                return '1.2'; // Puntualidad de entrega
+            case '1.2':
+                return '1.3'; // Trato del asesor comercial
+            case '1.3':
+                return '1.4'; // Precio
+            case '1.4':
+                return '1.5'; // Rapidez en programación
+            case '1.5':
+                return '2'; // ¿Recomendarías a Konkret?
+            case '2':
+                // Si la respuesta anterior fue "no", ir a pregunta 3
+                // Si fue "si", completar encuesta
+                if ($respuestaAnterior) {
+                    $respuestaLimpia = trim(strtolower($respuestaAnterior));
+                    if ($respuestaLimpia === 'no') {
+                        return '3'; // Ir a pregunta 3
+                    } else {
+                        return 'completado'; // Completar encuesta
+                    }
+                }
+                return 'completado'; // Por defecto completar
+            case '3':
+                return 'completado'; // Última pregunta
+            default:
+                return 'completado';
+        }
+    }
+
+    /**
      * Construir la primera pregunta
      */
-    protected function construirPrimeraPregunta(Envio $envio)
+   
+
+    /**
+     * Enviar primera pregunta de la nueva encuesta después del contenido aprobado
+     */
+    public function enviarPrimeraPreguntaNuevaEncuesta(Envio $envio)
     {
-        $cliente = $envio->cliente;
-        
-        // Debug: verificar que el ID esté disponible
-        Log::info("Construyendo primera pregunta", [
+        Log::info("Enviando primera pregunta después del contenido aprobado", [
             'envio_id' => $envio->idenvio,
-            'envio_attributes' => $envio->getAttributes(),
-            'cliente_nombre' => $cliente->nombre_completo ?? 'N/A',
-            'cliente_celular' => $cliente->celular ?? 'N/A'
+            'cliente_id' => $envio->cliente_id
         ]);
         
-        $mensaje = "🏗️ *Encuesta de Satisfacción - Konkret*\n\n";
-        $mensaje .= "Hola {$cliente->nombre_completo},\n\n";
-        $mensaje .= "Gracias por confiar en nosotros. Nos gustaría conocer tu opinión sobre nuestro servicio.\n\n";
-        $mensaje .= "Te enviaré 4 preguntas una por una para facilitar tu respuesta.\n\n";
-        $mensaje .= "📝 *Pregunta 1 de 4:*\n";
-        $mensaje .= "En una escala del 1 al 10, ¿qué probabilidad hay de que recomiende Konkret a un colega o contacto del sector construcción?\n\n";
+        try {
+            $cliente = $envio->cliente;
+            $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+
+            Log::info("Número de WhatsApp", [
+                'numeroWhatsApp' => $numeroWhatsApp
+            ]);
+
+            // Construir la primera pregunta de la nueva encuesta
+            $mensaje = $this->construirPregunta1NuevaEncuesta($envio);
+            Log::info("Primera pregunta de nueva encuesta", [
+                'mensaje' => $mensaje
+            ]);
+
+            Log::info("Enviando mensaje a Twilio", [
+                'envio_id' => $envio->idenvio,
+                'numero' => $numeroWhatsApp,
+                'from_number' => $this->fromNumber
+            ]);
+
+            // Envío real a Twilio
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'body' => $mensaje,
+                ]
+            );
+
+            Log::info("Mensaje enviado a Twilio exitosamente", [
+                'envio_id' => $envio->idenvio,
+                'message_sid' => $message->sid,
+                'status' => $message->status ?? 'N/A'
+            ]);
+
+            // Actualizar el envío con la información de Twilio
+            $envio->update([
+                'whatsapp_number' => 'whatsapp:'.$numeroWhatsApp,
+                'twilio_message_sid' => $message->sid,
+                'whatsapp_message' => $mensaje,
+                'estado' => 'enviado',
+                'fecha_envio' => now(),
+                'whatsapp_sent_at' => now(),
+                'pregunta_actual' => 1.1, // Marcar que estamos en la primera subpregunta
+            ]);
+
+            Log::info("Primera pregunta de nueva encuesta enviada exitosamente", [
+                'envio_id' => $envio->idenvio,
+                'cliente' => $cliente->nombre_completo,
+                'numero' => $numeroWhatsApp,
+                'message_sid' => $message->sid,
+                'pregunta_actual' => 1.1
+            ]);
+
+            return true;
+
+        } catch (\Exception $e) {
+            Log::error("Error enviando primera pregunta después de contenido aprobado", [
+                'envio_id' => $envio->idenvio,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Actualizar el estado del envío como fallido
+            $envio->update([
+                'estado' => 'error',
+                'whatsapp_error' => $e->getMessage()
+            ]);
+            
+            return false;
+        }
+    }
+
+    /**
+     * Construir la primera pregunta de la nueva encuesta
+     */
+    protected function construirPregunta1NuevaEncuesta(Envio $envio)
+    {
+        $cliente = $envio->cliente;
+        $identificador = $this->generarIdentificadorRespuesta($envio, 1.1);
+        
+        $mensaje = "📝 *Pregunta 1.1 de 5:*\n";
+        $mensaje .= "Calidad del producto\n\n";
         $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
         $mensaje .= "---\n";
         $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-        $mensaje .= "📱 *Tu número: " . ($cliente->celular ?? 'N/A') . "*";
-        // Agregar información oculta usando caracteres invisibles
-        //$mensaje .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($cliente->celular ?? 'N/A') . "\u{200B}";
-
+        $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+        
         return $mensaje;
     }
 
@@ -257,44 +371,58 @@ class TwilioService
         $identificador = $this->generarIdentificadorRespuesta($envio, $numeroPregunta);
         
         switch ($numeroPregunta) {
-            case 2:
-                $mensaje = "📝 *Pregunta 2 de 4:*\n";
-                $mensaje .= "¿Cuál es la razón principal de tu calificación?\n\n";
-                $mensaje .= "Responde con tu razón.\n\n";
+            case 1.2:
+                $mensaje = "📝 *Pregunta 1.2 de 5:*\n";
+                $mensaje .= "Puntualidad de entrega\n\n";
+                $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
                 $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
                 $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
-                // Agregar información oculta usando caracteres invisibles
-               
+                break;
+                
+            case 1.3:
+                $mensaje = "📝 *Pregunta 1.3 de 5:*\n";
+                $mensaje .= "Trato del asesor comercial\n\n";
+                $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
+                $mensaje .= "---\n";
+                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                break;
+                
+            case 1.4:
+                $mensaje = "📝 *Pregunta 1.4 de 5:*\n";
+                $mensaje .= "Precio\n\n";
+                $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
+                $mensaje .= "---\n";
+                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                break;
+                
+            case 1.5:
+                $mensaje = "📝 *Pregunta 1.5 de 5:*\n";
+                $mensaje .= "Rapidez en programación\n\n";
+                $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
+                $mensaje .= "---\n";
+                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                break;
+                
+            case 2:
+                $mensaje = "📝 *Pregunta 2:*\n";
+                $mensaje .= "¿Recomendarías a Konkret?\n\n";
+                $mensaje .= "Responde solo con 'Si' o 'No'.\n\n";
+                $mensaje .= "---\n";
+                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
+                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
                 break;
                 
             case 3:
-                
-                $mensaje = "📝 *Pregunta 3 de 4:*\n";
-                $mensaje .= "¿A qué tipo de obra se destinó este concreto?\n\n";
-                $mensaje .= "Opciones:\n";
-                $mensaje .= "1️⃣. Vivienda unifamiliar\n";
-                $mensaje .= "2️⃣. Edificio vertical\n";
-                $mensaje .= "3️⃣. Obra vial\n";
-                $mensaje .= "4️⃣. Obra industrial\n";
-                $mensaje .= "5️⃣. Otro\n\n";
-                $mensaje .= "Responde del 1 al 5 con una de las opciones.\n\n";
+                $mensaje = "📝 *Pregunta 3:*\n";
+                $mensaje .= "¿Qué podríamos hacer para mejorar tu experiencia?\n\n";
+                $mensaje .= "Responde con tu sugerencia.\n\n";
                 $mensaje .= "---\n";
                 $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
                 $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
-               
-               
-                break;
-                
-            case 4:
-                $mensaje = "📝 *Pregunta 4 de 4:*\n";
-                $mensaje .= "¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?\n\n";
-                $mensaje .= "Responde con tu sugerencia o escribe 'N/A' si no tienes sugerencias.\n\n";
-                $mensaje .= "---\n";
-                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
-                // Agregar información oculta usando caracteres invisibles
-               
                 break;
                 
             default:
@@ -367,24 +495,26 @@ class TwilioService
             // PRIMERA PRIORIDAD: Buscar por message_sid (más específico)
             if ($messageSid) {
                 $envio = Envio::where('twilio_message_sid', $messageSid)
-                    ->whereIn('estado', ['enviado', 'en_proceso'])
+                    ->whereIn('estado', ['enviado', 'en_proceso', 'esperando_respuesta'])
                     ->first();
                 
                 if ($envio) {
                     Log::info("Envío encontrado por message_sid", [
                         'envio_id' => $envio->idenvio,
-                        'message_sid' => $messageSid,
-                        'whatsapp_number' => $envio->whatsapp_number
+                        'message_sid_buscado' => $messageSid,
+                        'message_sid_encontrado' => $envio->twilio_message_sid
                     ]);
                 } else {
-                    Log::info("No se encontró envío por message_sid", ['message_sid_buscado' => $messageSid]);
+                    Log::info("No se encontró envío por message_sid", [
+                        'message_sid_buscado' => $messageSid
+                    ]);
                 }
             }
             
             if (!$envio && $envioId) {
                 // SEGUNDA PRIORIDAD: Buscar por ID de la encuesta
                 $envio = Envio::where('idenvio', $envioId)
-                    ->whereIn('estado', ['enviado', 'en_proceso'])
+                    ->whereIn('estado', ['enviado', 'en_proceso', 'esperando_respuesta'])
                     ->first();
                 
                 if ($envio) {
@@ -398,7 +528,7 @@ class TwilioService
                 // Si no se encontró por ID, buscar por número de WhatsApp (formato completo)
                 $whatsappNumber = "whatsapp:{$from}";
                 $envio = Envio::where('whatsapp_number', $whatsappNumber)
-                    ->whereIn('estado', ['enviado', 'en_proceso'])
+                    ->whereIn('estado', ['enviado', 'en_proceso', 'esperando_respuesta'])
                     ->latest()
                     ->first();
                 
@@ -418,7 +548,7 @@ class TwilioService
             if (!$envio) {
                 // Buscar por número de WhatsApp sin prefijo
                 $envio = Envio::where('whatsapp_number', $from)
-                    ->whereIn('estado', ['enviado', 'en_proceso'])
+                    ->whereIn('estado', ['enviado', 'en_proceso', 'esperando_respuesta'])
                     ->latest()
                     ->first();
                 
@@ -439,7 +569,7 @@ class TwilioService
                 // Buscar por número de WhatsApp con formato alternativo (sin el prefijo whatsapp:)
                 $numeroSinPrefijo = str_replace('whatsapp:', '', $from);
                 $envio = Envio::where('whatsapp_number', $numeroSinPrefijo)
-                    ->whereIn('estado', ['enviado', 'en_proceso'])
+                    ->whereIn('estado', ['enviado', 'en_proceso', 'esperando_respuesta'])
                     ->latest()
                     ->first();
                 
@@ -472,7 +602,7 @@ class TwilioService
                           ->orWhere('celular', '521' . $cleanFrom)
                           ->orWhere('celular', '521' . $cleanFromWhatsApp);
                 })
-                ->whereIn('estado', ['enviado', 'en_proceso'])
+                ->whereIn('estado', ['enviado', 'en_proceso', 'esperando_respuesta'])
                 ->latest()
                 ->first();
                 
@@ -504,7 +634,7 @@ class TwilioService
                           ->orWhere('whatsapp_number', $numeroSinPrefijo)
                           ->orWhere('whatsapp_number', 'LIKE', '%' . $numeroLimpio . '%');
                 })
-                ->whereIn('estado', ['enviado', 'en_proceso'])
+                ->whereIn('estado', ['enviado', 'en_proceso', 'esperando_respuesta'])
                 ->latest()
                 ->first();
                 
@@ -573,6 +703,11 @@ class TwilioService
                 'whatsapp_number' => $envio->whatsapp_number ?? 'N/A'
             ]);
 
+            // Verificar si es una respuesta de contenido aprobado
+            if ($envio->estado === 'esperando_respuesta' && $envio->timer_activo) {
+                return $this->procesarRespuestaContenidoAprobado($from, $body, $messageSid);
+            }
+
             // Validar la respuesta antes de procesarla
             $validacion = $this->validarRespuesta($envio, $body);
             
@@ -584,6 +719,11 @@ class TwilioService
             
             // Guardar la respuesta recibida
             $this->guardarRespuesta($envio, $body, $respuestaId);
+
+            // Si se completó la pregunta 1.5, calcular el promedio
+            if ($envio->pregunta_actual == 1.5) {
+                $this->calcularPromedioPregunta1($envio);
+            }
 
             // Procesar la respuesta y enviar siguiente pregunta
             $resultado = $this->enviarSiguientePregunta($envio, $body);
@@ -618,7 +758,7 @@ class TwilioService
      */
     protected function validarRespuesta(Envio $envio, $respuesta)
     {
-        $preguntaActual = $envio->pregunta_actual ?? 1;
+        $preguntaActual = $envio->pregunta_actual ?? 1.1;
         
         Log::info("Validando respuesta", [
             'envio_id' => $envio->idenvio,
@@ -627,7 +767,11 @@ class TwilioService
         ]);
         
         switch ($preguntaActual) {
-            case 1:
+            case 1.1:
+            case 1.2:
+            case 1.3:
+            case 1.4:
+            case 1.5:
                 // Validar que sea un número del 1 al 10
                 $respuestaLimpia = trim($respuesta);
                 
@@ -635,7 +779,7 @@ class TwilioService
                 if (!is_numeric($respuestaLimpia)) {
                     return [
                         'valida' => false,
-                        'mensaje' => "❌ *Respuesta no válida*\n\nPara la pregunta 1, debes responder con un número del 1 al 10.\n\nEjemplos válidos: 5, 8, 10\n\nPor favor, responde solo con un número."
+                        'mensaje' => "❌ *Respuesta no válida*\n\nPara la pregunta {$preguntaActual}, debes responder con un número del 1 al 10.\n\nEjemplos válidos: 5, 8, 10\n\nPor favor, responde solo con un número."
                     ];
                 }
                 
@@ -645,57 +789,33 @@ class TwilioService
                 if ($numero < 1 || $numero > 10) {
                     return [
                         'valida' => false,
-                        'mensaje' => "❌ *Número fuera de rango*\n\nPara la pregunta 1, debes responder con un número del 1 al 10.\n\nTu respuesta: {$numero}\n\nPor favor, responde con un número entre 1 y 10."
+                        'mensaje' => "❌ *Número fuera de rango*\n\nPara la pregunta {$preguntaActual}, debes responder con un número del 1 al 10.\n\nTu respuesta: {$numero}\n\nPor favor, responde con un número entre 1 y 10."
                     ];
                 }
                 
                 return ['valida' => true, 'mensaje' => ''];
                 
             case 2:
-                // Validar que no esté vacía y tenga al menos 3 caracteres
-                $respuestaLimpia = trim($respuesta);
+                // Validar que sea "si" o "no"
+                $respuestaLimpia = trim(strtolower($respuesta));
                 
-                if (strlen($respuestaLimpia) < 3) {
+                if ($respuestaLimpia !== 'si' && $respuestaLimpia !== 'sí' && $respuestaLimpia !== 'no') {
                     return [
                         'valida' => false,
-                        'mensaje' => "❌ *Respuesta muy corta*\n\nPara la pregunta 2, por favor explica tu razón con más detalle (mínimo 3 caracteres).\n\nTu respuesta actual: '{$respuestaLimpia}'"
+                        'mensaje' => "❌ *Respuesta no válida*\n\nPara la pregunta 2, debes responder solo con 'Si' o 'No'.\n\nTu respuesta: '{$respuesta}'\n\nPor favor, responde solo con 'Si' o 'No'."
                     ];
                 }
                 
                 return ['valida' => true, 'mensaje' => ''];
                 
             case 3:
-                // Validar que sea un número del 1 al 5
-                $respuestaLimpia = trim($respuesta);
-                
-                // Verificar si es un número
-                if (!is_numeric($respuestaLimpia)) {
-                    return [
-                        'valida' => false,
-                        'mensaje' => "❌ *Respuesta no válida*\n\nPara la pregunta 3, debes responder con un número del 1 al 5.\n\nOpciones disponibles:\n1️⃣. Vivienda unifamiliar\n2️⃣. Edificio vertical\n3️⃣. Obra vial\n4️⃣. Obra industrial\n5️⃣. Otro\n\nPor favor, responde solo con un número."
-                    ];
-                }
-                
-                $numero = (int) $respuestaLimpia;
-                
-                // Verificar rango del 1 al 5
-                if ($numero < 1 || $numero > 5) {
-                    return [
-                        'valida' => false,
-                        'mensaje' => "❌ *Número fuera de rango*\n\nPara la pregunta 3, debes responder con un número del 1 al 5.\n\nTu respuesta: {$numero}\n\nOpciones disponibles:\n1️⃣. Vivienda unifamiliar\n2️⃣. Edificio vertical\n3️⃣. Obra vial\n4️⃣. Obra industrial\n5️⃣. Otro\n\nPor favor, responde con un número entre 1 y 5."
-                    ];
-                }
-                
-                return ['valida' => true, 'mensaje' => ''];
-                
-            case 4:
                 // Validar que no esté vacía
                 $respuestaLimpia = trim($respuesta);
                 
                 if (empty($respuestaLimpia)) {
                     return [
                         'valida' => false,
-                        'mensaje' => "❌ *Respuesta vacía*\n\nPara la pregunta 4, por favor escribe tu sugerencia o 'N/A' si no tienes sugerencias."
+                        'mensaje' => "❌ *Respuesta vacía*\n\nPara la pregunta 3, por favor escribe tu sugerencia."
                     ];
                 }
                 
@@ -703,6 +823,29 @@ class TwilioService
                 
             default:
                 return ['valida' => true, 'mensaje' => ''];
+        }
+    }
+
+    /**
+     * Construir instrucciones para reenvío de respuesta
+     */
+    protected function construirInstruccionesReenvio(Envio $envio)
+    {
+        $preguntaActual = $envio->pregunta_actual ?? 1.1;
+        
+        switch ($preguntaActual) {
+            case 1.1:
+            case 1.2:
+            case 1.3:
+            case 1.4:
+            case 1.5:
+                return "Por favor, responde solo con un número del 1 al 10.";
+            case 2:
+                return "Por favor, responde solo con 'Si' o 'No'.";
+            case 3:
+                return "Por favor, escribe tu sugerencia.";
+            default:
+                return "Por favor, responde según las instrucciones.";
         }
     }
 
@@ -750,26 +893,7 @@ class TwilioService
         }
     }
 
-    /**
-     * Construir instrucciones para reenviar la respuesta
-     */
-    protected function construirInstruccionesReenvio(Envio $envio)
-    {
-        $preguntaActual = $envio->pregunta_actual ?? 1;
-        
-        switch ($preguntaActual) {
-            case 1:
-                return "📝 *Reenvía tu respuesta:*\nResponde solo con un número del 1 al 10.";
-            case 2:
-                return "📝 *Reenvía tu respuesta:*\nExplica tu razón con más detalle.";
-            case 3:
-                return "📝 *Reenvía tu respuesta:*\nResponde solo con un número del 1 al 5.";
-            case 4:
-                return "📝 *Reenvía tu respuesta:*\nEscribe tu sugerencia o 'N/A'.";
-            default:
-                return "📝 *Reenvía tu respuesta:*\nPor favor, responde de nuevo.";
-        }
-    }
+
 
     /**
      * Guardar respuesta del cliente en el envío
@@ -777,7 +901,7 @@ class TwilioService
     protected function guardarRespuesta(Envio $envio, $respuesta, $respuestaId = null)
     {
         try {
-            $preguntaActual = $envio->pregunta_actual ?? 1;
+            $preguntaActual = $envio->pregunta_actual ?? 1.1;
             
             Log::info("Intentando guardar respuesta", [
                 'envio_id' => $envio->idenvio,
@@ -787,41 +911,32 @@ class TwilioService
                 'estado_actual' => $envio->estado
             ]);
             
-            if ($preguntaActual <= 4) {
-                $campoRespuesta = "respuesta_{$preguntaActual}";
+            // Mapear preguntas a campos de la base de datos
+            $campoRespuesta = $this->mapearPreguntaACampo($preguntaActual);
+            
+            if ($campoRespuesta) {
+                $envio->update([
+                    $campoRespuesta => $respuesta
+                ]);
                 
-                // Verificar que el campo existe antes de actualizar
-                if (in_array($campoRespuesta, ['respuesta_1', 'respuesta_2', 'respuesta_3', 'respuesta_4'])) {
-                    $envio->update([
-                        $campoRespuesta => $respuesta
-                    ]);
-                    
-                    // Recargar el modelo para obtener los datos actualizados
-                    $envio->refresh();
-                    
-                    Log::info("Respuesta guardada exitosamente", [
-                        'envio_id' => $envio->idenvio,
-                        'idenvio' => $envio->idenvio,
-                        'pregunta' => $preguntaActual,
-                        'campo' => $campoRespuesta,
-                        'respuesta' => $respuesta,
-                        'cliente' => $envio->cliente->nombre_completo ?? 'N/A',
-                        'celular' => $envio->cliente->celular ?? 'N/A',
-                        'respuesta_id' => $respuestaId,
-                        'campo_actualizado' => $envio->$campoRespuesta
-                    ]);
-                } else {
-                    Log::error("Campo de respuesta no válido", [
-                        'envio_id' => $envio->idenvio,
-                        'campo_solicitado' => $campoRespuesta,
-                        'campos_validos' => ['respuesta_1', 'respuesta_2', 'respuesta_3', 'respuesta_4']
-                    ]);
-                }
-            } else {
-                Log::warning("Pregunta actual fuera de rango", [
+                // Recargar el modelo para obtener los datos actualizados
+                $envio->refresh();
+                
+                Log::info("Respuesta guardada exitosamente", [
                     'envio_id' => $envio->idenvio,
-                    'pregunta_actual' => $preguntaActual,
-                    'max_preguntas' => 4
+                    'idenvio' => $envio->idenvio,
+                    'pregunta' => $preguntaActual,
+                    'campo' => $campoRespuesta,
+                    'respuesta' => $respuesta,
+                    'cliente' => $envio->cliente->nombre_completo ?? 'N/A',
+                    'celular' => $envio->cliente->celular ?? 'N/A',
+                    'respuesta_id' => $respuestaId,
+                    'campo_actualizado' => $envio->$campoRespuesta
+                ]);
+            } else {
+                Log::error("Campo de respuesta no válido", [
+                    'envio_id' => $envio->idenvio,
+                    'pregunta_actual' => $preguntaActual
                 ]);
             }
         } catch (\Exception $e) {
@@ -837,6 +952,82 @@ class TwilioService
     }
 
     /**
+     * Calcular el promedio de las 5 respuestas de la pregunta 1
+     */
+    protected function calcularPromedioPregunta1(Envio $envio)
+    {
+        try {
+            // Obtener las 5 respuestas
+            $respuestas = [
+                $envio->respuesta_1_1,
+                $envio->respuesta_1_2,
+                $envio->respuesta_1_3,
+                $envio->respuesta_1_4,
+                $envio->respuesta_1_5
+            ];
+            
+            // Filtrar solo valores numéricos válidos
+            $respuestasValidas = array_filter($respuestas, function($valor) {
+                return is_numeric($valor) && $valor >= 1 && $valor <= 10;
+            });
+            
+            if (count($respuestasValidas) > 0) {
+                $promedio = round(array_sum($respuestasValidas) / count($respuestasValidas), 2);
+                
+                $envio->update([
+                    'promedio_pregunta_1' => $promedio
+                ]);
+                
+                Log::info("Promedio de pregunta 1 calculado", [
+                    'envio_id' => $envio->idenvio,
+                    'respuestas' => $respuestas,
+                    'respuestas_validas' => $respuestasValidas,
+                    'promedio' => $promedio
+                ]);
+            } else {
+                Log::warning("No se pudieron calcular el promedio de pregunta 1", [
+                    'envio_id' => $envio->idenvio,
+                    'respuestas' => $respuestas
+                ]);
+            }
+        } catch (\Exception $e) {
+            Log::error("Error calculando promedio de pregunta 1", [
+                'envio_id' => $envio->idenvio,
+                'error' => $e->getMessage()
+            ]);
+        }
+    }
+
+    /**
+     * Mapear pregunta actual a campo de la base de datos
+     */
+    protected function mapearPreguntaACampo($preguntaActual)
+    {
+        // Convertir a string para manejar valores decimales correctamente
+        $preguntaStr = (string) $preguntaActual;
+        
+        switch ($preguntaStr) {
+            case '1.1':
+            case '1.0':
+                return 'respuesta_1_1'; // Calidad del producto
+            case '1.2':
+                return 'respuesta_1_2'; // Puntualidad de entrega
+            case '1.3':
+                return 'respuesta_1_3'; // Trato del asesor comercial
+            case '1.4':
+                return 'respuesta_1_4'; // Precio
+            case '1.5':
+                return 'respuesta_1_5'; // Rapidez en programación
+            case '2':
+                return 'respuesta_2'; // ¿Recomendarías a Konkret?
+            case '3':
+                return 'respuesta_3'; // ¿Qué podríamos hacer para mejorar tu experiencia?
+            default:
+                return null;
+        }
+    }
+
+    /**
      * Generar identificador único para la respuesta
      */
     protected function generarIdentificadorRespuesta(Envio $envio, $preguntaActual)
@@ -847,115 +1038,19 @@ class TwilioService
         return "R{$envioId}P{$preguntaActual}{$hash}";
     }
 
-    /**
-     * Construir el mensaje de la encuesta
-     */
-    protected function construirMensajeEncuesta(Envio $envio)
-    {
-        $cliente = $envio->cliente;
-        
-        $mensaje = "🏗️ *Encuesta de Satisfacción - Proser*\n\n";
-        $mensaje .= "Hola {$cliente->nombre_completo},\n\n";
-        $mensaje .= "Gracias por confiar en Proser. Nos gustaría conocer tu opinión sobre nuestro servicio.\n\n";
-        $mensaje .= "*Por favor responde las siguientes preguntas:*\n\n";
-        
-        $mensaje .= "1️⃣ *Pregunta 1 (Escala 1-10):*\n";
-        $mensaje .= "En una escala del 1 al 10, ¿qué probabilidad hay de que recomiende proser a un colega o contacto del sector construcción?\n";
-        $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
-        
-        $mensaje .= "2️⃣ *Pregunta 2:*\n";
-        $mensaje .= "¿Cuál es la razón principal de tu calificación?\n\n";
-        
-        $mensaje .= "3️⃣ *Pregunta 3 (Opcional):*\n";
-        $mensaje .= "¿A qué tipo de obra se destinó este concreto?\n";
-        $mensaje .= "Opciones: Vivienda unifamiliar, Edificio vertical, Obra vial, Obra industrial, Otro\n\n";
-        
-        $mensaje .= "4️⃣ *Pregunta 4 (Opcional):*\n";
-        $mensaje .= "¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?\n\n";
-        
-        $mensaje .= "*Formato de respuesta:*\n";
-        $mensaje .= "1. [número del 1 al 10]\n";
-        $mensaje .= "2. [tu razón]\n";
-        $mensaje .= "3. [tipo de obra]\n";
-        $mensaje .= "4. [sugerencia de mejora]\n\n";
-        
-        $mensaje .= "¡Gracias por tu tiempo! 🙏";
 
-        return $mensaje;
-    }
 
-    /**
-     * Parsear la respuesta del cliente
-     */
-    protected function parsearRespuesta($body)
-    {
-        $lineas = explode("\n", trim($body));
-        $respuestas = [];
-        
-        foreach ($lineas as $linea) {
-            $linea = trim($linea);
-            
-            // Buscar patrones como "1.", "2.", etc.
-            if (preg_match('/^(\d+)\.\s*(.+)$/', $linea, $matches)) {
-                $numeroPregunta = $matches[1];
-                $respuesta = trim($matches[2]);
-                
-                switch ($numeroPregunta) {
-                    case '1':
-                        $respuestas['pregunta_1'] = $respuesta;
-                        break;
-                    case '2':
-                        $respuestas['pregunta_2'] = $respuesta;
-                        break;
-                    case '3':
-                        $respuestas['pregunta_3'] = $respuesta;
-                        break;
-                    case '4':
-                        $respuestas['pregunta_4'] = $respuesta;
-                        break;
-                }
-            }
-        }
-        
-        return $respuestas;
-    }
 
-    /**
-     * Enviar mensaje de confirmación
-     */
-    protected function enviarConfirmacion($to, Envio $envio)
-    {
-        try {
-            $mensaje = "✅ *¡Gracias por completar nuestra encuesta!*\n\n";
-            $mensaje .= "Hemos recibido tus respuestas y las tendremos en cuenta para mejorar nuestros servicios.\n\n";
-            $mensaje .= "Si tienes alguna consulta adicional, no dudes en contactarnos.\n\n";
-            $mensaje .= "¡Que tengas un excelente día! 🏗️";
 
-            $this->client->messages->create(
-                "whatsapp:{$to}",
-                [
-                    'from' => "whatsapp:{$this->fromNumber}",
-                    'body' => $mensaje
-                ]
-            );
 
-        } catch (\Exception $e) {
-            Log::error("Error enviando confirmación", [
-                'to' => $to,
-                'error' => $e->getMessage()
-            ]);
-        }
-    }
 
     /**
      * Formatear número para WhatsApp
      */
     protected function formatearNumeroWhatsApp($numero)
     {
-        // Remover caracteres no numéricos
         $numero = preg_replace('/[^0-9]/', '', $numero);
         
-        // Asegurar que tenga el código de país (México: 52)
         if (strlen($numero) == 10) {
             $numero = '521' . $numero;
         }
@@ -969,9 +1064,8 @@ class TwilioService
     public function probarConexion($numeroPrueba = null)
     {
         try {
-            // Si no se proporciona número de prueba, usar uno por defecto
             if (!$numeroPrueba) {
-                $numeroPrueba = '5219993778529'; // Número del ejemplo
+                $numeroPrueba = '5219993778529';
             }
 
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($numeroPrueba);
@@ -1038,19 +1132,6 @@ class TwilioService
                 'numero_formateado' => $numeroWhatsApp
             ]);
 
-            // Comentado temporalmente para forzar envío real
-            // if (app()->environment('local') || config('app.debug')) {
-            //     Log::info("MODO PRUEBA: Simulando envío de WhatsApp");
-            //     
-            //     return [
-            //         'success' => true,
-            //         'message_sid' => 'SIM_' . time(),
-            //         'status' => 'sent',
-            //         'numero_enviado' => $numeroWhatsApp
-            //     ];
-            // }
-
-            // Envío real a Twilio
             $message = $this->client->messages->create(
                 "whatsapp:{$numeroWhatsApp}",
                 [
@@ -1087,6 +1168,435 @@ class TwilioService
     }
 
     /**
+     * Enviar contenido aprobado y esperar respuesta
+     */
+    public function enviarContenidoAprobado(Envio $envio, $tiempoEsperaMinutos = 30)
+    {
+        Log::info("Enviando contenido aprobado y configurando timer", [
+            'envio_id' => $envio->idenvio,
+            'cliente_id' => $envio->cliente_id,
+            'tiempo_espera' => $tiempoEsperaMinutos
+        ]);
+        
+        try {
+            $cliente = $envio->cliente;
+            $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+            $contentSid = config('services.twilio.content_sid');
+
+            Log::info("Configuración para envío de contenido aprobado", [
+                'numeroWhatsApp' => $numeroWhatsApp,
+                'content_sid' => $contentSid
+            ]);
+
+            if (!$contentSid) {
+                throw new \Exception('Content SID no está configurado');
+            }
+
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'contentSid' => $contentSid,
+                    'contentVariables' => json_encode([
+                        'nombre' => $cliente->nombre_completo,
+                        'encuesta' => $envio->idenvio
+                    ])
+                ]
+            );
+
+            $tiempoExpiracion = now()->addMinutes($tiempoEsperaMinutos);
+
+            // Actualizar el envío
+            $envio->update([
+                'whatsapp_number' => 'whatsapp:'.$numeroWhatsApp,
+                'twilio_message_sid' => $message->sid,
+                'content_sid' => $contentSid,
+                'estado' => 'esperando_respuesta',
+                'fecha_envio' => now(),
+                'whatsapp_sent_at' => now(),
+                'esperando_respuesta_desde' => now(),
+                'tiempo_espera_minutos' => $tiempoEsperaMinutos,
+                'tiempo_expiracion' => $tiempoExpiracion,
+                'timer_activo' => true,
+                'estado_timer' => 'activo'
+            ]);
+
+            Log::info("Contenido aprobado enviado y timer configurado exitosamente", [
+                'envio_id' => $envio->idenvio,
+                'cliente' => $cliente->nombre_completo,
+                'numero' => $numeroWhatsApp,
+                'message_sid' => $message->sid,
+                'tiempo_expiracion' => $tiempoExpiracion,
+                'estado' => 'esperando_respuesta'
+            ]);
+
+            return [
+                'success' => true,
+                'message_sid' => $message->sid,
+                'tiempo_expiracion' => $tiempoExpiracion,
+                'estado' => 'esperando_respuesta'
+            ];
+
+        } catch (\Exception $e) {
+            Log::error("Error enviando contenido aprobado", [
+                'envio_id' => $envio->idenvio,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Actualizar el estado del envío como fallido
+            $envio->update([
+                'estado' => 'error',
+                'whatsapp_error' => $e->getMessage(),
+                'timer_activo' => false,
+                'estado_timer' => 'error'
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Procesar respuesta cuando se envía contenido aprobado
+     */
+    public function procesarRespuestaContenidoAprobado($from, $body, $messageSid)
+    {
+        Log::info("Procesando respuesta de contenido aprobado", [
+            'from' => $from,
+            'body' => $body,
+            'message_sid' => $messageSid,
+        ]);
+
+        try {
+            // Buscar el envío que está esperando respuesta con múltiples criterios
+            $envio = null;
+            
+            // PRIMERA PRIORIDAD: Buscar por message_sid
+            if ($messageSid) {
+                $envio = Envio::where('twilio_message_sid', $messageSid)
+                    ->where('estado', 'esperando_respuesta')
+                    ->where('timer_activo', true)
+                    ->where('tiempo_expiracion', '>', now())
+                    ->first();
+                
+                if ($envio) {
+                    Log::info("Envío encontrado por message_sid en contenido aprobado", [
+                        'envio_id' => $envio->idenvio,
+                        'message_sid_buscado' => $messageSid
+                    ]);
+                } else {
+                    Log::info("No se encontró envío por message_sid en contenido aprobado", [
+                        'message_sid_buscado' => $messageSid
+                    ]);
+                }
+            }
+            
+            // SEGUNDA PRIORIDAD: Buscar por número de WhatsApp
+            if (!$envio) {
+                $envio = Envio::where('whatsapp_number', "whatsapp:{$from}")
+                    ->where('estado', 'esperando_respuesta')
+                    ->where('timer_activo', true)
+                    ->where('tiempo_expiracion', '>', now())
+                    ->latest()
+                    ->first();
+                
+                if ($envio) {
+                    Log::info("Envío encontrado por número WhatsApp en contenido aprobado", [
+                        'envio_id' => $envio->idenvio,
+                        'whatsapp_number_buscado' => "whatsapp:{$from}"
+                    ]);
+                } else {
+                    Log::info("No se encontró envío por número WhatsApp en contenido aprobado", [
+                        'whatsapp_number_buscado' => "whatsapp:{$from}"
+                    ]);
+                }
+            }
+            
+            // TERCERA PRIORIDAD: Buscar por número sin prefijo
+            if (!$envio) {
+                $envio = Envio::where('whatsapp_number', $from)
+                    ->where('estado', 'esperando_respuesta')
+                    ->where('timer_activo', true)
+                    ->where('tiempo_expiracion', '>', now())
+                    ->latest()
+                    ->first();
+            }
+            
+            // CUARTA PRIORIDAD: Búsqueda flexible por número de celular del cliente
+            if (!$envio) {
+                $cleanFrom = str_replace(['+', '52'], '', $from);
+                $cleanFromWhatsApp = str_replace(['whatsapp:', '+', '52'], '', $from);
+                
+                $envio = Envio::whereHas('cliente', function($query) use ($from, $cleanFrom, $cleanFromWhatsApp) {
+                    $query->where('celular', $from)
+                          ->orWhere('celular', $cleanFrom)
+                          ->orWhere('celular', $cleanFromWhatsApp)
+                          ->orWhere('celular', '+' . $cleanFrom)
+                          ->orWhere('celular', '+' . $cleanFromWhatsApp)
+                          ->orWhere('celular', '52' . $cleanFrom)
+                          ->orWhere('celular', '52' . $cleanFromWhatsApp)
+                          ->orWhere('celular', '521' . $cleanFrom)
+                          ->orWhere('celular', '521' . $cleanFromWhatsApp);
+                })
+                ->where('estado', 'esperando_respuesta')
+                ->where('timer_activo', true)
+                ->where('tiempo_expiracion', '>', now())
+                ->latest()
+                ->first();
+            }
+            
+            // QUINTA PRIORIDAD: Búsqueda más flexible por whatsapp_number con diferentes formatos
+            if (!$envio) {
+                $numeroLimpio = preg_replace('/[^0-9]/', '', $from);
+                $numeroConPrefijo = 'whatsapp:' . $numeroLimpio;
+                $numeroSinPrefijo = $numeroLimpio;
+                
+                $envio = Envio::where(function($query) use ($numeroConPrefijo, $numeroSinPrefijo, $numeroLimpio) {
+                    $query->where('whatsapp_number', $numeroConPrefijo)
+                          ->orWhere('whatsapp_number', $numeroSinPrefijo)
+                          ->orWhere('whatsapp_number', 'LIKE', '%' . $numeroLimpio . '%');
+                })
+                ->where('estado', 'esperando_respuesta')
+                ->where('timer_activo', true)
+                ->where('tiempo_expiracion', '>', now())
+                ->latest()
+                ->first();
+            }
+
+            if (!$envio) {
+                Log::warning("No se encontró envío esperando respuesta o timer expirado", [
+                    'from' => $from,
+                    'message_sid' => $messageSid,
+                    'body' => $body
+                ]);
+                return false;
+            }
+
+            Log::info("Envío encontrado para contenido aprobado", [
+                'envio_id' => $envio->idenvio,
+                'estado' => $envio->estado,
+                'timer_activo' => $envio->timer_activo,
+                'tiempo_expiracion' => $envio->tiempo_expiracion,
+                'from' => $from,
+                'body' => $body
+            ]);
+
+            // Validar si la respuesta es "Si" (para continuar)
+            $respuestaLimpia = trim(strtolower($body));
+            
+            Log::info("Validando respuesta de contenido aprobado", [
+                'respuesta_original' => $body,
+                'respuesta_limpia' => $respuestaLimpia,
+                'es_si' => in_array($respuestaLimpia, ['si', 'sí', 'yes', 'ok', 'okay', 'vale', 'bueno'])
+            ]);
+            
+            if (in_array($respuestaLimpia, ['si', 'sí', 'yes', 'ok', 'okay', 'vale', 'bueno'])) {
+                // Desactivar timer y continuar con la encuesta
+                $envio->update([
+                    'timer_activo' => false,
+                    'estado_timer' => 'respondido',
+                    'estado' => 'enviado',
+                    'pregunta_actual' => 1.1 // Iniciar con la primera subpregunta
+                ]);
+
+                Log::info("Respuesta positiva recibida, enviando primera pregunta", [
+                    'envio_id' => $envio->idenvio,
+                    'respuesta' => $body
+                ]);
+
+                // Enviar la primera pregunta de la nueva encuesta
+                return $this->enviarPrimeraPreguntaNuevaEncuesta($envio);
+            } else {
+                // Enviar mensaje de error y mantener timer activo
+                Log::info("Respuesta negativa o inválida, enviando mensaje de error", [
+                    'envio_id' => $envio->idenvio,
+                    'respuesta' => $body
+                ]);
+                
+                $this->enviarMensajeErrorContenidoAprobado($envio, $body);
+                return false;
+            }
+
+        } catch (\Exception $e) {
+            Log::error("Error procesando respuesta de contenido aprobado", [
+                'from' => $from,
+                'body' => $body,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return false;
+        }
+    }
+
+    /**
+     * Enviar mensaje de error para contenido aprobado
+     */
+    protected function enviarMensajeErrorContenidoAprobado(Envio $envio, $respuestaRecibida)
+    {
+        try {
+            $cliente = $envio->cliente;
+            $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+            
+            $mensaje = "❌ *Respuesta no válida*\n\n";
+            $mensaje .= "Para continuar con la encuesta, responde con:\n";
+            $mensaje .= "• \"Si\" o \"Sí\"\n";
+            $mensaje .= "• \"Ok\" o \"Okay\"\n";
+            $mensaje .= "• \"Vale\" o \"Bueno\"\n\n";
+            $mensaje .= "Tu respuesta: \"{$respuestaRecibida}\"\n\n";
+            $mensaje .= "⏰ *Tiempo restante:* " . $this->calcularTiempoRestante($envio) . "\n\n";
+            $mensaje .= "Responde con \"Si\" para continuar.";
+            
+            Log::info("Enviando mensaje de error para contenido aprobado", [
+                'envio_id' => $envio->idenvio,
+                'numero' => $numeroWhatsApp,
+                'respuesta_recibida' => $respuestaRecibida
+            ]);
+            
+            // Envío real a Twilio
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'body' => $mensaje,
+                ]
+            );
+            
+            Log::info("Mensaje de error enviado exitosamente", [
+                'envio_id' => $envio->idenvio,
+                'numero' => $numeroWhatsApp,
+                'message_sid' => $message->sid
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error("Error enviando mensaje de error para contenido aprobado", [
+                'envio_id' => $envio->idenvio,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    /**
+     * Calcular tiempo restante del timer
+     */
+    protected function calcularTiempoRestante(Envio $envio)
+    {
+        if (!$envio->tiempo_expiracion) {
+            return 'No configurado';
+        }
+
+        $tiempoRestante = $envio->tiempo_expiracion->diffInMinutes(now());
+        
+        if ($tiempoRestante <= 0) {
+            return 'Expirado';
+        }
+
+        return $tiempoRestante . ' minutos';
+    }
+
+    /**
+     * Verificar y cancelar timers expirados
+     */
+    public function verificarTimersExpirados()
+    {
+        Log::info("Verificando timers expirados");
+
+        try {
+            $enviosExpirados = Envio::where('timer_activo', true)
+                ->where('tiempo_expiracion', '<', now())
+                ->where('estado', 'esperando_respuesta')
+                ->get();
+
+            Log::info("Encontrados " . $enviosExpirados->count() . " timers expirados");
+
+            foreach ($enviosExpirados as $envio) {
+                $this->cancelarTimerExpirado($envio);
+            }
+
+            return [
+                'success' => true,
+                'timers_cancelados' => $enviosExpirados->count()
+            ];
+
+        } catch (\Exception $e) {
+            Log::error("Error verificando timers expirados", [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            return [
+                'success' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Cancelar timer expirado
+     */
+    protected function cancelarTimerExpirado(Envio $envio)
+    {
+        try {
+            $cliente = $envio->cliente;
+            $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+            
+            $mensaje = "⏰ *Tiempo de espera agotado*\n\n";
+            $mensaje .= "No recibimos tu respuesta a tiempo.\n\n";
+            $mensaje .= "La encuesta ha sido cancelada automáticamente.\n\n";
+            $mensaje .= "Si deseas participar en el futuro, no dudes en contactarnos.\n\n";
+            $mensaje .= "¡Gracias por tu interés! 🏗️";
+            
+            Log::info("Cancelando timer expirado", [
+                'envio_id' => $envio->idenvio,
+                'numero' => $numeroWhatsApp,
+                'tiempo_expiracion' => $envio->tiempo_expiracion
+            ]);
+            
+            // Enviar mensaje de cancelación
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'body' => $mensaje,
+                ]
+            );
+            
+            // Actualizar estado del envío
+            $envio->update([
+                'estado' => 'cancelado',
+                'timer_activo' => false,
+                'estado_timer' => 'expirado',
+                'whatsapp_message' => $mensaje
+            ]);
+            
+            Log::info("Timer cancelado exitosamente", [
+                'envio_id' => $envio->idenvio,
+                'numero' => $numeroWhatsApp,
+                'message_sid' => $message->sid,
+                'estado_final' => 'cancelado'
+            ]);
+            
+        } catch (\Exception $e) {
+            Log::error("Error cancelando timer expirado", [
+                'envio_id' => $envio->idenvio,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            // Al menos actualizar el estado aunque falle el envío
+            $envio->update([
+                'estado' => 'cancelado',
+                'timer_activo' => false,
+                'estado_timer' => 'error'
+            ]);
+        }
+    }
+
+    /**
      * Verificar configuración de Twilio
      */
     public function verificarConfiguracion()
@@ -1094,7 +1604,8 @@ class TwilioService
         $config = [
             'account_sid' => config('services.twilio.account_sid'),
             'auth_token' => config('services.twilio.auth_token'),
-            'whatsapp_from' => config('services.twilio.whatsapp_from')
+            'whatsapp_from' => config('services.twilio.whatsapp_from'),
+            'content_sid' => config('services.twilio.content_sid')
         ];
 
         $errores = [];
@@ -1109,6 +1620,10 @@ class TwilioService
         
         if (empty($config['whatsapp_from'])) {
             $errores[] = 'TWILIO_WHATSAPP_FROM no está configurado';
+        }
+
+        if (empty($config['content_sid'])) {
+            $errores[] = 'TWILIO_CONTENT_SID no está configurado';
         }
 
         return [

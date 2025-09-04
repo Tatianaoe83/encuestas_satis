@@ -72,6 +72,40 @@ require __DIR__.'/auth.php';
 // Incluir rutas de webhook
 require __DIR__.'/webhook.php';
 
+// Rutas para contenido aprobado y timers
+Route::prefix('contenido-aprobado')->middleware(['auth'])->group(function () {
+    Route::get('/', function () {
+        return view('contenido-aprobado.index');
+    })->name('contenido-aprobado.index');
+    
+    Route::post('/enviar', [App\Http\Controllers\ContenidoAprobadoController::class, 'enviarContenidoAprobado'])
+        ->name('contenido-aprobado.enviar');
+    
+    Route::get('/timers-activos', [App\Http\Controllers\ContenidoAprobadoController::class, 'obtenerTimersActivos'])
+        ->name('contenido-aprobado.timers-activos');
+    
+    Route::post('/cancelar-timer', [App\Http\Controllers\ContenidoAprobadoController::class, 'cancelarTimer'])
+        ->name('contenido-aprobado.cancelar-timer');
+    
+    Route::post('/verificar-timers', [App\Http\Controllers\ContenidoAprobadoController::class, 'verificarTimersExpirados'])
+        ->name('contenido-aprobado.verificar-timers');
+    
+    Route::get('/estadisticas', [App\Http\Controllers\ContenidoAprobadoController::class, 'obtenerEstadisticasTimers'])
+        ->name('contenido-aprobado.estadisticas');
+});
+
+// Rutas para cron interno (sin autenticación para que funcione automáticamente)
+Route::prefix('cron-interno')->group(function () {
+    Route::get('/ejecutar', [App\Http\Controllers\CronInternoController::class, 'ejecutarCronInterno'])
+        ->name('cron-interno.ejecutar');
+    
+    Route::get('/estado', [App\Http\Controllers\CronInternoController::class, 'verificarEstadoCron'])
+        ->name('cron-interno.estado');
+    
+    Route::post('/forzar', [App\Http\Controllers\CronInternoController::class, 'forzarEjecucion'])
+        ->name('cron-interno.forzar');
+});
+
 // Rutas para el chat y mensajería
 Route::prefix('chat')->group(function () {
     // Enviar mensaje de chat

@@ -36,6 +36,9 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script type="text/javascript" src="{{ asset('js/select2-init.js') }}"></script>
+        
+        <!-- Cron Interno Automático -->
+        <script type="text/javascript" src="{{ asset('js/cron-interno.js') }}"></script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

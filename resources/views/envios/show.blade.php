@@ -71,6 +71,11 @@
                                                     Enviado
                                                 </span>
                                                 @break
+                                            @case('esperando_respuesta')
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                                    Esperando respuesta
+                                                </span>
+                                                @break
                                             @case('respondido')
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
                                                     Respondido
@@ -81,6 +86,15 @@
                                                     Cancelado
                                                 </span>
                                                 @break
+                                            @case('completado')
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                    Completado
+                                                </span>
+                                                @break
+                                            @default
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                    {{ ucfirst($envio->estado) }}
+                                                </span>
                                         @endswitch
                                     </div>
                                 </div>
@@ -136,66 +150,119 @@
 
                     <!-- Preguntas y Respuestas -->
                     <div class="mt-6 bg-gray-50 p-6 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-900 mb-4">Preguntas y Respuestas del Envío</h4>
-                        <div class="space-y-4">
-                            <div class="bg-white p-4 rounded border">
-                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 1 (Escala 1-10):</h5>
-                                <p class="text-gray-700 mb-3">{{ $envio->pregunta_1 }}</p>
-                                @if($envio->respuesta_1)
-                                    <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
-                                        <h6 class="font-medium text-green-900 mb-1">Respuesta:</h6>
-                                        <p class="text-green-800">{{ $envio->respuesta_1 }}</p>
-                                    </div>
-                                @else
-                                    <p class="text-gray-500 italic">Sin respuesta</p>
-                                @endif
-                            </div>
-                            
-                            <div class="bg-white p-4 rounded border">
-                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 2 (Abierta):</h5>
-                                <p class="text-gray-700 mb-3">{{ $envio->pregunta_2 }}</p>
-                                @if($envio->respuesta_2)
-                                    <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
-                                        <h6 class="font-medium text-green-900 mb-1">Respuesta:</h6>
-                                        <p class="text-green-800">{{ $envio->respuesta_2 }}</p>
-                                    </div>
-                                @else
-                                    <p class="text-gray-500 italic">Sin respuesta</p>
-                                @endif
-                            </div>
-                            
-                            <div class="bg-white p-4 rounded border">
-                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 3 (Segmentación):</h5>
-                                <p class="text-gray-700 mb-3">{{ $envio->pregunta_3 }}</p>
-                                <ul class="text-gray-600 mb-3 ml-4 list-disc">
-                                    <li>1. Vivienda unifamiliar</li>
-                                    <li>2. Edificio o proyecto vertical</li>
-                                    <li>3. Obra vial o infraestructura</li>
-                                    <li>4. Obra industrial</li>
-                                    <li>5. Otro</li>
+                        <h4 class="text-lg font-medium text-gray-900 mb-4">📋 Preguntas del Envío</h4>
+                        <div class="space-y-4 text-sm mb-6">
+                            <div class="bg-white p-3 rounded border-l-4 border-blue-500">
+                                <h5 class="font-medium text-gray-900 mb-1">Pregunta 1 (Escala 1-10):</h5>
+                                <p class="text-gray-700">En una escala del 1-10, ¿Cómo calificarías nuestro servicio con base en los siguientes puntos?</p>
+                                <p class="text-gray-600 mt-2 text-xs italic">Se envió una pregunta por una para calificar cada punto:</p>
+                                <ul class="text-gray-600 mt-1 ml-4 list-disc text-xs">
+                                    <li>1.1. Calidad del producto</li>
+                                    <li>1.2. Puntualidad de entrega</li>
+                                    <li>1.3. Trato del asesor comercial</li>
+                                    <li>1.4. Precio</li>
+                                    <li>1.5. Rapidez en programación</li>
                                 </ul>
-                                @if($envio->respuesta_3)
-                                    <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
-                                        <h6 class="font-medium text-green-900 mb-1">Respuesta:</h6>
-                                        <p class="text-green-800">{{ $envio->respuesta_3 }}</p>
-                                    </div>
-                                @else
-                                    <p class="text-gray-500 italic">Sin respuesta</p>
-                                @endif
                             </div>
-                            
-                            <div class="bg-white p-4 rounded border">
-                                <h5 class="font-medium text-gray-900 mb-2">Pregunta 4 (Opcional):</h5>
-                                <p class="text-gray-700 mb-3">{{ $envio->pregunta_4 }}</p>
-                                @if($envio->respuesta_4)
-                                    <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
-                                        <h6 class="font-medium text-green-900 mb-1">Respuesta:</h6>
-                                        <p class="text-green-800">{{ $envio->respuesta_4 }}</p>
-                                    </div>
-                                @else
-                                    <p class="text-gray-500 italic">Sin respuesta</p>
-                                @endif
+
+                            <div class="bg-white p-3 rounded border-l-4 border-blue-500">
+                                <h5 class="font-medium text-gray-900 mb-1">Pregunta 2 (Si/No):</h5>
+                                <p class="text-gray-700">¿Recomendarías a Konkret?</p>
                             </div>
+
+                            <div class="bg-white p-3 rounded border-l-4 border-orange-500">
+                                <h5 class="font-medium text-gray-900 mb-1">Pregunta 3 (Opcional - Abierta):</h5>
+                                <p class="text-gray-700">¿Qué podríamos hacer para mejorar tu experiencia?</p>
+                                <p class="text-gray-600 mt-1 text-xs italic">Solo se muestra si responde "No" a la pregunta 2</p>
+                            </div>
+                        </div>
+
+                        <h4 class="text-lg font-medium text-gray-900 mb-4">✍️ Respuestas del Cliente</h4>
+                        <div class="space-y-4">
+                            <!-- Pregunta 1 - Subpreguntas 1.1 a 1.5 -->
+                            <div class="bg-white p-4 rounded border-l-4 border-blue-500">
+                                <h5 class="font-medium text-gray-900 mb-3">Pregunta 1 - Calificaciones (Escala 1-10)</h5>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                                         <div class="bg-gray-50 p-3 rounded">
+                                         <span class="text-sm font-medium text-gray-500">1.1. Calidad del producto:</span>
+                                         @if($envio->respuesta_1_1)
+                                             <p class="text-gray-900 font-semibold text-lg">{{ $envio->respuesta_1_1 }}/10</p>
+                                         @else
+                                             <p class="text-gray-500 italic">Sin respuesta</p>
+                                         @endif
+                                     </div>
+
+                                     <div class="bg-gray-50 p-3 rounded">
+                                         <span class="text-sm font-medium text-gray-500">1.2. Puntualidad de entrega:</span>
+                                         @if($envio->respuesta_1_2)
+                                             <p class="text-gray-900 font-semibold text-lg">{{ $envio->respuesta_1_2 }}/10</p>
+                                         @else
+                                             <p class="text-gray-500 italic">Sin respuesta</p>
+                                         @endif
+                                     </div>
+
+                                     <div class="bg-gray-50 p-3 rounded">
+                                         <span class="text-sm font-medium text-gray-500">1.3. Trato del asesor comercial:</span>
+                                         @if($envio->respuesta_1_3)
+                                             <p class="text-gray-900 font-semibold text-lg">{{ $envio->respuesta_1_3 }}/10</p>
+                                         @else
+                                             <p class="text-gray-500 italic">Sin respuesta</p>
+                                         @endif
+                                     </div>
+
+                                     <div class="bg-gray-50 p-3 rounded">
+                                         <span class="text-sm font-medium text-gray-500">1.4. Precio:</span>
+                                         @if($envio->respuesta_1_4)
+                                             <p class="text-gray-900 font-semibold text-lg">{{ $envio->respuesta_1_4 }}/10</p>
+                                         @else
+                                             <p class="text-gray-500 italic">Sin respuesta</p>
+                                         @endif
+                                     </div>
+
+                                     <div class="bg-gray-50 p-3 rounded">
+                                         <span class="text-sm font-medium text-gray-500">1.5. Rapidez en programación:</span>
+                                         @if($envio->respuesta_1_5)
+                                             <p class="text-gray-900 font-semibold text-lg">{{ $envio->respuesta_1_5 }}/10</p>
+                                         @else
+                                             <p class="text-gray-500 italic">Sin respuesta</p>
+                                         @endif
+                                     </div>
+
+                                     <div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500">
+                                         <span class="text-sm font-medium text-blue-700">Promedio Pregunta 1:</span>
+                                         @if($envio->promedio_respuesta_1)
+                                             <p class="text-blue-900 font-bold text-xl">{{ number_format($envio->promedio_respuesta_1, 2) }}/10</p>
+                                         @else
+                                             <p class="text-blue-500 italic">No calculado</p>
+                                         @endif
+                                     </div>
+                                </div>
+                            </div>
+
+                                                         <!-- Pregunta 2 - Recomendación -->
+                             <div class="bg-white p-4 rounded border-l-4 border-blue-500">
+                                 <h5 class="font-medium text-gray-900 mb-3">Pregunta 2 - ¿Recomendarías a Konkret?</h5>
+                                 @if($envio->respuesta_2)
+                                     <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
+                                         <span class="text-sm font-medium text-green-700">Respuesta:</span>
+                                         <p class="text-green-900 font-semibold text-lg">{{ $envio->respuesta_2 }}</p>
+                                     </div>
+                                 @else
+                                     <p class="text-gray-500 italic">Sin respuesta</p>
+                                 @endif
+                             </div>
+
+                             <!-- Pregunta 3 - Mejoras (solo si respondió "No") -->
+                             @if($envio->respuesta_2 == 'No' && $envio->respuesta_3)
+                             <div class="bg-white p-4 rounded border-l-4 border-orange-500">
+                                 <h5 class="font-medium text-gray-900 mb-3">Pregunta 3 - ¿Qué podríamos hacer para mejorar tu experiencia?</h5>
+                                 <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">
+                                     <span class="text-sm font-medium text-green-700">Sugerencias de mejora:</span>
+                                     <p class="text-green-900">{{ $envio->respuesta_3 }}</p>
+                                 </div>
+                             </div>
+                             @endif
                         </div>
                     </div>
                 </div>

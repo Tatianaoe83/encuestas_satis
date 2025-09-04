@@ -8,52 +8,52 @@ use App\Models\Cliente;
 
 class CrearEnvioPrueba extends Command
 {
-    protected $signature = 'envio:crear-prueba {numero}';
-    protected $description = 'Crear un envío de prueba para un número específico';
+    protected $signature = 'envio:crear-prueba';
+    protected $description = 'Crear un envío de prueba para testing';
 
     public function handle()
     {
-        $numero = $this->argument('numero');
-        
-        $this->info("🔧 Creando envío de prueba para el número: {$numero}");
-        
-        // Buscar o crear cliente
-        $cliente = Cliente::where('celular', 'LIKE', '%' . $numero . '%')->first();
-        
-        if (!$cliente) {
-            $this->warn("⚠️  No se encontró cliente con ese número, creando uno nuevo...");
+        try {
+            // Buscar o crear cliente de prueba
+            $cliente = Cliente::where('celular', '9993778529')->first();
             
-            $cliente = Cliente::create([
-                'nombre_completo' => 'Cliente WhatsApp Test',
-                'celular' => $numero,
-                'email' => 'test@whatsapp.com',
-                'empresa' => 'Test'
+            if (!$cliente) {
+                $cliente = Cliente::create([
+                    'nombre_completo' => 'Cliente Prueba',
+                    'razon_social' => 'Empresa Prueba',
+                    'asesor_comercial' => 'Asesor Prueba',
+                    'puesto' => 'Gerente',
+                    'celular' => '9993778529',
+                    'correo' => 'prueba@test.com'
+                ]);
+            }
+            
+            // Crear envío de prueba
+            $envio = Envio::create([
+                'cliente_id' => $cliente->idcliente,
+                'whatsapp_number' => 'whatsapp:5219993778529',
+                'estado' => 'esperando_respuesta',
+                'pregunta_actual' => null,
+                'timer_activo' => true,
+                'estado_timer' => 'activo',
+                'tiempo_espera_minutos' => 30,
+                'tiempo_expiracion' => now()->addMinutes(30),
+                'pregunta_1' => 'En una escala del 1-10, ¿Cómo calificarías nuestro servicio con base en los siguientes puntos?',
+                'pregunta_2' => '¿Recomendarías a Konkret?',
+                'pregunta_3' => '¿Qué podríamos hacer para mejorar tu experiencia?'
             ]);
             
-            $this->info("✅ Cliente creado con ID: {$cliente->idcliente}");
-        } else {
-            $this->info("✅ Cliente encontrado: {$cliente->nombre_completo}");
+            $this->info("✅ Envío de prueba creado exitosamente");
+            $this->info("ID: " . $envio->idenvio);
+            $this->info("Cliente: " . $cliente->nombre_completo);
+            $this->info("Estado: " . $envio->estado);
+            $this->info("WhatsApp: " . $envio->whatsapp_number);
+            
+            return 0;
+            
+        } catch (\Exception $e) {
+            $this->error("Error: " . $e->getMessage());
+            return 1;
         }
-        
-        // Crear envío
-        $envio = Envio::create([
-            'cliente_id' => $cliente->idcliente,
-            'pregunta_1' => 'En una escala del 0 al 10, ¿qué probabilidad hay de que recomiende Proser a un colega o contacto del sector construcción?',
-            'pregunta_2' => '¿Cuál es la razón principal de tu calificación?',
-            'pregunta_3' => '¿A qué tipo de obra se destinó este concreto?',
-            'pregunta_4' => '¿Qué podríamos hacer para mejorar tu experiencia en futuras entregas?',
-            'estado' => 'enviado',
-            'pregunta_actual' => 1,
-            'whatsapp_number' => 'whatsapp:' . $numero,
-            'fecha_envio' => now()
-        ]);
-        
-        $this->info("✅ Envío creado exitosamente:");
-        $this->line("   ID: {$envio->idenvio}");
-        $this->line("   Estado: {$envio->estado}");
-        $this->line("   Pregunta actual: {$envio->pregunta_actual}");
-        $this->line("   WhatsApp number: {$envio->whatsapp_number}");
-        
-        $this->info("🎯 Ahora cuando envíes un mensaje a este número, debería procesarse correctamente.");
     }
 }

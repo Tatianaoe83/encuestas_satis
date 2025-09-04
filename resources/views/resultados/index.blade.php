@@ -360,72 +360,126 @@
                         </div>
                     </div>
                     <div class="p-6">
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <!-- Pregunta 1: NPS -->
-                            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h4 class="text-lg font-semibold text-blue-900 flex items-center">
-                                        <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold">1</span>
-                                        Net Promoter Score
-                                    </h4>
-                                    <div class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                                        Escala 1-10
+                        <!-- Sección: Calidad del Producto (Preguntas 1.1 a 1.5) -->
+                        <div class="mb-8">
+                            <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                                <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">📊</span>
+                                Calidad del Producto - Análisis Detallado
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <!-- Pregunta 1.1 -->
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-blue-900">1.1 - Calidad General</h5>
+                                        <div class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-32">
+                                        <canvas id="chartRespuesta1_1"></canvas>
                                     </div>
                                 </div>
-                                <p class="text-sm text-blue-700 mb-4">¿Qué probabilidad hay de que recomiende Konkret a un colega?</p>
-                                <div class="relative h-48">
-                                    <canvas id="chartRespuesta1"></canvas>
+
+                                <!-- Pregunta 1.2 -->
+                                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-indigo-900">1.2 - Durabilidad</h5>
+                                        <div class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-32">
+                                        <canvas id="chartRespuesta1_2"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Pregunta 1.3 -->
+                                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-purple-900">1.3 - Presentación</h5>
+                                        <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-32">
+                                        <canvas id="chartRespuesta1_3"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Pregunta 1.4 -->
+                                <div class="bg-gradient-to-br from-pink-50 to-red-50 rounded-lg p-4 border border-pink-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-pink-900">1.4 - Funcionalidad</h5>
+                                        <div class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-32">
+                                        <canvas id="chartRespuesta1_4"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Pregunta 1.5 -->
+                                <div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 border border-red-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-red-900">1.5 - Satisfacción General</h5>
+                                        <div class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-32">
+                                        <canvas id="chartRespuesta1_5"></canvas>
+                                    </div>
+                                </div>
+
+                                <!-- Promedio NPS -->
+                                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-green-900">Promedio NPS</h5>
+                                        <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                                            Promedio
+                                        </div>
+                                    </div>
+                                    <div class="relative h-32">
+                                        <canvas id="chartRespuesta1"></canvas>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <!-- Pregunta 2: Razón -->
+                        <!-- Sección: Otras Preguntas -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Pregunta 2: Recomendación -->
                             <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
                                 <div class="flex items-center justify-between mb-4">
                                     <h4 class="text-lg font-semibold text-green-900 flex items-center">
                                         <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 text-green-600 font-bold">2</span>
-                                        Razón Principal
+                                        Recomendación
                                     </h4>
                                     <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
-                                        Texto Libre
+                                        Si/No
                                     </div>
                                 </div>
-                                <p class="text-sm text-green-700 mb-4">¿Cuál es la razón principal de tu calificación?</p>
+                                <p class="text-sm text-green-700 mb-4">¿Recomendarías a Konkret?</p>
                                 <div class="relative h-48">
                                     <canvas id="chartRespuesta2"></canvas>
                                 </div>
                             </div>
 
-                            <!-- Pregunta 3: Tipo de Obra -->
+                            <!-- Pregunta 3: Sugerencias -->
                             <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
                                 <div class="flex items-center justify-between mb-4">
                                     <h4 class="text-lg font-semibold text-purple-900 flex items-center">
                                         <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 text-purple-600 font-bold">3</span>
-                                        Tipo de Obra
-                                    </h4>
-                                    <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
-                                        Opciones 1-5
-                                    </div>
-                                </div>
-                                <p class="text-sm text-purple-700 mb-4">¿A qué tipo de obra se destinó este concreto?</p>
-                                <div class="relative h-48">
-                                    <canvas id="chartRespuesta3"></canvas>
-                                </div>
-                            </div>
-
-                            <!-- Pregunta 4: Sugerencias -->
-                            <div class="bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl p-6 border border-yellow-200">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h4 class="text-lg font-semibold text-yellow-900 flex items-center">
-                                        <span class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 text-yellow-600 font-bold">4</span>
                                         Sugerencias
                                     </h4>
-                                    <div class="text-xs bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full font-medium">
+                                    <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
                                         Texto Libre
                                     </div>
                                 </div>
-                                <p class="text-sm text-yellow-700 mb-4">¿Qué podríamos hacer para mejorar tu experiencia?</p>
+                                <p class="text-sm text-purple-700 mb-4">¿Qué podríamos hacer para mejorar tu experiencia?</p>
                                 <div class="relative h-48">
-                                    <canvas id="chartRespuesta4"></canvas>
+                                    <canvas id="chartRespuesta3"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -448,7 +502,7 @@
             const respuesta1Data = @json($respuestasPregunta1);
             const respuesta2Data = @json($respuestasPregunta2);
             const respuesta3Data = @json($respuestasPregunta3);
-            const respuesta4Data = @json($respuestasPregunta4);
+            const respuestaDetalle1Data = @json($respuestasDetalle1);
 
             // Configuración común para Chart.js
             Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
@@ -959,10 +1013,23 @@
                     return;
                 }
 
+                // Determinar qué campo usar basado en el elemento
+                let campoRespuesta;
+                if (elementId === 'chartRespuesta1') {
+                    campoRespuesta = 'promedio_respuesta_1';
+                } else if (elementId === 'chartRespuesta2') {
+                    campoRespuesta = 'respuesta_2';
+                } else if (elementId === 'chartRespuesta3') {
+                    campoRespuesta = 'respuesta_3';
+                } else if (elementId.startsWith('chartRespuesta1_')) {
+                    // Para preguntas 1.1 a 1.5, usar el campo 'respuesta'
+                    campoRespuesta = 'respuesta';
+                }
+
                 new Chart(document.getElementById(elementId), {
                     type: 'bar',
                     data: {
-                        labels: data.map(item => item.respuesta_1 || item.respuesta_2 || item.respuesta_3 || item.respuesta_4),
+                        labels: data.map(item => item[campoRespuesta] || item.respuesta_2 || item.respuesta_3),
                         datasets: [{
                             label: 'Respuestas',
                             data: data.map(item => item.total),
@@ -1001,10 +1068,17 @@
                 });
             }
 
-            crearGraficaRespuesta('chartRespuesta1', respuesta1Data, 'Pregunta 1');
+            // Crear gráficas para preguntas 1.1 a 1.5
+            crearGraficaRespuesta('chartRespuesta1_1', respuestaDetalle1Data['1_1'], 'Pregunta 1.1');
+            crearGraficaRespuesta('chartRespuesta1_2', respuestaDetalle1Data['1_2'], 'Pregunta 1.2');
+            crearGraficaRespuesta('chartRespuesta1_3', respuestaDetalle1Data['1_3'], 'Pregunta 1.3');
+            crearGraficaRespuesta('chartRespuesta1_4', respuestaDetalle1Data['1_4'], 'Pregunta 1.4');
+            crearGraficaRespuesta('chartRespuesta1_5', respuestaDetalle1Data['1_5'], 'Pregunta 1.5');
+            
+            // Crear gráficas para otras preguntas
+            crearGraficaRespuesta('chartRespuesta1', respuesta1Data, 'Promedio NPS');
             crearGraficaRespuesta('chartRespuesta2', respuesta2Data, 'Pregunta 2');
             crearGraficaRespuesta('chartRespuesta3', respuesta3Data, 'Pregunta 3');
-            crearGraficaRespuesta('chartRespuesta4', respuesta4Data, 'Pregunta 4');
         }); // Cerrar el evento DOMContentLoaded
     </script>
 </x-app-layout> 

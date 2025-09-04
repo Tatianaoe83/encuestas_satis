@@ -192,6 +192,16 @@ class TwilioService
                 ]
             );
             
+            // Si se está pasando de pregunta 1.5 a pregunta 2, calcular el promedio
+            if ($preguntaActual == 1.5 && $siguientePregunta == 2) {
+                Log::info("Calculando promedio al completar pregunta 1.5", [
+                    'envio_id' => $envio->idenvio,
+                    'pregunta_actual' => $preguntaActual,
+                    'siguiente_pregunta' => $siguientePregunta
+                ]);
+                $this->calcularPromedioPregunta1($envio);
+            }
+            
             $envio->update([
                 'pregunta_actual' => $siguientePregunta,
                 'whatsapp_message' => $mensaje,
@@ -353,11 +363,12 @@ class TwilioService
         $identificador = $this->generarIdentificadorRespuesta($envio, 1.1);
         
         $mensaje = "📝 *Pregunta 1.1 de 5:*\n";
+        $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
         $mensaje .= "Calidad del producto\n\n";
         $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
         $mensaje .= "---\n";
-        $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-        $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+        // Identificador de respuesta discreto
+        $mensaje .= "Ref: " . $identificador;
         
         return $mensaje;
     }
@@ -373,56 +384,62 @@ class TwilioService
         switch ($numeroPregunta) {
             case 1.2:
                 $mensaje = "📝 *Pregunta 1.2 de 5:*\n";
-                $mensaje .= "Puntualidad de entrega\n\n";
+                $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
+                $mensaje .= "Calidad del producto\n\n";
                 $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                // Identificador de respuesta discreto
+                $mensaje .= "Ref: " . $identificador;
                 break;
                 
             case 1.3:
                 $mensaje = "📝 *Pregunta 1.3 de 5:*\n";
-                $mensaje .= "Trato del asesor comercial\n\n";
+                $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
+                $mensaje .= "Calidad del producto\n\n";
                 $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                // Identificador de respuesta discreto
+                $mensaje .= "Ref: " . $identificador;
                 break;
                 
             case 1.4:
                 $mensaje = "📝 *Pregunta 1.4 de 5:*\n";
-                $mensaje .= "Precio\n\n";
+                $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
+                $mensaje .= "Calidad del producto\n\n";
                 $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                // Identificador de respuesta discreto
+                $mensaje .= "Ref: " . $identificador;
                 break;
                 
             case 1.5:
                 $mensaje = "📝 *Pregunta 1.5 de 5:*\n";
-                $mensaje .= "Rapidez en programación\n\n";
+                $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
+                $mensaje .= "Calidad del producto\n\n";
                 $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                // Identificador de respuesta discreto
+                $mensaje .= "Ref: " . $identificador;
                 break;
                 
             case 2:
                 $mensaje = "📝 *Pregunta 2:*\n";
+                $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
                 $mensaje .= "¿Recomendarías a Konkret?\n\n";
                 $mensaje .= "Responde solo con 'Si' o 'No'.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                // Identificador de respuesta discreto
+                $mensaje .= "Ref: " . $identificador;
                 break;
                 
             case 3:
                 $mensaje = "📝 *Pregunta 3:*\n";
+                $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
                 $mensaje .= "¿Qué podríamos hacer para mejorar tu experiencia?\n\n";
                 $mensaje .= "Responde con tu sugerencia.\n\n";
                 $mensaje .= "---\n";
-                $mensaje .= "🆔 *# de Encuesta: " . ($envio->idenvio ?? 'N/A') . "*\n";
-                $mensaje .= "🔑 *# de Respuesta: {$identificador}*";
+                // Identificador de respuesta discreto
+                $mensaje .= "Ref: " . $identificador;
                 break;
                 
             default:
@@ -472,12 +489,12 @@ class TwilioService
             ]);
 
             // Intentar extraer el ID de la encuesta del mensaje si está disponible
-            if (preg_match('/🆔 \*# de Encuesta: (\d+)\*/', $body, $matches)) {
+            if (preg_match('/# de encuesta: (\d+)/', $body, $matches)) {
                 $envioId = $matches[1];
                 Log::info("ID de encuesta extraído del mensaje", ['envio_id' => $envioId]);
             }
             
-            if (preg_match('/🔑 \*# de Respuesta: ([A-Za-z0-9]+)\*/', $body, $matches)) {
+            if (preg_match('/Ref: ([A-Za-z0-9]+)/', $body, $matches)) {
                 $respuestaId = $matches[1];
                 Log::info("ID de respuesta extraído del mensaje", ['respuesta_id' => $respuestaId]);
             }
@@ -720,10 +737,7 @@ class TwilioService
             // Guardar la respuesta recibida
             $this->guardarRespuesta($envio, $body, $respuestaId);
 
-            // Si se completó la pregunta 1.5, calcular el promedio
-            if ($envio->pregunta_actual == 1.5) {
-                $this->calcularPromedioPregunta1($envio);
-            }
+            $envio->refresh();
 
             // Procesar la respuesta y enviar siguiente pregunta
             $resultado = $this->enviarSiguientePregunta($envio, $body);
@@ -860,8 +874,9 @@ class TwilioService
             
             // Agregar instrucciones para reenviar la respuesta
             $mensajeCompleto = $mensajeError . "\n\n" . $this->construirInstruccionesReenvio($envio);
-            // Agregar información oculta usando caracteres invisibles
-            $mensajeCompleto .= "\n\n" . "\u{200B}" . ($envio->idenvio ?? 'N/A') . "|" . ($envio->cliente->celular ?? 'N/A') . "\u{200B}";
+            // Agregar información discreta
+            $mensajeCompleto .= "\n\n# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n";
+            $mensajeCompleto .= "Ref: " . $this->generarIdentificadorRespuesta($envio, $envio->pregunta_actual ?? 1.1);
             
             Log::info("Enviando mensaje de error", [
                 'envio_id' => $envio->idenvio,
@@ -954,7 +969,7 @@ class TwilioService
     /**
      * Calcular el promedio de las 5 respuestas de la pregunta 1
      */
-    protected function calcularPromedioPregunta1(Envio $envio)
+    public function calcularPromedioPregunta1(Envio $envio)
     {
         try {
             // Obtener las 5 respuestas
@@ -975,7 +990,7 @@ class TwilioService
                 $promedio = round(array_sum($respuestasValidas) / count($respuestasValidas), 2);
                 
                 $envio->update([
-                    'promedio_pregunta_1' => $promedio
+                    'promedio_respuesta_1' => $promedio
                 ]);
                 
                 Log::info("Promedio de pregunta 1 calculado", [
@@ -1448,7 +1463,10 @@ class TwilioService
             $mensaje .= "• \"Vale\" o \"Bueno\"\n\n";
             $mensaje .= "Tu respuesta: \"{$respuestaRecibida}\"\n\n";
             $mensaje .= "⏰ *Tiempo restante:* " . $this->calcularTiempoRestante($envio) . "\n\n";
-            $mensaje .= "Responde con \"Si\" para continuar.";
+            $mensaje .= "Responde con \"Si\" para continuar.\n\n";
+            $mensaje .= "---\n";
+            $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n";
+            $mensaje .= "Ref: " . $this->generarIdentificadorRespuesta($envio, 'contenido_aprobado');
             
             Log::info("Enviando mensaje de error para contenido aprobado", [
                 'envio_id' => $envio->idenvio,

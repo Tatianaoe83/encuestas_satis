@@ -46,9 +46,9 @@ new class extends Component
                         {{ __('Resultados') }}
                     </x-nav-link>
 
-                    <x-nav-link href="{{ route('contenido-aprobado.index') }}" :active="request()->routeIs('contenido-aprobado.*')">
+                    <!-- <x-nav-link href="{{ route('contenido-aprobado.index') }}" :active="request()->routeIs('contenido-aprobado.*')">
                         {{ __('⏰ Contenido Aprobado') }}
-                    </x-nav-link>
+                    </x-nav-link> -->
 
                     <!-- <x-nav-link href="{{ route('chat.index') }}" :active="request()->routeIs('chat.*')">
                         {{ __('💬 Chat') }}

@@ -25,29 +25,29 @@ class TwilioService
      */
     public function enviarEncuesta(Envio $envio)
     {
-        Log::info("Enviando encuesta por WhatsApp", [
+        /*Log::info("Enviando encuesta por WhatsApp", [
             'envio_id' => $envio->idenvio,
             'cliente_id' => $envio->cliente_id
-        ]);
+        ]);*/
         
         try {
             $cliente = $envio->cliente;
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
             $contentSid = config('services.twilio.content_sid');
 
-            Log::info("Número de WhatsApp", [
+            /*Log::info("Número de WhatsApp", [
                 'numeroWhatsApp' => $numeroWhatsApp,
                 'content_sid' => $contentSid
-            ]);
+            ]);*/
 
             if (!$contentSid) {
                 throw new \Exception('Content SID no está configurado');
             }
 
-            Log::info("Enviando contenido aprobado", [
+            /*Log::info("Enviando contenido aprobado", [
                 'envio_id' => $envio->idenvio,
                 'content_sid' => $contentSid
-            ]);
+            ]);*/
 
             // Preparar variables de contenido
             $contentVariables = [
@@ -55,9 +55,9 @@ class TwilioService
                 'encuesta' => (string) ($envio->idenvio ?? '0')
             ];
             
-            Log::info("Variables de contenido preparadas", [
+            /*Log::info("Variables de contenido preparadas", [
                 'content_variables' => $contentVariables
-            ]);
+            ]);*/
 
             $message = $this->client->messages->create(
                 "whatsapp:{$numeroWhatsApp}",
@@ -85,29 +85,29 @@ class TwilioService
                 'estado_timer' => 'activo'
             ]);
 
-            Log::info("Contenido aprobado enviado y timer configurado", [
+            /*Log::info("Contenido aprobado enviado y timer configurado", [
                 'envio_id' => $envio->idenvio,
                 'pregunta_actual' => null,
                 'estado' => 'esperando_respuesta'
-            ]);
+            ]);*/
 
-            Log::info("Contenido aprobado enviado exitosamente", [
+            /*Log::info("Contenido aprobado enviado exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'cliente' => $cliente->nombre_completo,
                 'numero' => $numeroWhatsApp,
                 'message_sid' => $message->sid,
                 'tiempo_expiracion' => $tiempoExpiracion,
                 'estado' => 'esperando_respuesta'
-            ]);
+            ]);*/
 
             return true;
 
         } catch (\Exception $e) {
-            Log::error("Error enviando encuesta por WhatsApp", [
+            /*Log::error("Error enviando encuesta por WhatsApp", [
                 'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
             
             // Actualizar estado como fallido
             $envio->update([
@@ -135,21 +135,21 @@ class TwilioService
             // Determinar siguiente pregunta
             $siguientePregunta = $this->determinarSiguientePregunta($preguntaActual, $respuestaAnterior);
             
-            Log::info("Procesando siguiente pregunta", [
+            /*Log::info("Procesando siguiente pregunta", [
                 'envio_id' => $envio->idenvio,
                 'pregunta_actual' => $preguntaActual,
                 'siguiente_pregunta' => $siguientePregunta,
                 'respuesta_anterior' => $respuestaAnterior
-            ]);
+            ]);*/
             
             if ($siguientePregunta === 'completado') {
                 // Enviar mensaje de agradecimiento
                 $mensaje = $this->construirMensajeAgradecimiento($envio);
                 
-                Log::info("Enviando mensaje de agradecimiento", [
+                /*Log::info("Enviando mensaje de agradecimiento", [
                     'envio_id' => $envio->idenvio,
                     'numero' => $numeroWhatsApp
-                ]);
+                ]);*/
                 
                 $message = $this->client->messages->create(
                     "whatsapp:{$numeroWhatsApp}",
@@ -166,22 +166,22 @@ class TwilioService
                     'pregunta_actual' => 4
                 ]);
                 
-                Log::info("Encuesta completada exitosamente", [
+                /*Log::info("Encuesta completada exitosamente", [
                     'envio_id' => $envio->idenvio,
                     'numero' => $numeroWhatsApp,
                     'message_sid' => $message->sid
-                ]);
+                ]);*/
                 
                 return true;
             }
             
             $mensaje = $this->construirPregunta($envio, $siguientePregunta);
             
-            Log::info("Enviando siguiente pregunta", [
+            /*Log::info("Enviando siguiente pregunta", [
                 'envio_id' => $envio->idenvio,
                 'pregunta' => $siguientePregunta,
                 'numero' => $numeroWhatsApp
-            ]);
+            ]);*/
             
             // Envío real a Twilio
             $message = $this->client->messages->create(
@@ -194,11 +194,11 @@ class TwilioService
             
             // Si se está pasando de pregunta 1.5 a pregunta 2, calcular el promedio
             if ($preguntaActual == 1.5 && $siguientePregunta == 2) {
-                Log::info("Calculando promedio al completar pregunta 1.5", [
+                /*Log::info("Calculando promedio al completar pregunta 1.5", [
                     'envio_id' => $envio->idenvio,
                     'pregunta_actual' => $preguntaActual,
                     'siguiente_pregunta' => $siguientePregunta
-                ]);
+                ]);*/
                 $this->calcularPromedioPregunta1($envio);
             }
             
@@ -208,21 +208,21 @@ class TwilioService
                 'estado' => 'en_proceso'
             ]);
             
-            Log::info("Siguiente pregunta enviada exitosamente", [
+            /*Log::info("Siguiente pregunta enviada exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'pregunta_actual' => $siguientePregunta,
                 'numero' => $numeroWhatsApp,
                 'message_sid' => $message->sid
-            ]);
+            ]);*/
             
             return true;
             
         } catch (\Exception $e) {
-            Log::error("Error enviando siguiente pregunta", [
+            /*Log::error("Error enviando siguiente pregunta", [
                 'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
             return false;
         }
     }
@@ -276,30 +276,30 @@ class TwilioService
      */
     public function enviarPrimeraPreguntaNuevaEncuesta(Envio $envio)
     {
-        Log::info("Enviando primera pregunta después del contenido aprobado", [
+        /*Log::info("Enviando primera pregunta después del contenido aprobado", [
             'envio_id' => $envio->idenvio,
             'cliente_id' => $envio->cliente_id
-        ]);
+        ]);*/
         
         try {
             $cliente = $envio->cliente;
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
 
-            Log::info("Número de WhatsApp", [
+            /*Log::info("Número de WhatsApp", [
                 'numeroWhatsApp' => $numeroWhatsApp
-            ]);
+            ]);*/
 
             // Construir la primera pregunta de la nueva encuesta
             $mensaje = $this->construirPregunta1NuevaEncuesta($envio);
-            Log::info("Primera pregunta de nueva encuesta", [
+            /*Log::info("Primera pregunta de nueva encuesta", [
                 'mensaje' => $mensaje
-            ]);
+            ]);*/
 
-            Log::info("Enviando mensaje a Twilio", [
+            /*  Log::info("Enviando mensaje a Twilio", [
                 'envio_id' => $envio->idenvio,
                 'numero' => $numeroWhatsApp,
                 'from_number' => $this->fromNumber
-            ]);
+            ]);*/
 
             // Envío real a Twilio
             $message = $this->client->messages->create(
@@ -310,11 +310,11 @@ class TwilioService
                 ]
             );
 
-            Log::info("Mensaje enviado a Twilio exitosamente", [
+            /*Log::info("Mensaje enviado a Twilio exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'message_sid' => $message->sid,
                 'status' => $message->status ?? 'N/A'
-            ]);
+            ]);*/
 
             // Actualizar el envío con la información de Twilio
             $envio->update([
@@ -327,22 +327,22 @@ class TwilioService
                 'pregunta_actual' => 1.1, // Marcar que estamos en la primera subpregunta
             ]);
 
-            Log::info("Primera pregunta de nueva encuesta enviada exitosamente", [
+            /*Log::info("Primera pregunta de nueva encuesta enviada exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'cliente' => $cliente->nombre_completo,
                 'numero' => $numeroWhatsApp,
                 'message_sid' => $message->sid,
                 'pregunta_actual' => 1.1
-            ]);
+            ]);*/
 
             return true;
 
         } catch (\Exception $e) {
-            Log::error("Error enviando primera pregunta después de contenido aprobado", [
+            /*Log::error("Error enviando primera pregunta después de contenido aprobado", [
                 'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
             
             // Actualizar el estado del envío como fallido
             $envio->update([
@@ -472,45 +472,45 @@ class TwilioService
      */
     public function procesarRespuesta($from, $body, $messageSid)
     {
-        Log::info("Procesando respuesta de WhatsApp procesarRespuesta", [
+        /*Log::info("Procesando respuesta de WhatsApp procesarRespuesta", [
             'from' => $from,
             'body' => $body,
             'message_sid' => $messageSid,
-        ]);
+        ]);*/
 
         try {
             // Declarar variables al inicio
             $envioId = null;
             $respuestaId = null;
             
-            Log::info("Procesando respuesta de WhatsApp", [
+            /*Log::info("Procesando respuesta de WhatsApp", [
                 'from' => $from,
                 'body' => $body,
                 'message_sid' => $messageSid,
                 'envio_id_extraido' => $envioId,
                 'respuesta_id_extraido' => $respuestaId
-            ]);
+            ]);*/
 
             // Intentar extraer el ID de la encuesta del mensaje si está disponible
             if (preg_match('/# de encuesta: (\d+)/', $body, $matches)) {
                 $envioId = $matches[1];
-                Log::info("ID de encuesta extraído del mensaje", ['envio_id' => $envioId]);
+                /*Log::info("ID de encuesta extraído del mensaje", ['envio_id' => $envioId]);*/
             }
             
             if (preg_match('/Ref: ([A-Za-z0-9]+)/', $body, $matches)) {
                 $respuestaId = $matches[1];
-                Log::info("ID de respuesta extraído del mensaje", ['respuesta_id' => $respuestaId]);
+                /*Log::info("ID de respuesta extraído del mensaje", ['respuesta_id' => $respuestaId]);*/
             }
 
             // Buscar el envío por múltiples criterios
             $envio = null;
             
-            Log::info("Iniciando búsqueda de envío", [
+            /*Log::info("Iniciando búsqueda de envío", [
                 'from' => $from,
                 'envio_id_extraido' => $envioId,
                 'respuesta_id_extraido' => $respuestaId,
                 'message_sid' => $messageSid
-            ]);
+            ]);*/
             
             // PRIMERA PRIORIDAD: Buscar por message_sid (más específico)
             if ($messageSid) {
@@ -519,15 +519,15 @@ class TwilioService
                     ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por message_sid", [
+                    /*Log::info("Envío encontrado por message_sid", [
                         'envio_id' => $envio->idenvio,
                         'message_sid_buscado' => $messageSid,
                         'message_sid_encontrado' => $envio->twilio_message_sid
-                    ]);
+                    ]);*/
                 } else {
-                    Log::info("No se encontró envío por message_sid", [
+                    /*Log::info("No se encontró envío por message_sid", [
                         'message_sid_buscado' => $messageSid
-                    ]);
+                    ]);*/
                 }
             }
             
@@ -538,9 +538,9 @@ class TwilioService
                     ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por ID de encuesta", ['envio_id' => $envio->idenvio]);
+                    /*Log::info("Envío encontrado por ID de encuesta", ['envio_id' => $envio->idenvio]);*/
                 } else {
-                    Log::info("No se encontró envío por ID de encuesta", ['envio_id_buscado' => $envioId]);
+                    /*Log::info("No se encontró envío por ID de encuesta", ['envio_id_buscado' => $envioId]);*/
                 }
             }
             
@@ -553,15 +553,15 @@ class TwilioService
                     ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por número de WhatsApp completo", [
+                    /*Log::info("Envío encontrado por número de WhatsApp completo", [
                         'envio_id' => $envio->idenvio,
                         'whatsapp_number_buscado' => $whatsappNumber,
                         'whatsapp_number_encontrado' => $envio->whatsapp_number
-                    ]);
+                    ]);*/
                 } else {
-                    Log::info("No se encontró envío por número de WhatsApp completo", [
+                    /*Log::info("No se encontró envío por número de WhatsApp completo", [
                         'whatsapp_number_buscado' => $whatsappNumber
-                    ]);
+                    ]);*/
                 }
             }
             
@@ -573,15 +573,15 @@ class TwilioService
                     ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por número de WhatsApp sin prefijo", [
+                    /*Log::info("Envío encontrado por número de WhatsApp sin prefijo", [
                         'envio_id' => $envio->idenvio,
                         'numero_buscado' => $from,
                         'whatsapp_number_encontrado' => $envio->whatsapp_number
-                    ]);
+                    ]);*/
                 } else {
-                    Log::info("No se encontró envío por número de WhatsApp sin prefijo", [
+                    /*Log::info("No se encontró envío por número de WhatsApp sin prefijo", [
                         'numero_buscado' => $from
-                    ]);
+                    ]);*/
                 }
             }
             
@@ -594,15 +594,15 @@ class TwilioService
                     ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por número de WhatsApp sin prefijo whatsapp:", [
+                    /*Log::info("Envío encontrado por número de WhatsApp sin prefijo whatsapp:", [
                         'envio_id' => $envio->idenvio,
                         'numero_buscado' => $numeroSinPrefijo,
                         'whatsapp_number_encontrado' => $envio->whatsapp_number
-                    ]);
+                    ]);*/
                 } else {
-                    Log::info("No se encontró envío por número de WhatsApp sin prefijo whatsapp:", [
+                    /*Log::info("No se encontró envío por número de WhatsApp sin prefijo whatsapp:", [
                         'numero_buscado' => $numeroSinPrefijo
-                    ]);
+                    ]);*/
                 }
             }
             
@@ -627,19 +627,19 @@ class TwilioService
                 ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por número de celular del cliente", [
+                    /*Log::info("Envío encontrado por número de celular del cliente", [
                         'envio_id' => $envio->idenvio,
                         'numero_original' => $from,
                         'numero_limpio' => $cleanFrom,
                         'numero_limpio_whatsapp' => $cleanFromWhatsApp,
                         'celular_cliente' => $envio->cliente->celular ?? 'N/A'
-                    ]);
+                    ]);*/
                 } else {
-                    Log::info("No se encontró envío por número de celular del cliente", [
+                    /*Log::info("No se encontró envío por número de celular del cliente", [
                         'numero_original' => $from,
                         'numero_limpio' => $cleanFrom,
                         'numero_limpio_whatsapp' => $cleanFromWhatsApp
-                    ]);
+                    ]);*/
                 }
             }
             
@@ -659,30 +659,30 @@ class TwilioService
                 ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por búsqueda flexible de whatsapp_number", [
+                    /*Log::info("Envío encontrado por búsqueda flexible de whatsapp_number", [
                         'envio_id' => $envio->idenvio,
                         'numero_limpio' => $numeroLimpio,
                         'numero_con_prefijo' => $numeroConPrefijo,
                         'numero_sin_prefijo' => $numeroSinPrefijo,
                         'whatsapp_number_encontrado' => $envio->whatsapp_number
-                    ]);
+                    ]);*/
                 } else {
-                    Log::info("No se encontró envío por búsqueda flexible de whatsapp_number", [
+                    /*Log::info("No se encontró envío por búsqueda flexible de whatsapp_number", [
                         'numero_limpio' => $numeroLimpio,
                         'numero_con_prefijo' => $numeroConPrefijo,
                         'numero_sin_prefijo' => $numeroSinPrefijo
-                    ]);
+                    ]);*/
                 }
             }
 
             if (!$envio) {
-                Log::warning("No se encontró envío para el número: {$from}", [
+                /*Log::warning("No se encontró envío para el número: {$from}", [
                     'from' => $from,
                     'body' => $body,
                     'envio_id_extraido' => $envioId,
                     'message_sid' => $messageSid,
                     'numero_limpio' => str_replace(['+', '52'], '', $from)
-                ]);
+                ]);*/
                 return false;
             }
             
@@ -695,25 +695,25 @@ class TwilioService
             $numeroRespuestaLimpio = preg_replace('/[^0-9]/', '', $numeroRespuesta);
             
             if ($numeroEnvioLimpio !== $numeroRespuestaLimpio) {
-                Log::warning("Número de respuesta no coincide con el envío", [
+                /*Log::warning("Número de respuesta no coincide con el envío", [
                     'envio_id' => $envio->idenvio,
                     'numero_envio' => $numeroEnvio,
                     'numero_envio_limpio' => $numeroEnvioLimpio,
                     'numero_respuesta' => $numeroRespuesta,
                     'numero_respuesta_limpio' => $numeroRespuestaLimpio,
                     'message_sid' => $messageSid
-                ]);
+                ]); */
                 return false;
             }
             
-            Log::info("Validación de número exitosa", [
+            /*Log::info("Validación de número exitosa", [
                 'envio_id' => $envio->idenvio,
                 'numero_envio' => $numeroEnvio,
                 'numero_respuesta' => $numeroRespuesta,
                 'coinciden' => true
-            ]);
+            ]);*/
 
-            Log::info("Envío encontrado exitosamente", [
+            /*Log::info("Envío encontrado exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'idenvio' => $envio->idenvio,
                 'estado' => $envio->estado,
@@ -721,7 +721,7 @@ class TwilioService
                 'cliente_celular' => $envio->cliente->celular ?? 'N/A',
                 'respuesta_id_extraido' => $respuestaId,
                 'whatsapp_number' => $envio->whatsapp_number ?? 'N/A'
-            ]);
+            ]);*/
 
             // Verificar si es una respuesta de contenido aprobado
             if ($envio->estado === 'esperando_respuesta' && $envio->timer_activo) {
@@ -746,25 +746,25 @@ class TwilioService
             $resultado = $this->enviarSiguientePregunta($envio, $body);
 
             if ($resultado) {
-                Log::info("Respuesta procesada exitosamente", [
+                /*Log::info("Respuesta procesada exitosamente", [
                     'envio_id' => $envio->idenvio,
                     'idenvio' => $envio->idenvio,
                     'numero' => $from,
                     'respuesta' => $body,
                     'pregunta_actual' => $envio->pregunta_actual,
                     'respuesta_id_extraido' => $respuestaId
-                ]);
+                ]);*/
             }
 
             return $resultado;
 
         } catch (\Exception $e) {
-            Log::error("Error procesando respuesta de WhatsApp", [
+            /*Log::error("Error procesando respuesta de WhatsApp", [
                 'from' => $from,
                 'body' => $body,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
             
             return false;
         }
@@ -777,11 +777,11 @@ class TwilioService
     {
         $preguntaActual = $envio->pregunta_actual ?? 1.1;
         
-        Log::info("Validando respuesta", [
+        /*Log::info("Validando respuesta", [
             'envio_id' => $envio->idenvio,
             'pregunta_actual' => $preguntaActual,
             'respuesta' => $respuesta
-        ]);
+        ]); */
         
         switch ($preguntaActual) {
             case 1.1:
@@ -881,11 +881,11 @@ class TwilioService
             $mensajeCompleto .= "\n\n# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n";
             $mensajeCompleto .= "Ref: " . $this->generarIdentificadorRespuesta($envio, $envio->pregunta_actual ?? 1.1);
             
-            Log::info("Enviando mensaje de error", [
+            /*Log::info("Enviando mensaje de error", [
                 'envio_id' => $envio->idenvio,
                 'numero' => $numeroWhatsApp,
                 'mensaje_error' => $mensajeError
-            ]);
+            ]);*/
             
             // Envío real a Twilio
             $message = $this->client->messages->create(
@@ -896,18 +896,18 @@ class TwilioService
                 ]
             );
             
-            Log::info("Mensaje de error enviado exitosamente", [
+           /* Log::info("Mensaje de error enviado exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'numero' => $numeroWhatsApp,
                 'message_sid' => $message->sid
-            ]);
+            ]);*/
             
         } catch (\Exception $e) {
-            Log::error("Error enviando mensaje de error", [
+            /*Log::error("Error enviando mensaje de error", [
                 'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
         }
     }
 
@@ -921,13 +921,13 @@ class TwilioService
         try {
             $preguntaActual = $envio->pregunta_actual ?? 1.1;
             
-            Log::info("Intentando guardar respuesta", [
+            /*Log::info("Intentando guardar respuesta", [
                 'envio_id' => $envio->idenvio,
                 'pregunta_actual' => $preguntaActual,
                 'respuesta' => $respuesta,
                 'respuesta_id' => $respuestaId,
                 'estado_actual' => $envio->estado
-            ]);
+            ]);*/
             
             // Mapear preguntas a campos de la base de datos
             $campoRespuesta = $this->mapearPreguntaACampo($preguntaActual);
@@ -940,7 +940,7 @@ class TwilioService
                 // Recargar el modelo para obtener los datos actualizados
                 $envio->refresh();
                 
-                Log::info("Respuesta guardada exitosamente", [
+                /*Log::info("Respuesta guardada exitosamente", [
                     'envio_id' => $envio->idenvio,
                     'idenvio' => $envio->idenvio,
                     'pregunta' => $preguntaActual,
@@ -950,22 +950,22 @@ class TwilioService
                     'celular' => $envio->cliente->celular ?? 'N/A',
                     'respuesta_id' => $respuestaId,
                     'campo_actualizado' => $envio->$campoRespuesta
-                ]);
+                ]);*/
             } else {
-                Log::error("Campo de respuesta no válido", [
+                /*Log::error("Campo de respuesta no válido", [
                     'envio_id' => $envio->idenvio,
                     'pregunta_actual' => $preguntaActual
-                ]);
+                ]); */
             }
         } catch (\Exception $e) {
-            Log::error("Error guardando respuesta", [
+            /*Log::error("Error guardando respuesta", [
                 'envio_id' => $envio->idenvio,
                 'idenvio' => $envio->idenvio,
                 'pregunta_actual' => $envio->pregunta_actual ?? 'N/A',
                 'error' => $e->getMessage(),
                 'respuesta_id' => $respuestaId,
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
         }
     }
 
@@ -996,23 +996,23 @@ class TwilioService
                     'promedio_respuesta_1' => $promedio
                 ]);
                 
-                Log::info("Promedio de pregunta 1 calculado", [
+                /*Log::info("Promedio de pregunta 1 calculado", [
                     'envio_id' => $envio->idenvio,
                     'respuestas' => $respuestas,
                     'respuestas_validas' => $respuestasValidas,
                     'promedio' => $promedio
-                ]);
+                ]);*/
             } else {
-                Log::warning("No se pudieron calcular el promedio de pregunta 1", [
+                /*Log::warning("No se pudieron calcular el promedio de pregunta 1", [
                     'envio_id' => $envio->idenvio,
                     'respuestas' => $respuestas
-                ]);
+                ]);*/
             }
         } catch (\Exception $e) {
-            Log::error("Error calculando promedio de pregunta 1", [
+            /*Log::error("Error calculando promedio de pregunta 1", [
                 'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage()
-            ]);
+            ]);*/
         }
     }
 
@@ -1088,11 +1088,11 @@ class TwilioService
 
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($numeroPrueba);
 
-            Log::info("Probando conexión con Twilio", [
+            /*Log::info("Probando conexión con Twilio", [
                 'numero_original' => $numeroPrueba,
                 'numero_formateado' => $numeroWhatsApp,
                 'from_number' => $this->fromNumber
-            ]);
+            ]);*/
 
             // Enviar mensaje de prueba
             $message = $this->client->messages->create(
@@ -1103,10 +1103,10 @@ class TwilioService
                 ]
             );
 
-            Log::info("Prueba de conexión exitosa", [
+            /*Log::info("Prueba de conexión exitosa", [
                 'message_sid' => $message->sid,
                 'status' => $message->status
-            ]);
+            ]);*/
 
             return [
                 'success' => true,
@@ -1116,10 +1116,10 @@ class TwilioService
             ];
 
         } catch (\Exception $e) {
-            Log::error("Error en prueba de conexión", [
+            /*Log::error("Error en prueba de conexión", [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
 
             return [
                 'success' => false,
@@ -1135,20 +1135,20 @@ class TwilioService
     public function enviarMensajeDirecto($numero, $mensaje, $nombre = null, $codigo = null)
     {
         try {
-            Log::info("Enviando mensaje directo por WhatsApp", [
+            /*Log::info("Enviando mensaje directo por WhatsApp", [
                 'numero' => $numero,
                 'mensaje' => $mensaje,
                 'nombre' => $nombre,
                 'codigo' => $codigo
-            ]);
+            ]);*/
 
             // Formatear número para WhatsApp
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($numero);
 
-            Log::info("Número formateado para WhatsApp", [
+            /*Log::info("Número formateado para WhatsApp", [
                 'numero_original' => $numero,
                 'numero_formateado' => $numeroWhatsApp
-            ]);
+            ]);*/
 
             $message = $this->client->messages->create(
                 "whatsapp:{$numeroWhatsApp}",
@@ -1158,11 +1158,11 @@ class TwilioService
                 ]
             );
 
-            Log::info("Mensaje enviado exitosamente", [
+            /*Log::info("Mensaje enviado exitosamente", [
                 'message_sid' => $message->sid,
                 'status' => $message->status,
                 'numero_enviado' => $numeroWhatsApp
-            ]);
+            ]);*/
 
             return [
                 'success' => true,
@@ -1172,11 +1172,11 @@ class TwilioService
             ];
 
         } catch (\Exception $e) {
-            Log::error("Error enviando mensaje directo por WhatsApp", [
+            /*Log::error("Error enviando mensaje directo por WhatsApp", [
                 'numero' => $numero,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]); */
             
             return [
                 'success' => false,
@@ -1190,21 +1190,21 @@ class TwilioService
      */
     public function enviarContenidoAprobado(Envio $envio, $tiempoEsperaMinutos = 30)
     {
-        Log::info("Enviando contenido aprobado y configurando timer", [
+        /*Log::info("Enviando contenido aprobado y configurando timer", [
             'envio_id' => $envio->idenvio,
             'cliente_id' => $envio->cliente_id,
             'tiempo_espera' => $tiempoEsperaMinutos
-        ]);
+        ]); */
         
         try {
             $cliente = $envio->cliente;
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
             $contentSid = config('services.twilio.content_sid');
 
-            Log::info("Configuración para envío de contenido aprobado", [
+            /*Log::info("Configuración para envío de contenido aprobado", [
                 'numeroWhatsApp' => $numeroWhatsApp,
                 'content_sid' => $contentSid
-            ]);
+            ]);*/
 
             if (!$contentSid) {
                 throw new \Exception('Content SID no está configurado');
@@ -1239,14 +1239,14 @@ class TwilioService
                 'estado_timer' => 'activo'
             ]);
 
-            Log::info("Contenido aprobado enviado y timer configurado exitosamente", [
+            /*Log::info("Contenido aprobado enviado y timer configurado exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'cliente' => $cliente->nombre_completo,
                 'numero' => $numeroWhatsApp,
                 'message_sid' => $message->sid,
                 'tiempo_expiracion' => $tiempoExpiracion,
                 'estado' => 'esperando_respuesta'
-            ]);
+            ]);*/
 
             return [
                 'success' => true,
@@ -1256,11 +1256,11 @@ class TwilioService
             ];
 
         } catch (\Exception $e) {
-            Log::error("Error enviando contenido aprobado", [
+            /*Log::error("Error enviando contenido aprobado", [
                 'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
             
             // Actualizar el estado del envío como fallido
             $envio->update([
@@ -1282,11 +1282,11 @@ class TwilioService
      */
     public function procesarRespuestaContenidoAprobado($from, $body, $messageSid)
     {
-        Log::info("Procesando respuesta de contenido aprobado", [
+        /*Log::info("Procesando respuesta de contenido aprobado", [
             'from' => $from,
             'body' => $body,
             'message_sid' => $messageSid,
-        ]);
+        ]); */
 
         try {
             // Buscar el envío que está esperando respuesta con múltiples criterios
@@ -1301,14 +1301,14 @@ class TwilioService
                     ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por message_sid en contenido aprobado", [
+                    /*Log::info("Envío encontrado por message_sid en contenido aprobado", [
                         'envio_id' => $envio->idenvio,
                         'message_sid_buscado' => $messageSid
-                    ]);
+                    ]);*/
                 } else {
-                    Log::info("No se encontró envío por message_sid en contenido aprobado", [
+                    /*Log::info("No se encontró envío por message_sid en contenido aprobado", [
                         'message_sid_buscado' => $messageSid
-                    ]);
+                    ]);*/
                 }
             }
             
@@ -1322,14 +1322,14 @@ class TwilioService
                     ->first();
                 
                 if ($envio) {
-                    Log::info("Envío encontrado por número WhatsApp en contenido aprobado", [
+                    /*Log::info("Envío encontrado por número WhatsApp en contenido aprobado", [
                         'envio_id' => $envio->idenvio,
                         'whatsapp_number_buscado' => "whatsapp:{$from}"
-                    ]);
+                    ]);*/
                 } else {
-                    Log::info("No se encontró envío por número WhatsApp en contenido aprobado", [
+                    /*Log::info("No se encontró envío por número WhatsApp en contenido aprobado", [
                         'whatsapp_number_buscado' => "whatsapp:{$from}"
-                    ]);
+                    ]);*/
                 }
             }
             
@@ -1385,31 +1385,31 @@ class TwilioService
             }
 
             if (!$envio) {
-                Log::warning("No se encontró envío esperando respuesta o timer expirado", [
+                /*Log::warning("No se encontró envío esperando respuesta o timer expirado", [
                     'from' => $from,
                     'message_sid' => $messageSid,
                     'body' => $body
-                ]);
+                ]);*/
                 return false;
             }
 
-            Log::info("Envío encontrado para contenido aprobado", [
+            /*Log::info("Envío encontrado para contenido aprobado", [
                 'envio_id' => $envio->idenvio,
                 'estado' => $envio->estado,
                 'timer_activo' => $envio->timer_activo,
                 'tiempo_expiracion' => $envio->tiempo_expiracion,
                 'from' => $from,
                 'body' => $body
-            ]);
+            ]);*/
 
             // Validar si la respuesta es "Si" (para continuar)
             $respuestaLimpia = trim(strtolower($body));
             
-            Log::info("Validando respuesta de contenido aprobado", [
+            /*Log::info("Validando respuesta de contenido aprobado", [
                 'respuesta_original' => $body,
                 'respuesta_limpia' => $respuestaLimpia,
                 'es_si' => in_array($respuestaLimpia, ['si', 'sí', 'yes', 'ok', 'okay', 'vale', 'bueno'])
-            ]);
+            ]);*/
             
             if (in_array($respuestaLimpia, ['si', 'sí', 'yes', 'ok', 'okay', 'vale', 'bueno'])) {
                 // Desactivar timer y continuar con la encuesta
@@ -1420,31 +1420,31 @@ class TwilioService
                     'pregunta_actual' => 1.1 // Iniciar con la primera subpregunta
                 ]);
 
-                Log::info("Respuesta positiva recibida, enviando primera pregunta", [
+                /*Log::info("Respuesta positiva recibida, enviando primera pregunta", [
                     'envio_id' => $envio->idenvio,
                     'respuesta' => $body
-                ]);
+                ]);*/
 
                 // Enviar la primera pregunta de la nueva encuesta
                 return $this->enviarPrimeraPreguntaNuevaEncuesta($envio);
             } else {
                 // Enviar mensaje de error y mantener timer activo
-                Log::info("Respuesta negativa o inválida, enviando mensaje de error", [
+                /*Log::info("Respuesta negativa o inválida, enviando mensaje de error", [
                     'envio_id' => $envio->idenvio,
                     'respuesta' => $body
-                ]);
+                ]);*/
                 
                 $this->enviarMensajeErrorContenidoAprobado($envio, $body);
                 return false;
             }
 
         } catch (\Exception $e) {
-            Log::error("Error procesando respuesta de contenido aprobado", [
+            /*Log::error("Error procesando respuesta de contenido aprobado", [
                 'from' => $from,
                 'body' => $body,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
             
             return false;
         }
@@ -1471,11 +1471,11 @@ class TwilioService
             $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n";
             $mensaje .= "Ref: " . $this->generarIdentificadorRespuesta($envio, 'contenido_aprobado');
             
-            Log::info("Enviando mensaje de error para contenido aprobado", [
+            /*Log::info("Enviando mensaje de error para contenido aprobado", [
                 'envio_id' => $envio->idenvio,
                 'numero' => $numeroWhatsApp,
                 'respuesta_recibida' => $respuestaRecibida
-            ]);
+            ]);*/
             
             // Envío real a Twilio
             $message = $this->client->messages->create(
@@ -1486,18 +1486,18 @@ class TwilioService
                 ]
             );
             
-            Log::info("Mensaje de error enviado exitosamente", [
+            /*Log::info("Mensaje de error enviado exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'numero' => $numeroWhatsApp,
                 'message_sid' => $message->sid
-            ]);
+            ]);*/
             
         } catch (\Exception $e) {
-            Log::error("Error enviando mensaje de error para contenido aprobado", [
+            /*Log::error("Error enviando mensaje de error para contenido aprobado", [
                 'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
         }
     }
 
@@ -1524,7 +1524,7 @@ class TwilioService
      */
     public function verificarTimersExpirados()
     {
-        Log::info("Verificando timers expirados");
+        /*Log::info("Verificando timers expirados");*/
 
         try {
             $enviosExpirados = Envio::where('timer_activo', true)
@@ -1532,7 +1532,7 @@ class TwilioService
                 ->where('estado', 'esperando_respuesta')
                 ->get();
 
-            Log::info("Encontrados " . $enviosExpirados->count() . " timers expirados");
+            /*Log::info("Encontrados " . $enviosExpirados->count() . " timers expirados");*/
 
             foreach ($enviosExpirados as $envio) {
                 $this->cancelarTimerExpirado($envio);
@@ -1544,10 +1544,10 @@ class TwilioService
             ];
 
         } catch (\Exception $e) {
-            Log::error("Error verificando timers expirados", [
+            /*Log::error("Error verificando timers expirados", [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
             
             return [
                 'success' => false,
@@ -1571,11 +1571,11 @@ class TwilioService
             $mensaje .= "Si deseas participar en el futuro, no dudes en contactarnos.\n\n";
             $mensaje .= "¡Gracias por tu interés! 🏗️";
             
-            Log::info("Cancelando timer expirado", [
+            /*Log::info("Cancelando timer expirado", [
                 'envio_id' => $envio->idenvio,
                 'numero' => $numeroWhatsApp,
                 'tiempo_expiracion' => $envio->tiempo_expiracion
-            ]);
+            ]);*/
             
             // Enviar mensaje de cancelación
             $message = $this->client->messages->create(
@@ -1594,19 +1594,19 @@ class TwilioService
                 'whatsapp_message' => $mensaje
             ]);
             
-            Log::info("Timer cancelado exitosamente", [
+            /*Log::info("Timer cancelado exitosamente", [
                 'envio_id' => $envio->idenvio,
                 'numero' => $numeroWhatsApp,
                 'message_sid' => $message->sid,
                 'estado_final' => 'cancelado'
-            ]);
+            ]);*/
             
         } catch (\Exception $e) {
-            Log::error("Error cancelando timer expirado", [
+            /*Log::error("Error cancelando timer expirado", [
                 'envio_id' => $envio->idenvio,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]);*/
             
             // Al menos actualizar el estado aunque falle el envío
             $envio->update([

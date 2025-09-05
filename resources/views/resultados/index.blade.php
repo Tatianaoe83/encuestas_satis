@@ -383,7 +383,7 @@
                                 <!-- Pregunta 1.2 -->
                                 <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200">
                                     <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-indigo-900">1.2 - Durabilidad</h5>
+                                        <h5 class="text-sm font-semibold text-indigo-900">1.2 - Puntualidad de entrega</h5>
                                         <div class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-medium">
                                             Escala 1-10
                                         </div>
@@ -396,7 +396,7 @@
                                 <!-- Pregunta 1.3 -->
                                 <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
                                     <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-purple-900">1.3 - Presentación</h5>
+                                        <h5 class="text-sm font-semibold text-purple-900">1.3 - Trato del asesor comercial</h5>
                                         <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
                                             Escala 1-10
                                         </div>
@@ -409,11 +409,11 @@
                                 <!-- Pregunta 1.4 -->
                                 <div class="bg-gradient-to-br from-pink-50 to-red-50 rounded-lg p-4 border border-pink-200">
                                     <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-pink-900">1.4 - Funcionalidad</h5>
+                                        <h5 class="text-sm font-semibold text-pink-900">1.4 - Precio</h5>
                                         <div class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full font-medium">
                                             Escala 1-10
                                         </div>
-                                    </div>
+                                    </div>  
                                     <div class="relative h-32">
                                         <canvas id="chartRespuesta1_4"></canvas>
                                     </div>
@@ -422,7 +422,7 @@
                                 <!-- Pregunta 1.5 -->
                                 <div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 border border-red-200">
                                     <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-red-900">1.5 - Satisfacción General</h5>
+                                        <h5 class="text-sm font-semibold text-red-900">1.5 - Rapidez en programación.</h5>
                                         <div class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">
                                             Escala 1-10
                                         </div>

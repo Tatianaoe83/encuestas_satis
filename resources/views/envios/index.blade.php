@@ -108,11 +108,11 @@
                 @if($saldoTwilio['success'])
                     <div class="grid grid-cols-3 gap-4">
                         <!-- Saldo Actual -->
-                        <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-4 text-white">
-                            <div class="flex items-center justify-between">
+                        <div class="bg-purple-600 from-purple-600 to-purple-700 rounded-lg p-4 shadow-lg text-purple-800">
+                            <div class="flex items-center justify-between text-purple-800">
                                 <div>
-                                    <p class="text-blue-100 text-sm font-medium">Saldo Actual</p>
-                                    <p class="text-2xl font-bold mt-1">{{ $saldoTwilio['balance_formatted'] }}</p>
+                                    <p class="text-purple-100 text-sm font-medium">Saldo Actual</p>
+                                    <p class="text-2xl font-bold mt-1 text-purple-100">{{ $saldoTwilio['balance_formatted'] }}</p>
                                 </div>
                                 <div class="bg-white bg-opacity-20 rounded-full p-3">
                                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

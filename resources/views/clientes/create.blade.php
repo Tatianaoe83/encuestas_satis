@@ -65,7 +65,7 @@
 
                             <div>
                                 <x-input-label for="correo" :value="__('Correo')" />
-                                <x-text-input id="correo" class="block mt-1 w-full" type="email" name="correo" :value="old('correo')" required />
+                                <x-text-input id="correo" class="block mt-1 w-full" type="email" name="correo" :value="old('correo')" />
                                 <x-input-error :messages="$errors->get('correo')" class="mt-2" />
                             </div>
                         </div>

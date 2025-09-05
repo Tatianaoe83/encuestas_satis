@@ -100,9 +100,12 @@ class DashboardController extends Controller
         $datosGraficaMensual = $this->obtenerDatosGraficaMensual();
         $datosGraficaSemanal = $this->obtenerDatosGraficaSemanal();
         
-        // Datos del NPS (Net Promoter Score)
+        // Datos del NPS (Net Promoter Score) usando promedio_respuesta_1
         $datosNPS = $this->obtenerDatosNPS();
         $npsPromedio = $this->calcularNPSPromedio();
+        
+        // Estadísticas de calidad del producto (preguntas 1.1 a 1.5)
+        $estadisticasCalidad = $this->obtenerEstadisticasCalidad();
 
         return view('dashboard', compact(
             'totalEnvios',
@@ -123,7 +126,8 @@ class DashboardController extends Controller
             'datosGraficaMensual',
             'datosGraficaSemanal',
             'datosNPS',
-            'npsPromedio'
+            'npsPromedio',
+            'estadisticasCalidad'
         ));
     }
 
@@ -168,21 +172,21 @@ class DashboardController extends Controller
     }
 
     /**
-     * Obtiene datos del NPS (Net Promoter Score) por mes
+     * Obtiene datos del NPS (Net Promoter Score) por mes usando promedio_respuesta_1
      */
     private function obtenerDatosNPS()
     {
         return Envio::select(
                 DB::raw('MONTH(fecha_envio) as mes'),
                 DB::raw('YEAR(fecha_envio) as año'),
-                DB::raw('AVG(CAST(respuesta_1 AS DECIMAL(3,1))) as nps_promedio'),
+                DB::raw('AVG(promedio_respuesta_1) as nps_promedio'),
                 DB::raw('count(*) as total_respuestas'),
-                DB::raw('count(CASE WHEN CAST(respuesta_1 AS DECIMAL(3,1)) >= 9 THEN 1 END) as promotores'),
-                DB::raw('count(CASE WHEN CAST(respuesta_1 AS DECIMAL(3,1)) BETWEEN 7 AND 8 THEN 1 END) as pasivos'),
-                DB::raw('count(CASE WHEN CAST(respuesta_1 AS DECIMAL(3,1)) <= 6 THEN 1 END) as detractores')
+                DB::raw('count(CASE WHEN promedio_respuesta_1 >= 9 THEN 1 END) as promotores'),
+                DB::raw('count(CASE WHEN promedio_respuesta_1 BETWEEN 7 AND 8 THEN 1 END) as pasivos'),
+                DB::raw('count(CASE WHEN promedio_respuesta_1 <= 6 THEN 1 END) as detractores')
             )
             ->whereNotNull('fecha_envio')
-            ->whereNotNull('respuesta_1')
+            ->whereNotNull('promedio_respuesta_1')
             ->where('estado', 'completado')
             ->where('fecha_envio', '>=', Carbon::now()->subMonths(6))
             ->groupBy('mes', 'año')
@@ -192,12 +196,12 @@ class DashboardController extends Controller
     }
 
     /**
-     * Calcula el NPS promedio general
+     * Calcula el NPS promedio general usando promedio_respuesta_1
      */
     private function calcularNPSPromedio()
     {
         $enviosCompletados = Envio::where('estado', 'completado')
-            ->whereNotNull('respuesta_1')
+            ->whereNotNull('promedio_respuesta_1')
             ->get();
 
         if ($enviosCompletados->count() === 0) {
@@ -206,14 +210,17 @@ class DashboardController extends Controller
                 'promotores' => 0,
                 'pasivos' => 0,
                 'detractores' => 0,
-                'total' => 0
+                'total' => 0,
+                'porcentaje_promotores' => 0,
+                'porcentaje_pasivos' => 0,
+                'porcentaje_detractores' => 0
             ];
         }
 
         $total = $enviosCompletados->count();
-        $promotores = $enviosCompletados->where('respuesta_1', '>=', 9)->count();
-        $pasivos = $enviosCompletados->where('respuesta_1', '>=', 7)->where('respuesta_1', '<=', 8)->count();
-        $detractores = $enviosCompletados->where('respuesta_1', '<=', 6)->count();
+        $promotores = $enviosCompletados->where('promedio_respuesta_1', '>=', 9)->count();
+        $pasivos = $enviosCompletados->where('promedio_respuesta_1', '>=', 7)->where('promedio_respuesta_1', '<=', 8)->count();
+        $detractores = $enviosCompletados->where('promedio_respuesta_1', '<=', 6)->count();
 
         // Calcular NPS correctamente: % Promotores - % Detractores
         $porcentajePromotores = ($promotores / $total) * 100;
@@ -229,6 +236,61 @@ class DashboardController extends Controller
             'porcentaje_promotores' => round($porcentajePromotores, 1),
             'porcentaje_pasivos' => round(($pasivos / $total) * 100, 1),
             'porcentaje_detractores' => round($porcentajeDetractores, 1)
+        ];
+    }
+
+    /**
+     * Obtiene estadísticas de calidad del producto (preguntas 1.1 a 1.5)
+     */
+    private function obtenerEstadisticasCalidad()
+    {
+        $enviosCompletados = Envio::where('estado', 'completado')
+            ->whereNotNull('promedio_respuesta_1')
+            ->get();
+
+        if ($enviosCompletados->count() === 0) {
+            return [
+                'promedio_general' => 0,
+                'mejor_aspecto' => 'N/A',
+                'peor_aspecto' => 'N/A',
+                'aspectos' => [
+                    '1_1' => ['nombre' => 'Calidad General', 'promedio' => 0],
+                    '1_2' => ['nombre' => 'Durabilidad', 'promedio' => 0],
+                    '1_3' => ['nombre' => 'Presentación', 'promedio' => 0],
+                    '1_4' => ['nombre' => 'Funcionalidad', 'promedio' => 0],
+                    '1_5' => ['nombre' => 'Satisfacción General', 'promedio' => 0]
+                ]
+            ];
+        }
+
+        // Calcular promedios por aspecto
+        $aspectos = [
+            '1_1' => ['nombre' => 'Calidad General', 'campo' => 'respuesta_1_1'],
+            '1_2' => ['nombre' => 'Durabilidad', 'campo' => 'respuesta_1_2'],
+            '1_3' => ['nombre' => 'Presentación', 'campo' => 'respuesta_1_3'],
+            '1_4' => ['nombre' => 'Funcionalidad', 'campo' => 'respuesta_1_4'],
+            '1_5' => ['nombre' => 'Satisfacción General', 'campo' => 'respuesta_1_5']
+        ];
+
+        foreach ($aspectos as $key => $aspecto) {
+            $campo = $aspecto['campo'];
+            $promedio = $enviosCompletados->whereNotNull($campo)->avg($campo);
+            $aspectos[$key]['promedio'] = round($promedio, 1);
+        }
+
+        // Encontrar mejor y peor aspecto
+        $promedios = collect($aspectos)->pluck('promedio', 'nombre');
+        $mejorAspecto = $promedios->filter()->max();
+        $peorAspecto = $promedios->filter()->min();
+        
+        $mejorAspectoNombre = $promedios->search($mejorAspecto);
+        $peorAspectoNombre = $promedios->search($peorAspecto);
+
+        return [
+            'promedio_general' => round($enviosCompletados->avg('promedio_respuesta_1'), 1),
+            'mejor_aspecto' => $mejorAspectoNombre ?: 'N/A',
+            'peor_aspecto' => $peorAspectoNombre ?: 'N/A',
+            'aspectos' => $aspectos
         ];
     }
 

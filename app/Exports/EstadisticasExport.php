@@ -37,6 +37,9 @@ class EstadisticasExport implements FromCollection, WithHeadings, WithMapping, W
         // Calcular NPS
         $npsData = $this->calcularNPS();
         
+        // Calcular estadísticas de calidad del producto
+        $calidadData = $this->calcularEstadisticasCalidad();
+        
         // Estadísticas por asesor
         $estadisticasAsesores = Cliente::select(
                 'asesor_comercial',
@@ -121,6 +124,71 @@ class EstadisticasExport implements FromCollection, WithHeadings, WithMapping, W
             'valor' => $npsData['total'],
             'porcentaje' => '100%',
             'categoria' => 'nps'
+        ]);
+
+        // Agregar estadísticas de calidad del producto
+        $estadisticas->push([
+            'seccion' => 'CALIDAD_DEL_PRODUCTO',
+            'metrica' => 'Promedio General Calidad',
+            'valor' => $calidadData['promedio_general'],
+            'porcentaje' => '/10',
+            'categoria' => 'calidad'
+        ]);
+        
+        $estadisticas->push([
+            'seccion' => 'CALIDAD_DEL_PRODUCTO',
+            'metrica' => 'Calidad del producto (1.1)',
+            'valor' => $calidadData['aspectos']['1_1']['promedio'],
+            'porcentaje' => '/10',
+            'categoria' => 'calidad'
+        ]);
+        
+        $estadisticas->push([
+            'seccion' => 'CALIDAD_DEL_PRODUCTO',
+            'metrica' => 'Puntualidad de entrega (1.2)',
+            'valor' => $calidadData['aspectos']['1_2']['promedio'],
+            'porcentaje' => '/10',
+            'categoria' => 'calidad'
+        ]);
+        
+        $estadisticas->push([
+            'seccion' => 'CALIDAD_DEL_PRODUCTO',
+            'metrica' => 'Trato del asesor comercial (1.3)',
+            'valor' => $calidadData['aspectos']['1_3']['promedio'],
+            'porcentaje' => '/10',
+            'categoria' => 'calidad'
+        ]);
+        
+        $estadisticas->push([
+            'seccion' => 'CALIDAD_DEL_PRODUCTO',
+            'metrica' => 'Precio (1.4)',
+            'valor' => $calidadData['aspectos']['1_4']['promedio'],
+            'porcentaje' => '/10',
+            'categoria' => 'calidad'
+        ]);
+        
+        $estadisticas->push([
+            'seccion' => 'CALIDAD_DEL_PRODUCTO',
+            'metrica' => 'Rapidez en programación (1.5)',
+            'valor' => $calidadData['aspectos']['1_5']['promedio'],
+            'porcentaje' => '/10',
+            'categoria' => 'calidad'
+        ]);
+        
+        $estadisticas->push([
+            'seccion' => 'CALIDAD_DEL_PRODUCTO',
+            'metrica' => 'Mejor Aspecto',
+            'valor' => $calidadData['mejor_aspecto'],
+            'porcentaje' => 'N/A',
+            'categoria' => 'calidad'
+        ]);
+        
+        $estadisticas->push([
+            'seccion' => 'CALIDAD_DEL_PRODUCTO',
+            'metrica' => 'Necesita Mejora',
+            'valor' => $calidadData['peor_aspecto'],
+            'porcentaje' => 'N/A',
+            'categoria' => 'calidad'
         ]);
 
         // Agregar estadísticas por asesor
@@ -384,7 +452,7 @@ class EstadisticasExport implements FromCollection, WithHeadings, WithMapping, W
     private function calcularNPS()
     {
         $enviosCompletados = Envio::where('estado', 'completado')
-            ->whereNotNull('respuesta_1')
+            ->whereNotNull('promedio_respuesta_1')
             ->get();
 
         if ($enviosCompletados->count() === 0) {
@@ -401,9 +469,9 @@ class EstadisticasExport implements FromCollection, WithHeadings, WithMapping, W
         }
 
         $total = $enviosCompletados->count();
-        $promotores = $enviosCompletados->where('respuesta_1', '>=', 9)->count();
-        $pasivos = $enviosCompletados->where('respuesta_1', '>=', 7)->where('respuesta_1', '<=', 8)->count();
-        $detractores = $enviosCompletados->where('respuesta_1', '<=', 6)->count();
+        $promotores = $enviosCompletados->where('promedio_respuesta_1', '>=', 9)->count();
+        $pasivos = $enviosCompletados->where('promedio_respuesta_1', '>=', 7)->where('promedio_respuesta_1', '<=', 8)->count();
+        $detractores = $enviosCompletados->where('promedio_respuesta_1', '<=', 6)->count();
 
         $porcentajePromotores = ($promotores / $total) * 100;
         $porcentajeDetractores = ($detractores / $total) * 100;
@@ -418,6 +486,58 @@ class EstadisticasExport implements FromCollection, WithHeadings, WithMapping, W
             'porcentaje_promotores' => round($porcentajePromotores, 1),
             'porcentaje_pasivos' => round(($pasivos / $total) * 100, 1),
             'porcentaje_detractores' => round($porcentajeDetractores, 1)
+        ];
+    }
+
+    private function calcularEstadisticasCalidad()
+    {
+        $enviosCompletados = Envio::where('estado', 'completado')
+            ->whereNotNull('promedio_respuesta_1')
+            ->get();
+
+        if ($enviosCompletados->count() === 0) {
+            return [
+                'promedio_general' => 0,
+                'mejor_aspecto' => 'N/A',
+                'peor_aspecto' => 'N/A',
+                            'aspectos' => [
+                '1_1' => ['nombre' => 'Calidad del producto', 'promedio' => 0],
+                '1_2' => ['nombre' => 'Puntualidad de entrega', 'promedio' => 0],
+                '1_3' => ['nombre' => 'Trato del asesor comercial', 'promedio' => 0],
+                '1_4' => ['nombre' => 'Precio', 'promedio' => 0],
+                '1_5' => ['nombre' => 'Rapidez en programación', 'promedio' => 0]
+            ]
+            ];
+        }
+
+        // Calcular promedios por aspecto
+        $aspectos = [
+            '1_1' => ['nombre' => 'Calidad del producto', 'campo' => 'respuesta_1_1'],
+            '1_2' => ['nombre' => 'Puntualidad de entrega', 'campo' => 'respuesta_1_2'],
+            '1_3' => ['nombre' => 'Trato del asesor comercial', 'campo' => 'respuesta_1_3'],
+            '1_4' => ['nombre' => 'Precio', 'campo' => 'respuesta_1_4'],
+            '1_5' => ['nombre' => 'Rapidez en programación', 'campo' => 'respuesta_1_5']
+        ];
+
+        foreach ($aspectos as $key => $aspecto) {
+            $campo = $aspecto['campo'];
+            $promedio = $enviosCompletados->whereNotNull($campo)->avg($campo);
+            $aspectos[$key]['promedio'] = round($promedio, 1);
+        }
+
+        // Encontrar mejor y peor aspecto
+        $promedios = collect($aspectos)->pluck('promedio', 'nombre');
+        $mejorAspecto = $promedios->filter()->max();
+        $peorAspecto = $promedios->filter()->min();
+        
+        $mejorAspectoNombre = $promedios->search($mejorAspecto);
+        $peorAspectoNombre = $promedios->search($peorAspecto);
+
+        return [
+            'promedio_general' => round($enviosCompletados->avg('promedio_respuesta_1'), 1),
+            'mejor_aspecto' => $mejorAspectoNombre ?: 'N/A',
+            'peor_aspecto' => $peorAspectoNombre ?: 'N/A',
+            'aspectos' => $aspectos
         ];
     }
 }

@@ -30,45 +30,45 @@
                     </div>
                 </div>
 
-                <!-- Card 2 - Encuestas Enviadas -->
+                <!-- Card 2 - Encuestas Completadas -->
                 <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-green-100 text-sm font-medium">Encuestas Enviadas</p>
-                            <p class="text-3xl font-bold mt-2">{{ number_format($enviosMesActual) }}</p>
-                            <p class="text-green-100 text-sm mt-1">Este mes</p>
+                            <p class="text-green-100 text-sm font-medium">Encuestas Completadas</p>
+                            <p class="text-3xl font-bold mt-2">{{ number_format($enviosCompletados) }}</p>
+                            <p class="text-green-100 text-sm mt-1">{{ $tasaRespuesta }}% tasa de respuesta</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M12 2a1 1 0 0 1 .932.638l7 18a1 1 0 0 1-1.326 1.281L13 19.517V13a1 1 0 1 0-2 0v6.517l-5.606 2.402a1 1 0 0 1-1.326-1.281l7-18A1 1 0 0 1 12 2Z" clip-rule="evenodd"/>
+                                <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd"/>
                               </svg>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 3 - Respuestas -->
+                <!-- Card 3 - NPS Score -->
                 <div class="bg-yellow-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-yellow-100 text-sm font-medium">Respuestas</p>
-                            <p class="text-3xl font-bold mt-2">{{ number_format($enviosCompletados) }}</p>
-                            <p class="text-yellow-100 text-sm mt-1">{{ $tasaRespuesta }}% tasa de respuesta</p>
+                            <p class="text-yellow-100 text-sm font-medium">NPS Score</p>
+                            <p class="text-3xl font-bold mt-2">{{ $npsPromedio['nps_score'] }}</p>
+                            <p class="text-yellow-100 text-sm mt-1">{{ $npsPromedio['total'] }} respuestas</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M3.559 4.544c.355-.35.834-.544 1.33-.544H19.11c.496 0 .975.194 1.33.544.356.35.559.829.559 1.331v9.25c0 .502-.203.981-.559 1.331-.355.35-.834.544-1.33.544H15.5l-2.7 3.6a1 1 0 0 1-1.6 0L8.5 17H4.889c-.496 0-.975-.194-1.33-.544A1.868 1.868 0 0 1 3 15.125v-9.25c0 .502.203.981.559-1.331ZM7.556 7.5a1 1 0 1 0 0 2h8a1 1 0 0 0 0-2h-8Zm0 3.5a1 1 0 1 0 0 2H12a1 1 0 1 0 0-2H7.556Z" clip-rule="evenodd"/>
+                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"/>
                               </svg>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card 4 - Tiempo Promedio -->
+                <!-- Card 4 - Calidad Promedio -->
                 <div class="bg-purple-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-purple-100 text-sm font-medium">Tiempo Promedio</p>
-                            <p class="text-3xl font-bold mt-2">{{ round($promedioRespuesta, 1) }}h</p>
-                            <p class="text-purple-100 text-sm mt-1">Respuesta promedio</p>
+                            <p class="text-purple-100 text-sm font-medium">Calidad Promedio</p>
+                            <p class="text-3xl font-bold mt-2">{{ $estadisticasCalidad['promedio_general'] }}/10</p>
+                            <p class="text-purple-100 text-sm mt-1">Calidad del producto</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -218,7 +218,52 @@
                 </div>
             </div>
 
-         
+            <!-- Nueva sección: Análisis de Calidad del Producto -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Gráfico de aspectos de calidad -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Aspectos de Calidad</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                                <span class="text-sm text-gray-600">Promedios</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            @foreach($estadisticasCalidad['aspectos'] as $aspecto)
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                                        <span class="text-sm text-gray-700">{{ $aspecto['nombre'] }}</span>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-blue-600 h-2 rounded-full" style="width: {{ ($aspecto['promedio'] / 10) * 100 }}%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-900">{{ $aspecto['promedio'] }}/10</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                        
+                        <!-- Mejor y peor aspecto -->
+                        <div class="mt-6 pt-4 border-t border-gray-100">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="text-center p-3 bg-green-50 rounded-lg">
+                                    <div class="text-sm text-green-600 font-medium">Mejor Aspecto</div>
+                                    <div class="text-lg font-bold text-green-700">{{ $estadisticasCalidad['mejor_aspecto'] }}</div>
+                                </div>
+                                <div class="text-center p-3 bg-red-50 rounded-lg">
+                                    <div class="text-sm text-red-600 font-medium">Necesita Mejora</div>
+                                    <div class="text-lg font-bold text-red-700">{{ $estadisticasCalidad['peor_aspecto'] }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <!-- Top asesores comerciales -->
                 <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
@@ -235,8 +280,138 @@
                     </div>
                 </div>
 
-      
-              
+                <!-- Resumen de recomendaciones -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen de Recomendaciones</h3>
+                    <div class="space-y-4">
+                        @php
+                            $recomendacionesSi = App\Models\Envio::where('estado', 'completado')
+                                ->where('respuesta_2', 'like', '%si%')
+                                ->orWhere('respuesta_2', 'like', '%Si%')
+                                ->count();
+                            $recomendacionesNo = App\Models\Envio::where('estado', 'completado')
+                                ->where('respuesta_2', 'like', '%no%')
+                                ->orWhere('respuesta_2', 'like', '%No%')
+                                ->count();
+                            $totalRecomendaciones = $recomendacionesSi + $recomendacionesNo;
+                            $porcentajeSi = $totalRecomendaciones > 0 ? round(($recomendacionesSi / $totalRecomendaciones) * 100, 1) : 0;
+                        @endphp
+                        
+                        <div class="text-center">
+                            <div class="text-3xl font-bold text-green-600 mb-2">{{ $porcentajeSi }}%</div>
+                            <div class="text-sm text-gray-600">Recomendarían Konkret</div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 text-center">
+                            <div class="p-3 bg-green-50 rounded-lg">
+                                <div class="text-lg font-bold text-green-600">{{ $recomendacionesSi }}</div>
+                                <div class="text-xs text-green-600">Sí</div>
+                            </div>
+                            <div class="p-3 bg-red-50 rounded-lg">
+                                <div class="text-lg font-bold text-red-600">{{ $recomendacionesNo }}</div>
+                                <div class="text-xs text-red-600">No</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección adicional: Estadísticas detalladas -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Envíos por estado -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Envíos por Estado</h3>
+                            <a href="{{ route('envios.index') }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">Ver todos</a>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            @php
+                                $estados = [
+                                    'completado' => ['nombre' => 'Completados', 'color' => 'green', 'icon' => '✓'],
+                                    'en_proceso' => ['nombre' => 'En Proceso', 'color' => 'purple', 'icon' => '⏳'],
+                                    'pendiente' => ['nombre' => 'Pendientes', 'color' => 'yellow', 'icon' => '⏰'],
+                                    'cancelado' => ['nombre' => 'Cancelados', 'color' => 'red', 'icon' => '✗']
+                                ];
+                            @endphp
+                            
+                            @foreach($estados as $estado => $info)
+                                @php
+                                    $total = $enviosPorEstado->where('estado', $estado)->first()->total ?? 0;
+                                    $porcentaje = $totalEnvios > 0 ? round(($total / $totalEnvios) * 100, 1) : 0;
+                                @endphp
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-{{ $info['color'] }}-100 rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-{{ $info['color'] }}-600 font-medium text-sm">{{ $info['icon'] }}</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">{{ $info['nombre'] }}</div>
+                                            <div class="text-sm text-gray-500">{{ $total }} envíos</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                            <div class="bg-{{ $info['color'] }}-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
+                                        </div>
+                                        <span class="text-sm font-medium text-gray-900">{{ $porcentaje }}%</span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actividad reciente -->
+                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 border-b border-gray-100">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-semibold text-gray-900">Actividad Reciente</h3>
+                            <span class="text-sm text-gray-600">{{ Carbon\Carbon::now()->format('d/m/Y') }}</span>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            @php
+                                $enviosRecientes = App\Models\Envio::with('cliente')
+                                    ->where('fecha_envio', '>=', Carbon\Carbon::now()->subDays(7))
+                                    ->orderBy('fecha_envio', 'desc')
+                                    ->limit(5)
+                                    ->get();
+                            @endphp
+                            
+                            @forelse($enviosRecientes as $envio)
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">{{ $envio->cliente->razon_social ?? 'Cliente' }}</div>
+                                            <div class="text-sm text-gray-500">{{ $envio->fecha_envio ? $envio->fecha_envio->format('d/m H:i') : 'N/A' }}</div>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                            {{ $envio->estado === 'completado' ? 'bg-green-100 text-green-800' : 
+                                               ($envio->estado === 'en_proceso' ? 'bg-purple-100 text-purple-800' : 
+                                               ($envio->estado === 'pendiente' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')) }}">
+                                            {{ ucfirst($envio->estado) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="text-center py-4">
+                                    <p class="text-sm text-gray-500">No hay actividad reciente</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

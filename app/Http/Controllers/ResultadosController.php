@@ -244,7 +244,7 @@ class ResultadosController extends Controller
             ->get()
             ->map(function($item) {
                 return [
-                    'pregunta' => '1.2 - Calidad del producto - Durabilidad',
+                    'pregunta' => '1.2 - Puntualidad de entrega',
                     'respuesta' => $item->respuesta_1_2,
                     'total' => $item->total
                 ];
@@ -259,7 +259,7 @@ class ResultadosController extends Controller
             ->get()
             ->map(function($item) {
                 return [
-                    'pregunta' => '1.3 - Calidad del producto - Presentación',
+                    'pregunta' => '1.3 - Trato del asesor comercial',
                     'respuesta' => $item->respuesta_1_3,
                     'total' => $item->total
                 ];
@@ -274,7 +274,7 @@ class ResultadosController extends Controller
             ->get()
             ->map(function($item) {
                 return [
-                    'pregunta' => '1.4 - Calidad del producto - Funcionalidad',
+                    'pregunta' => '1.4 - Precio',
                     'respuesta' => $item->respuesta_1_4,
                     'total' => $item->total
                 ];
@@ -289,7 +289,7 @@ class ResultadosController extends Controller
             ->get()
             ->map(function($item) {
                 return [
-                    'pregunta' => '1.5 - Calidad del producto - Satisfacción general',
+                    'pregunta' => '1.5 - Rapidez en programación',
                     'respuesta' => $item->respuesta_1_5,
                     'total' => $item->total
                 ];

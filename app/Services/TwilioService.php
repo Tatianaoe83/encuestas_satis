@@ -362,9 +362,12 @@ class TwilioService
         $cliente = $envio->cliente;
         $identificador = $this->generarIdentificadorRespuesta($envio, 1.1);
         
-        $mensaje = "📝 *Pregunta 1.1 de 5:*\n";
-        $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
-        $mensaje .= "Calidad del producto\n\n";
+        $mensaje  = "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
+        $mensaje .= "*1. En una escala del 1-10, ¿Cómo calificarías nuestro servicio con base en los siguientes puntos?*\n\n";
+        $mensaje .= "*1* mala calificación y *10* es la mejor calificación.\n\n";
+        $mensaje .= "---\n";
+        $mensaje .= "*📝 Pregunta 1.1 de 5:*\n";
+        $mensaje .= "_Calidad del producto_\n\n";
         $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
         $mensaje .= "---\n";
         // Identificador de respuesta discreto
@@ -385,7 +388,7 @@ class TwilioService
             case 1.2:
                 $mensaje = "📝 *Pregunta 1.2 de 5:*\n";
                 $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
-                $mensaje .= "Calidad del producto\n\n";
+                $mensaje .= "_Puntualidad de entrega_\n\n";
                 $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
                 // Identificador de respuesta discreto
@@ -395,7 +398,7 @@ class TwilioService
             case 1.3:
                 $mensaje = "📝 *Pregunta 1.3 de 5:*\n";
                 $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
-                $mensaje .= "Calidad del producto\n\n";
+                $mensaje .= "_Trato del asesor comercial_\n\n";
                 $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
                 // Identificador de respuesta discreto
@@ -405,7 +408,7 @@ class TwilioService
             case 1.4:
                 $mensaje = "📝 *Pregunta 1.4 de 5:*\n";
                 $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
-                $mensaje .= "Calidad del producto\n\n";
+                $mensaje .= "_Precio_\n\n";
                 $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
                 // Identificador de respuesta discreto
@@ -415,7 +418,7 @@ class TwilioService
             case 1.5:
                 $mensaje = "📝 *Pregunta 1.5 de 5:*\n";
                 $mensaje .= "# de encuesta: " . ($envio->idenvio ?? 'N/A') . "\n\n";
-                $mensaje .= "Calidad del producto\n\n";
+                $mensaje .= "_Rapidez en programación_\n\n";
                 $mensaje .= "Responde solo con un número del 1 al 10.\n\n";
                 $mensaje .= "---\n";
                 // Identificador de respuesta discreto

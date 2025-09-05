@@ -25,7 +25,7 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
     {
         return Envio::with('cliente')
             ->where('estado', 'completado')
-            ->whereNotNull('respuesta_1')
+            ->whereNotNull('promedio_respuesta_1')
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -37,10 +37,14 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
             'CLIENTE - RAZÓN SOCIAL',
             'ASESOR COMERCIAL',
             'FECHA RESPUESTA',
-            'CALIFICACIÓN NPS',
+            'CALIFICACIÓN 1.1 - CALIDAD DEL PRODUCTO',
+            'CALIFICACIÓN 1.2 - PUNTUALIDAD DE ENTREGA',
+            'CALIFICACIÓN 1.3 - TRATO DEL ASESOR COMERCIAL',
+            'CALIFICACIÓN 1.4 - PRECIO',
+            'CALIFICACIÓN 1.5 - RAPIDEZ EN PROGRAMACIÓN',
+            'PROMEDIO CALIDAD (NPS)',
             'CATEGORÍA NPS',
-            'RAZÓN CALIFICACIÓN',
-            'TIPO DE OBRA',
+            'RECOMENDACIÓN',
             'SUGERENCIAS MEJORA',
             'TIEMPO RESPUESTA (HORAS)',
             'PERIODO ENVÍO'
@@ -55,8 +59,8 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
             $tiempoRespuesta = round($envio->fecha_envio->diffInHours($envio->fecha_respuesta), 2);
         }
 
-        // Determinar categoría NPS
-        $respuesta = (int) $envio->respuesta_1;
+        // Determinar categoría NPS basado en promedio_respuesta_1
+        $respuesta = (float) $envio->promedio_respuesta_1;
         if ($respuesta >= 9) {
             $categoriaNPS = 'PROMOTOR';
         } elseif ($respuesta >= 7) {
@@ -73,11 +77,15 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
             $envio->cliente->razon_social ?? 'N/A',
             $envio->cliente->asesor_comercial ?? 'N/A',
             $envio->fecha_respuesta ? $envio->fecha_respuesta->format('d/m/Y H:i:s') : 'N/A',
-            $envio->respuesta_1,
+            $envio->respuesta_1_1 ?? 'N/A',
+            $envio->respuesta_1_2 ?? 'N/A',
+            $envio->respuesta_1_3 ?? 'N/A',
+            $envio->respuesta_1_4 ?? 'N/A',
+            $envio->respuesta_1_5 ?? 'N/A',
+            $envio->promedio_respuesta_1 ?? 'N/A',
             $categoriaNPS,
             $envio->respuesta_2 ?? 'N/A',
             $envio->respuesta_3 ?? 'N/A',
-            $envio->respuesta_4 ?? 'N/A',
             $tiempoRespuesta ?? 'N/A',
             $periodoEnvio
         ];
@@ -86,7 +94,7 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
     public function styles($sheet)
     {
         // Estilo para el título principal
-        $sheet->getStyle('A1:K1')->applyFromArray([
+        $sheet->getStyle('A1:O1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -109,7 +117,7 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
         ]);
 
         // Estilo para las celdas de datos
-        $sheet->getStyle('A2:K' . ($sheet->getHighestRow()))->applyFromArray([
+        $sheet->getStyle('A2:O' . ($sheet->getHighestRow()))->applyFromArray([
             'font' => [
                 'size' => 10
             ],
@@ -125,8 +133,8 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
             ]
         ]);
 
-        // Estilo especial para la columna de calificación NPS
-        $sheet->getStyle('E2:E' . $sheet->getHighestRow())->applyFromArray([
+        // Estilo especial para la columna de promedio NPS
+        $sheet->getStyle('J2:J' . $sheet->getHighestRow())->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 12
@@ -137,7 +145,7 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
         ]);
 
         // Estilo especial para la columna de categoría NPS
-        $sheet->getStyle('F2:F' . $sheet->getHighestRow())->applyFromArray([
+        $sheet->getStyle('K2:K' . $sheet->getHighestRow())->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 11
@@ -150,17 +158,17 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
         // Colorear filas según categoría NPS
         $highestRow = $sheet->getHighestRow();
         for ($row = 2; $row <= $highestRow; $row++) {
-            $categoria = $sheet->getCell('F' . $row)->getValue();
+            $categoria = $sheet->getCell('K' . $row)->getValue();
             if ($categoria === 'PROMOTOR') {
-                $sheet->getStyle('A' . $row . ':K' . $row)->getFill()
+                $sheet->getStyle('A' . $row . ':O' . $row)->getFill()
                     ->setFillType(Fill::FILL_SOLID)
                     ->setStartColor(new Color('D4EDDA'));
             } elseif ($categoria === 'PASIVO') {
-                $sheet->getStyle('A' . $row . ':K' . $row)->getFill()
+                $sheet->getStyle('A' . $row . ':O' . $row)->getFill()
                     ->setFillType(Fill::FILL_SOLID)
                     ->setStartColor(new Color('FFF3CD'));
             } elseif ($categoria === 'DETRACTOR') {
-                $sheet->getStyle('A' . $row . ':K' . $row)->getFill()
+                $sheet->getStyle('A' . $row . ':O' . $row)->getFill()
                     ->setFillType(Fill::FILL_SOLID)
                     ->setStartColor(new Color('F8D7DA'));
             }
@@ -171,9 +179,10 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
         $sheet->getStyle('B1')->getFill()->setStartColor(new Color('2E5BBA'));
         $sheet->getStyle('C1')->getFill()->setStartColor(new Color('1F4E79'));
         $sheet->getStyle('D1')->getFill()->setStartColor(new Color('2E5BBA'));
-        $sheet->getStyle('E1:F1')->getFill()->setStartColor(new Color('28A745'));
-        $sheet->getStyle('G1:I1')->getFill()->setStartColor(new Color('17A2B8'));
-        $sheet->getStyle('J1:K1')->getFill()->setStartColor(new Color('6C757D'));
+        $sheet->getStyle('E1:I1')->getFill()->setStartColor(new Color('28A745')); // Calificaciones individuales
+        $sheet->getStyle('J1:K1')->getFill()->setStartColor(new Color('17A2B8')); // NPS y categoría
+        $sheet->getStyle('L1:M1')->getFill()->setStartColor(new Color('FFC107')); // Recomendación y sugerencias
+        $sheet->getStyle('N1:O1')->getFill()->setStartColor(new Color('6C757D')); // Metadatos
 
         return $sheet;
     }
@@ -185,13 +194,17 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
             'B' => 30,  // CLIENTE - RAZÓN SOCIAL
             'C' => 20,  // ASESOR COMERCIAL
             'D' => 20,  // FECHA RESPUESTA
-            'E' => 18,  // CALIFICACIÓN NPS
-            'F' => 18,  // CATEGORÍA NPS
-            'G' => 40,  // RAZÓN CALIFICACIÓN
-            'H' => 30,  // TIPO DE OBRA
-            'I' => 40,  // SUGERENCIAS MEJORA
-            'J' => 25,  // TIEMPO RESPUESTA (HORAS)
-            'K' => 15,  // PERIODO ENVÍO
+            'E' => 25,  // CALIFICACIÓN 1.1 - CALIDAD DEL PRODUCTO
+            'F' => 25,  // CALIFICACIÓN 1.2 - PUNTUALIDAD DE ENTREGA
+            'G' => 25,  // CALIFICACIÓN 1.3 - TRATO DEL ASESOR COMERCIAL
+            'H' => 25,  // CALIFICACIÓN 1.4 - PRECIO
+            'I' => 30,  // CALIFICACIÓN 1.5 - RAPIDEZ EN PROGRAMACIÓN
+            'J' => 20,  // PROMEDIO CALIDAD (NPS)
+            'K' => 18,  // CATEGORÍA NPS
+            'L' => 25,  // RECOMENDACIÓN
+            'M' => 40,  // SUGERENCIAS MEJORA
+            'N' => 25,  // TIEMPO RESPUESTA (HORAS)
+            'O' => 15,  // PERIODO ENVÍO
         ];
     }
 
@@ -222,7 +235,7 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
                 $event->sheet->getDelegate()->getStyle('A1:K1')->getFont()->setBold(true);
                 
                 // Agregar filtros a los encabezados
-                $event->sheet->getDelegate()->setAutoFilter('A1:K1');
+                $event->sheet->getDelegate()->setAutoFilter('A1:O1');
                 
                 // Congelar la primera fila
                 $event->sheet->getDelegate()->freezePane('A2');
@@ -231,7 +244,7 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
                 $event->sheet->insertNewRowBefore(1, 3);
                 
                 // Título principal
-                $event->sheet->mergeCells('A1:K1');
+                $event->sheet->mergeCells('A1:O1');
                 $event->sheet->setCellValue('A1', 'REPORTE DE NET PROMOTER SCORE (NPS)');
                 $event->sheet->getStyle('A1')->applyFromArray([
                     'font' => [
@@ -250,7 +263,7 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
                 ]);
                 
                 // Subtítulo
-                $event->sheet->mergeCells('A2:K2');
+                $event->sheet->mergeCells('A2:O2');
                 $event->sheet->setCellValue('A2', 'Encuestas de Satisfacción del Cliente - Konkret');
                 $event->sheet->getStyle('A2')->applyFromArray([
                     'font' => [
@@ -269,7 +282,7 @@ class NPSExport implements FromCollection, WithHeadings, WithMapping, WithStyles
                 ]);
                 
                 // Fecha de generación
-                $event->sheet->mergeCells('A3:K3');
+                $event->sheet->mergeCells('A3:O3');
                 $event->sheet->setCellValue('A3', 'Generado el: ' . now()->format('d/m/Y H:i:s'));
                 $event->sheet->getStyle('A3')->applyFromArray([
                     'font' => [

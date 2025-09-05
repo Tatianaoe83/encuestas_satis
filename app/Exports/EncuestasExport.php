@@ -42,15 +42,22 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
             'FECHA ENVÍO',
             'FECHA RESPUESTA',
             'FECHA CREACIÓN',
-            'PREGUNTA 1 - NPS',
-            'RESPUESTA 1 - NPS',
+            'PREGUNTA 1.1 - CALIDAD DEL PRODUCTO',
+            'RESPUESTA 1.1',
+            'PREGUNTA 1.2 - PUNTUALIDAD DE ENTREGA',
+            'RESPUESTA 1.2',
+            'PREGUNTA 1.3 - TRATO DEL ASESOR COMERCIAL',
+            'RESPUESTA 1.3',
+            'PREGUNTA 1.4 - PRECIO',
+            'RESPUESTA 1.4',
+            'PREGUNTA 1.5 - RAPIDEZ EN PROGRAMACIÓN',
+            'RESPUESTA 1.5',
+            'PROMEDIO CALIDAD (NPS)',
             'CATEGORÍA NPS',
-            'PREGUNTA 2 - RAZÓN',
-            'RESPUESTA 2 - RAZÓN',
-            'PREGUNTA 3 - TIPO OBRA',
-            'RESPUESTA 3 - TIPO OBRA',
-            'PREGUNTA 4 - SUGERENCIAS',
-            'RESPUESTA 4 - SUGERENCIAS',
+            'PREGUNTA 2 - RECOMENDACIÓN',
+            'RESPUESTA 2 - RECOMENDACIÓN',
+            'PREGUNTA 3 - SUGERENCIAS',
+            'RESPUESTA 3 - SUGERENCIAS',
             'TIEMPO RESPUESTA (HORAS)',
             'DÍA SEMANA ENVÍO',
             'MES ENVÍO',
@@ -66,10 +73,10 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
             $tiempoRespuesta = round($envio->fecha_envio->diffInHours($envio->fecha_respuesta), 2);
         }
 
-        // Determinar categoría NPS
+        // Determinar categoría NPS basado en promedio_respuesta_1
         $categoriaNPS = '';
-        if ($envio->respuesta_1 !== null && $envio->respuesta_1 !== '') {
-            $respuesta = (int) $envio->respuesta_1;
+        if ($envio->promedio_respuesta_1 !== null && $envio->promedio_respuesta_1 !== '') {
+            $respuesta = (float) $envio->promedio_respuesta_1;
             if ($respuesta >= 9) {
                 $categoriaNPS = 'PROMOTOR';
             } elseif ($respuesta >= 7) {
@@ -94,15 +101,22 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
             $envio->fecha_envio ? $envio->fecha_envio->format('d/m/Y H:i:s') : 'N/A',
             $envio->fecha_respuesta ? $envio->fecha_respuesta->format('d/m/Y H:i:s') : 'N/A',
             $envio->created_at->format('d/m/Y H:i:s'),
-            '¿Qué probabilidad hay de que recomiende Konkret a un colega?',
-            $envio->respuesta_1 ?? 'N/A',
+            'Calidad del producto',
+            $envio->respuesta_1_1 ?? 'N/A',
+            'Puntualidad de entrega',
+            $envio->respuesta_1_2 ?? 'N/A',
+            'Trato del asesor comercial',
+            $envio->respuesta_1_3 ?? 'N/A',
+            'Precio',
+            $envio->respuesta_1_4 ?? 'N/A',
+            'Rapidez en programación',
+            $envio->respuesta_1_5 ?? 'N/A',
+            $envio->promedio_respuesta_1 ?? 'N/A',
             $categoriaNPS,
-            '¿Cuál es la razón principal de tu calificación?',
+            '¿Recomendarías a Konkret?',
             $envio->respuesta_2 ?? 'N/A',
-            '¿A qué tipo de obra se destinó este concreto?',
-            $envio->respuesta_3 ?? 'N/A',
             '¿Qué podríamos hacer para mejorar tu experiencia?',
-            $envio->respuesta_4 ?? 'N/A',
+            $envio->respuesta_3 ?? 'N/A',
             $tiempoRespuesta ?? 'N/A',
             $envio->fecha_envio ? $envio->fecha_envio->format('l') : 'N/A',
             $envio->fecha_envio ? $envio->fecha_envio->format('F') : 'N/A',
@@ -113,7 +127,7 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
     public function styles($sheet)
     {
         // Estilo para el título
-        $sheet->getStyle('A1:X1')->applyFromArray([
+        $sheet->getStyle('A1:AE1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'color' => ['rgb' => 'FFFFFF'],
@@ -136,7 +150,7 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
         ]);
 
         // Estilo para las celdas de datos
-        $sheet->getStyle('A2:X' . ($sheet->getHighestRow()))->applyFromArray([
+        $sheet->getStyle('A2:AE' . ($sheet->getHighestRow()))->applyFromArray([
             'font' => [
                 'size' => 10
             ],
@@ -153,7 +167,7 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
         ]);
 
         // Estilo especial para la columna de categoría NPS
-        $sheet->getStyle('N2:N' . $sheet->getHighestRow())->applyFromArray([
+        $sheet->getStyle('W2:W' . $sheet->getHighestRow())->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 10
@@ -166,17 +180,17 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
         // Colorear filas según categoría NPS
         $highestRow = $sheet->getHighestRow();
         for ($row = 2; $row <= $highestRow; $row++) {
-            $categoria = $sheet->getCell('N' . $row)->getValue();
+            $categoria = $sheet->getCell('W' . $row)->getValue();
             if ($categoria === 'PROMOTOR') {
-                $sheet->getStyle('A' . $row . ':X' . $row)->getFill()
+                $sheet->getStyle('A' . $row . ':AE' . $row)->getFill()
                     ->setFillType(Fill::FILL_SOLID)
                     ->setStartColor(new Color('D4EDDA'));
             } elseif ($categoria === 'PASIVO') {
-                $sheet->getStyle('A' . $row . ':X' . $row)->getFill()
+                $sheet->getStyle('A' . $row . ':AE' . $row)->getFill()
                     ->setFillType(Fill::FILL_SOLID)
                     ->setStartColor(new Color('FFF3CD'));
             } elseif ($categoria === 'DETRACTOR') {
-                $sheet->getStyle('A' . $row . ':X' . $row)->getFill()
+                $sheet->getStyle('A' . $row . ':AE' . $row)->getFill()
                     ->setFillType(Fill::FILL_SOLID)
                     ->setStartColor(new Color('F8D7DA'));
             }
@@ -189,10 +203,11 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
         $sheet->getStyle('E1:G1')->getFill()->setStartColor(new Color('2E5BBA'));
         $sheet->getStyle('H1')->getFill()->setStartColor(new Color('1F4E79'));
         $sheet->getStyle('I1:K1')->getFill()->setStartColor(new Color('2E5BBA'));
-        $sheet->getStyle('L1:N1')->getFill()->setStartColor(new Color('28A745'));
-        $sheet->getStyle('O1:Q1')->getFill()->setStartColor(new Color('17A2B8'));
-        $sheet->getStyle('R1:T1')->getFill()->setStartColor(new Color('FFC107'));
-        $sheet->getStyle('U1:X1')->getFill()->setStartColor(new Color('6C757D'));
+        $sheet->getStyle('L1:V1')->getFill()->setStartColor(new Color('28A745')); // Calidad del producto
+        $sheet->getStyle('W1')->getFill()->setStartColor(new Color('17A2B8')); // Categoría NPS
+        $sheet->getStyle('X1:Y1')->getFill()->setStartColor(new Color('FFC107')); // Recomendación
+        $sheet->getStyle('Z1:AA1')->getFill()->setStartColor(new Color('6C757D')); // Sugerencias
+        $sheet->getStyle('AB1:AE1')->getFill()->setStartColor(new Color('6C757D')); // Metadatos
 
         return $sheet;
     }
@@ -211,19 +226,26 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
             'I' => 20,  // FECHA ENVÍO
             'J' => 20,  // FECHA RESPUESTA
             'K' => 20,  // FECHA CREACIÓN
-            'L' => 50,  // PREGUNTA 1 - NPS
-            'M' => 15,  // RESPUESTA 1 - NPS
-            'N' => 15,  // CATEGORÍA NPS
-            'O' => 50,  // PREGUNTA 2 - RAZÓN
-            'P' => 40,  // RESPUESTA 2 - RAZÓN
-            'Q' => 50,  // PREGUNTA 3 - TIPO OBRA
-            'R' => 40,  // RESPUESTA 3 - TIPO OBRA
-            'S' => 50,  // PREGUNTA 4 - SUGERENCIAS
-            'T' => 40,  // RESPUESTA 4 - SUGERENCIAS
-            'U' => 25,  // TIEMPO RESPUESTA (HORAS)
-            'V' => 20,  // DÍA SEMANA ENVÍO
-            'W' => 15,  // MES ENVÍO
-            'X' => 10,  // AÑO ENVÍO
+            'L' => 20,  // PREGUNTA 1.1 - CALIDAD GENERAL
+            'M' => 15,  // RESPUESTA 1.1
+            'N' => 20,  // PREGUNTA 1.2 - DURABILIDAD
+            'O' => 15,  // RESPUESTA 1.2
+            'P' => 20,  // PREGUNTA 1.3 - PRESENTACIÓN
+            'Q' => 15,  // RESPUESTA 1.3
+            'R' => 20,  // PREGUNTA 1.4 - FUNCIONALIDAD
+            'S' => 15,  // RESPUESTA 1.4
+            'T' => 25,  // PREGUNTA 1.5 - SATISFACCIÓN GENERAL
+            'U' => 15,  // RESPUESTA 1.5
+            'V' => 20,  // PROMEDIO CALIDAD (NPS)
+            'W' => 15,  // CATEGORÍA NPS
+            'X' => 30,  // PREGUNTA 2 - RECOMENDACIÓN
+            'Y' => 25,  // RESPUESTA 2 - RECOMENDACIÓN
+            'Z' => 40,  // PREGUNTA 3 - SUGERENCIAS
+            'AA' => 40, // RESPUESTA 3 - SUGERENCIAS
+            'AB' => 25, // TIEMPO RESPUESTA (HORAS)
+            'AC' => 20, // DÍA SEMANA ENVÍO
+            'AD' => 15, // MES ENVÍO
+            'AE' => 10, // AÑO ENVÍO
         ];
     }
 
@@ -254,7 +276,7 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
                 $event->sheet->getDelegate()->getStyle('A1:X1')->getFont()->setBold(true);
                 
                 // Agregar filtros a los encabezados
-                $event->sheet->getDelegate()->setAutoFilter('A1:X1');
+                $event->sheet->getDelegate()->setAutoFilter('A1:AE1');
                 
                 // Congelar la primera fila
                 $event->sheet->getDelegate()->freezePane('A2');

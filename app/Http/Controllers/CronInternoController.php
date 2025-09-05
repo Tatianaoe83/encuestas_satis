@@ -37,12 +37,12 @@ class CronInternoController extends Controller
         }
         
         try {
-            Log::info('Ejecutando cron interno automáticamente', [
+            /*Log::info('Ejecutando cron interno automáticamente', [
                 'timestamp' => $now,
                 'last_run' => $lastRun,
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent()
-            ]);
+            ]);*/
             
             // Ejecutar verificación de timers
             $resultado = $this->twilioService->verificarTimersExpirados();

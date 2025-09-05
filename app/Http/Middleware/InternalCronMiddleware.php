@@ -35,10 +35,10 @@ class InternalCronMiddleware
         // Ejecutar solo si han pasado al menos 5 minutos desde la última ejecución
         if (!$lastRun || $now->diffInMinutes($lastRun) >= 5) {
             try {
-                Log::info('Ejecutando cron interno automáticamente', [
+                /*Log::info('Ejecutando cron interno automáticamente', [
                     'timestamp' => $now,
                     'last_run' => $lastRun
-                ]);
+                ]);*/
                 
                 // Ejecutar comando de timers
                 \Artisan::call('timers:verificar');

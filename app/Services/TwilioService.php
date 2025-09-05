@@ -1314,13 +1314,13 @@ class TwilioService
             
             // SEGUNDA PRIORIDAD: Buscar por número de WhatsApp
             if (!$envio) {
-                $envio = Envio::where('whatsapp_number', "whatsapp:{$from}")
-                    ->where('estado', 'esperando_respuesta')
-                    ->where('timer_activo', true)
-                    ->where('tiempo_expiracion', '>', now())
-                    ->latest()
-                    ->first();
-                
+            $envio = Envio::where('whatsapp_number', "whatsapp:{$from}")
+                ->where('estado', 'esperando_respuesta')
+                ->where('timer_activo', true)
+                ->where('tiempo_expiracion', '>', now())
+                ->latest()
+                ->first();
+
                 if ($envio) {
                     /*Log::info("Envío encontrado por número WhatsApp en contenido aprobado", [
                         'envio_id' => $envio->idenvio,
@@ -1654,5 +1654,42 @@ class TwilioService
                 return $value ? 'Configurado' : 'No configurado';
             }, $config)
         ];
+    }
+
+    /**
+     * Obtener saldo de la cuenta de Twilio
+     */
+    public function obtenerSaldo()
+    {
+        try {
+            // Obtener información de la cuenta
+            $account = $this->client->api->accounts(config('services.twilio.account_sid'))->fetch();
+            
+            // Obtener el saldo de la cuenta
+            $balance = $this->client->api->accounts(config('services.twilio.account_sid'))->balance->fetch();
+            
+            return [
+                'success' => true,
+                'account_sid' => $account->sid,
+                'account_name' => $account->friendlyName,
+                'account_status' => $account->status,
+                'balance' => $balance->balance,
+                'currency' => $balance->currency,
+                'balance_formatted' => number_format($balance->balance, 2) . ' ' . $balance->currency,
+                'fecha_consulta' => now()->format('d/m/Y H:i:s')
+            ];
+
+        } catch (\Exception $e) {
+            Log::error("Error obteniendo saldo de Twilio", [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'fecha_consulta' => now()->format('d/m/Y H:i:s')
+            ];
+        }
     }
 } 

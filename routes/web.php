@@ -5,6 +5,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\EnvioController;
 use App\Http\Controllers\ResultadosController;
 use App\Http\Controllers\TwilioWebhookController;
+use App\Http\Controllers\TwilioController;
 use App\Http\Controllers\ChatController;
 use Illuminate\Http\Request;
 
@@ -133,5 +134,17 @@ Route::prefix('chat')->group(function () {
 Route::get('/chat', function () {
     return view('chat.index');
 })->name('chat.index');
+
+// Rutas para información de Twilio
+Route::prefix('twilio')->middleware(['auth'])->group(function () {
+    Route::get('/', [TwilioController::class, 'index'])
+        ->name('twilio.index');
+    
+    Route::get('/saldo', [TwilioController::class, 'obtenerSaldo'])
+        ->name('twilio.saldo');
+    
+    Route::post('/probar', [TwilioController::class, 'probarConexion'])
+        ->name('twilio.probar');
+});
 
 

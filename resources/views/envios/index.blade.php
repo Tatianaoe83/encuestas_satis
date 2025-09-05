@@ -88,6 +88,88 @@
                 </div>
             </div>
 
+            <!-- Saldo de Twilio -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                        </svg>
+                        Saldo de Twilio
+                    </h2>
+                    <button onclick="actualizarSaldoTwilio()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                        Actualizar
+                    </button>
+                </div>
+
+                @if($saldoTwilio['success'])
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <!-- Saldo Actual -->
+                        <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-4 text-white">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-blue-100 text-sm font-medium">Saldo Actual</p>
+                                    <p class="text-2xl font-bold mt-1">{{ $saldoTwilio['balance_formatted'] }}</p>
+                                </div>
+                                <div class="bg-white bg-opacity-20 rounded-full p-3">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Información de Cuenta -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <h3 class="text-sm font-medium text-gray-500 mb-2">Información de Cuenta</h3>
+                            <div class="space-y-1">
+                                <p class="text-xs text-gray-600">
+                                    <span class="font-medium">SID:</span> {{ substr($saldoTwilio['account_sid'], 0, 20) }}...
+                                </p>
+                                <p class="text-xs text-gray-600">
+                                    <span class="font-medium">Nombre:</span> {{ $saldoTwilio['account_name'] }}
+                                </p>
+                                <p class="text-xs text-gray-600">
+                                    <span class="font-medium">Estado:</span> 
+                                    <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        {{ ucfirst($saldoTwilio['account_status']) }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Moneda -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <h3 class="text-sm font-medium text-gray-500 mb-2">Moneda</h3>
+                            <p class="text-2xl font-bold text-gray-900">{{ $saldoTwilio['currency'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Código de moneda</p>
+                        </div>
+
+                        <!-- Última Consulta -->
+                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                            <h3 class="text-sm font-medium text-gray-500 mb-2">Última Consulta</h3>
+                            <p class="text-lg font-bold text-gray-900">{{ $saldoTwilio['fecha_consulta'] }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Fecha y hora</p>
+                        </div>
+                    </div>
+                @else
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                            <div>
+                                <h3 class="text-sm font-medium text-red-800">Error al obtener saldo</h3>
+                                <p class="text-sm text-red-600 mt-1">{{ $saldoTwilio['error'] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
+
             <!-- Mensajes de éxito y error -->
             @if(session('success'))
                 <div class="bg-green-500 border border-green-400 text-white px-6 py-4 rounded-xl mb-6 shadow-lg">
@@ -427,4 +509,52 @@
             </div>
         </div>
     </div>
+
+    <!-- JavaScript para actualizar saldo de Twilio -->
+    <script>
+        function actualizarSaldoTwilio() {
+            const saldoSection = document.querySelector('.bg-white.rounded-xl.shadow-lg.p-6.mb-8');
+            const button = document.querySelector('button[onclick="actualizarSaldoTwilio()"]');
+            
+            // Mostrar estado de carga
+            button.disabled = true;
+            button.innerHTML = `
+                <svg class="w-4 h-4 mr-2 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                </svg>
+                Actualizando...
+            `;
+            
+            fetch('{{ route("twilio.saldo") }}', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Actualizar la sección del saldo
+                    location.reload();
+                } else {
+                    alert('Error al actualizar el saldo: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al actualizar el saldo');
+            })
+            .finally(() => {
+                // Restaurar botón
+                button.disabled = false;
+                button.innerHTML = `
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Actualizar
+                `;
+            });
+        }
+    </script>
 </x-app-layout> 

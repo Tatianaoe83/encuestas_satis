@@ -22,7 +22,7 @@ class EnvioController extends Controller
      */
     public function index()
     {
-        $envios = Envio::with('cliente')->paginate(100);
+        $envios = Envio::with('cliente')->latest()->get();
         $saldoTwilio = $this->twilioService->obtenerSaldo();
         
         return view('envios.index', compact('envios', 'saldoTwilio'));

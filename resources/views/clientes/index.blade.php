@@ -27,7 +27,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-blue-100 text-sm font-medium">Total Clientes</p>
-                            <p class="text-2xl font-bold mt-1">{{ $clientes->total() }}</p>
+                            <p class="text-2xl font-bold mt-1">{{ $clientes->count() }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">

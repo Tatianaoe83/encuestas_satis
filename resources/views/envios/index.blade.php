@@ -27,7 +27,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-blue-100 text-sm font-medium">Total Envíos</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->total() }}</p>
+                            <p class="text-2xl font-bold mt-1">{{ $envios->count() }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -106,7 +106,7 @@
                 </div>
 
                 @if($saldoTwilio['success'])
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         <!-- Saldo Actual -->
                         <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg p-4 text-white">
                             <div class="flex items-center justify-between">
@@ -126,9 +126,7 @@
                         <div class="bg-white border border-gray-200 rounded-lg p-4">
                             <h3 class="text-sm font-medium text-gray-500 mb-2">Información de Cuenta</h3>
                             <div class="space-y-1">
-                                <p class="text-xs text-gray-600">
-                                    <span class="font-medium">SID:</span> {{ substr($saldoTwilio['account_sid'], 0, 20) }}...
-                                </p>
+                               
                                 <p class="text-xs text-gray-600">
                                     <span class="font-medium">Nombre:</span> {{ $saldoTwilio['account_name'] }}
                                 </p>
@@ -148,12 +146,6 @@
                             <p class="text-xs text-gray-500 mt-1">Código de moneda</p>
                         </div>
 
-                        <!-- Última Consulta -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-4">
-                            <h3 class="text-sm font-medium text-gray-500 mb-2">Última Consulta</h3>
-                            <p class="text-lg font-bold text-gray-900">{{ $saldoTwilio['fecha_consulta'] }}</p>
-                            <p class="text-xs text-gray-500 mt-1">Fecha y hora</p>
-                        </div>
                     </div>
                 @else
                     <div class="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -199,7 +191,7 @@
 
                 <div class="p-6">
                     <table class="w-full display responsive nowrap" id="tabla-envios" style="width: 100%;">
-                        <thead >
+                        <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Cliente</th>
@@ -390,6 +382,19 @@
                     <!-- Script para inicializar DataTables -->
             <script>
                 $(document).ready(function() {
+                    // Verificar que la tabla existe y tiene el número correcto de columnas
+                    var table = $('#tabla-envios');
+                    var headerCount = table.find('thead th').length;
+                    var firstRowCount = table.find('tbody tr:first td').length;
+                    
+                    console.log('Columnas en encabezado:', headerCount);
+                    console.log('Columnas en primera fila:', firstRowCount);
+                    
+                    if (headerCount !== firstRowCount) {
+                        console.error('Error: Número de columnas no coincide');
+                        return;
+                    }
+                    
                     $('#tabla-envios').DataTable({
                         responsive: true,
                         language: {
@@ -403,8 +408,16 @@
                                 targets: -1,
                                 orderable: false,
                                 searchable: false
+                            },
+                            {
+                                targets: [1, 2, 3, 4],
+                                orderable: false
                             }
                         ],
+                        autoWidth: false,
+                        processing: true,
+                        deferRender: true,
+                        destroy: true,
                         initComplete: function() {
                             // Actualizar contador de total de envíos
                             $('#total-envios').text(this.api().data().count());

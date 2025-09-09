@@ -10,6 +10,7 @@ use App\Exports\EncuestasExport;
 use App\Exports\NPSExport;
 use App\Exports\EstadisticasExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Carbon\Carbon;
 
 class ResultadosController extends Controller
 {
@@ -176,6 +177,8 @@ class ResultadosController extends Controller
     {
         $enviosCompletados = Envio::where('estado', 'completado')
             ->whereNotNull('promedio_respuesta_1')
+            ->where('fecha_envio', '>=', Carbon::now()->subMonths(6))
+            ->where('fecha_envio', '<=', Carbon::now())
             ->get();
 
         if ($enviosCompletados->count() === 0) {
@@ -193,8 +196,8 @@ class ResultadosController extends Controller
 
         $total = $enviosCompletados->count();
         $promotores = $enviosCompletados->where('promedio_respuesta_1', '>=', 9)->count();
-        $pasivos = $enviosCompletados->where('promedio_respuesta_1', '>=', 7)->where('promedio_respuesta_1', '<=', 8)->count();
-        $detractores = $enviosCompletados->where('promedio_respuesta_1', '<=', 6)->count();
+        $pasivos = $enviosCompletados->where('promedio_respuesta_1', '>=', 7)->where('promedio_respuesta_1', '<', 9)->count();
+        $detractores = $enviosCompletados->where('promedio_respuesta_1', '<', 7)->count();
 
         // Calcular NPS correctamente: % Promotores - % Detractores
         $porcentajePromotores = ($promotores / $total) * 100;

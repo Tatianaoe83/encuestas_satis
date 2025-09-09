@@ -182,13 +182,14 @@ class DashboardController extends Controller
                 DB::raw('AVG(promedio_respuesta_1) as nps_promedio'),
                 DB::raw('count(*) as total_respuestas'),
                 DB::raw('count(CASE WHEN promedio_respuesta_1 >= 9 THEN 1 END) as promotores'),
-                DB::raw('count(CASE WHEN promedio_respuesta_1 BETWEEN 7 AND 8 THEN 1 END) as pasivos'),
-                DB::raw('count(CASE WHEN promedio_respuesta_1 <= 6 THEN 1 END) as detractores')
+                DB::raw('count(CASE WHEN promedio_respuesta_1 >= 7 AND promedio_respuesta_1 < 9 THEN 1 END) as pasivos'),
+                DB::raw('count(CASE WHEN promedio_respuesta_1 < 7 THEN 1 END) as detractores')
             )
             ->whereNotNull('fecha_envio')
             ->whereNotNull('promedio_respuesta_1')
             ->where('estado', 'completado')
             ->where('fecha_envio', '>=', Carbon::now()->subMonths(6))
+            ->where('fecha_envio', '<=', Carbon::now())
             ->groupBy('mes', 'año')
             ->orderBy('año')
             ->orderBy('mes')
@@ -202,6 +203,8 @@ class DashboardController extends Controller
     {
         $enviosCompletados = Envio::where('estado', 'completado')
             ->whereNotNull('promedio_respuesta_1')
+            ->where('fecha_envio', '>=', Carbon::now()->subMonths(6))
+            ->where('fecha_envio', '<=', Carbon::now())
             ->get();
 
         if ($enviosCompletados->count() === 0) {
@@ -219,8 +222,8 @@ class DashboardController extends Controller
 
         $total = $enviosCompletados->count();
         $promotores = $enviosCompletados->where('promedio_respuesta_1', '>=', 9)->count();
-        $pasivos = $enviosCompletados->where('promedio_respuesta_1', '>=', 7)->where('promedio_respuesta_1', '<=', 8)->count();
-        $detractores = $enviosCompletados->where('promedio_respuesta_1', '<=', 6)->count();
+        $pasivos = $enviosCompletados->where('promedio_respuesta_1', '>=', 7)->where('promedio_respuesta_1', '<', 9)->count();
+        $detractores = $enviosCompletados->where('promedio_respuesta_1', '<', 7)->count();
 
         // Calcular NPS correctamente: % Promotores - % Detractores
         $porcentajePromotores = ($promotores / $total) * 100;

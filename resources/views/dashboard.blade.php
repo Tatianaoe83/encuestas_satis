@@ -24,8 +24,8 @@
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M12 2a1 1 0 0 1 .932.638l7 18a1 1 0 0 1-1.326 1.281L13 19.517V13a1 1 0 1 0-2 0v6.517l-5.606 2.402a1 1 0 0 1-1.326-1.281l7-18A1 1 0 0 1 12 2Z" clip-rule="evenodd"/>
-                              </svg>
+                                <path fill-rule="evenodd" d="M12 2a1 1 0 0 1 .932.638l7 18a1 1 0 0 1-1.326 1.281L13 19.517V13a1 1 0 1 0-2 0v6.517l-5.606 2.402a1 1 0 0 1-1.326-1.281l7-18A1 1 0 0 1 12 2Z" clip-rule="evenodd" />
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -40,8 +40,8 @@
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd"/>
-                              </svg>
+                                <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd" />
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -56,8 +56,8 @@
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"/>
-                              </svg>
+                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -72,8 +72,8 @@
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
                             <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z"/>
-                              </svg>
+                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                                 <div class="text-xs text-gray-600">Detractores (0-6)</div>
                                 <div class="text-xs text-red-500 font-medium">{{ $npsPromedio['porcentaje_detractores'] }}%</div>
                             </div>
-                                </div>
+                        </div>
 
                         <!-- Fórmula del NPS -->
                         <div class="text-center mb-4 p-3 bg-gray-50 rounded-lg">
@@ -130,24 +130,24 @@
                         <!-- Gráfico de Tendencia Mensual -->
                         <div class="h-32">
                             @if($datosNPS->count() > 0)
-                                <div class="flex items-end justify-between h-full space-x-1">
-                                    @foreach($datosNPS as $dato)
-                                        @php
-                                            $mes = Carbon\Carbon::createFromDate($dato->año, $dato->mes, 1)->format('M');
-                                            $npsValue = $dato->nps_promedio ?: 0;
-                                            $altura = $npsValue > 0 ? ($npsValue / 10) * 100 : 0;
-                                        @endphp
-                                        <div class="flex flex-col items-center">
-                                            <div class="w-6 {{ $npsValue >= 7 ? 'bg-green-500' : ($npsValue >= 5 ? 'bg-yellow-500' : 'bg-red-500') }} rounded-t" style="height: {{ $altura }}%"></div>
-                                            <span class="text-xs text-gray-600 mt-1">{{ $mes }}</span>
-                                            <span class="text-xs text-gray-500">{{ round($npsValue, 1) }}</span>
-                                        </div>
-                                    @endforeach
+                            <div class="flex items-end justify-between h-full space-x-1">
+                                @foreach($datosNPS as $dato)
+                                @php
+                                $mes = Carbon\Carbon::createFromDate($dato->año, $dato->mes, 1)->format('M');
+                                $npsValue = $dato->nps_promedio ?: 0;
+                                $altura = $npsValue > 0 ? ($npsValue / 10) * 100 : 0;
+                                @endphp
+                                <div class="flex flex-col items-center">
+                                    <div class="w-6 {{ $npsValue >= 7 ? 'bg-green-500' : ($npsValue >= 5 ? 'bg-yellow-500' : 'bg-red-500') }} rounded-t" style="height: {{ $altura }}%"></div>
+                                    <span class="text-xs text-gray-600 mt-1">{{ $mes }}</span>
+                                    <span class="text-xs text-gray-500">{{ round($npsValue, 1) }}</span>
                                 </div>
+                                @endforeach
+                            </div>
                             @else
-                                <div class="flex items-center justify-center h-full">
-                                    <p class="text-sm text-gray-500">No hay datos de NPS</p>
-                                </div>
+                            <div class="flex items-center justify-center h-full">
+                                <p class="text-sm text-gray-500">No hay datos de NPS</p>
+                            </div>
                             @endif
                         </div>
                     </div>
@@ -175,40 +175,40 @@
                                 <tr class="hover:bg-gray-50 transition-colors duration-200">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                                <div class="w-8 h-8 {{ $estado->estado === 'completado' ? 'bg-green-100' : ($estado->estado === 'enviado' ? 'bg-blue-100' : 'bg-yellow-100') }} rounded-full flex items-center justify-center mr-3">
-                                                    <span class="{{ $estado->estado === 'completado' ? 'text-green-600' : ($estado->estado === 'enviado' ? 'text-blue-600' : 'text-yellow-600') }} font-medium text-sm">{{ strtoupper(substr($estado->estado, 0, 1)) }}</span>
+                                            <div class="w-8 h-8 {{ $estado->estado === 'completado' ? 'bg-green-100' : ($estado->estado === 'enviado' ? 'bg-blue-100' : 'bg-yellow-100') }} rounded-full flex items-center justify-center mr-3">
+                                                <span class="{{ $estado->estado === 'completado' ? 'text-green-600' : ($estado->estado === 'enviado' ? 'text-blue-600' : 'text-yellow-600') }} font-medium text-sm">{{ strtoupper(substr($estado->estado, 0, 1)) }}</span>
                                             </div>
                                             <div>
-                                                    <div class="text-sm font-medium text-gray-900">{{ ucfirst($estado->estado) }}</div>
-                                                    <div class="text-sm text-gray-500">{{ $estado->total }} envíos</div>
-                                                </div>
+                                                <div class="text-sm font-medium text-gray-900">{{ ucfirst($estado->estado) }}</div>
+                                                <div class="text-sm text-gray-500">{{ $estado->total }} envíos</div>
+                                            </div>
                                         </div>
                                     </td>
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
-                                                <div class="w-16 bg-gray-200 rounded-full h-2">
-                                                    @php
-                                                        $porcentaje = $totalEnvios > 0 ? ($estado->total / $totalEnvios) * 100 : 0;
-                                                    @endphp
-                                                    <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
+                                            <div class="w-16 bg-gray-200 rounded-full h-2">
+                                                @php
+                                                $porcentaje = $totalEnvios > 0 ? ($estado->total / $totalEnvios) * 100 : 0;
+                                                @endphp
+                                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
                                             </div>
-                                                <span class="ml-2 text-sm font-medium text-gray-900">{{ round($porcentaje, 1) }}%</span>
+                                            <span class="ml-2 text-sm font-medium text-gray-900">{{ round($porcentaje, 1) }}%</span>
                                         </div>
                                     </td>
-                                        <td class="px-6 py-4 text-sm text-gray-500">
-                                            @if($estado->estado === 'completado')
-                                                <span class="text-green-600">✓ Completado</span>
-                                            @elseif($estado->estado === 'enviado')
-                                                <span class="text-blue-600">📤 Enviado</span>
-                                            @else
-                                                <span class="text-yellow-600">⏳ Pendiente</span>
-                                            @endif
+                                    <td class="px-6 py-4 text-sm text-gray-500">
+                                        @if($estado->estado === 'completado')
+                                        <span class="text-green-600">✓ Completado</span>
+                                        @elseif($estado->estado === 'enviado')
+                                        <span class="text-blue-600">📤 Enviado</span>
+                                        @else
+                                        <span class="text-yellow-600">⏳ Pendiente</span>
+                                        @endif
                                     </td>
                                 </tr>
                                 @empty
-                                    <tr>
-                                        <td colspan="3" class="px-6 py-4 text-center text-gray-500">
-                                            No hay datos para mostrar
+                                <tr>
+                                    <td colspan="3" class="px-6 py-4 text-center text-gray-500">
+                                        No hay datos para mostrar
                                     </td>
                                 </tr>
                                 @endforelse
@@ -234,21 +234,21 @@
                     <div class="p-6">
                         <div class="space-y-4">
                             @foreach($estadisticasCalidad['aspectos'] as $aspecto)
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
-                                        <span class="text-sm text-gray-700">{{ $aspecto['nombre'] }}</span>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                            <div class="bg-blue-600 h-2 rounded-full" style="width: {{ ($aspecto['promedio'] / 10) * 100 }}%"></div>
-                                        </div>
-                                        <span class="text-sm font-medium text-gray-900">{{ $aspecto['promedio'] }}/10</span>
-                                    </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                                    <span class="text-sm text-gray-700">{{ $aspecto['nombre'] }}</span>
                                 </div>
+                                <div class="flex items-center">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                        <div class="bg-blue-600 h-2 rounded-full" style="width: {{ ($aspecto['promedio'] / 10) * 100 }}%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">{{ $aspecto['promedio'] }}/10</span>
+                                </div>
+                            </div>
                             @endforeach
                         </div>
-                        
+
                         <!-- Mejor y peor aspecto -->
                         <div class="mt-6 pt-4 border-t border-gray-100">
                             <div class="grid grid-cols-2 gap-4">
@@ -270,12 +270,12 @@
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Top Asesores del Mes</h3>
                     <div class="space-y-3">
                         @forelse($topAsesoresMes as $asesor)
-                            <div class="flex items-center justify-between">
-                                <span class="text-sm text-gray-600">{{ $asesor->asesor_comercial ?: 'Sin asesor' }}</span>
-                                <span class="text-sm font-medium text-blue-600">{{ $asesor->total_envios }} envíos</span>
-                            </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-600">{{ $asesor->asesor_comercial ?: 'Sin asesor' }}</span>
+                            <span class="text-sm font-medium text-blue-600">{{ $asesor->total_envios }} envíos</span>
+                        </div>
                         @empty
-                            <p class="text-sm text-gray-500">No hay datos de asesores</p>
+                        <p class="text-sm text-gray-500">No hay datos de asesores</p>
                         @endforelse
                     </div>
                 </div>
@@ -285,23 +285,23 @@
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen de Recomendaciones</h3>
                     <div class="space-y-4">
                         @php
-                            $recomendacionesSi = App\Models\Envio::where('estado', 'completado')
-                                ->where('respuesta_2', 'like', '%si%')
-                                ->orWhere('respuesta_2', 'like', '%Si%')
-                                ->count();
-                            $recomendacionesNo = App\Models\Envio::where('estado', 'completado')
-                                ->where('respuesta_2', 'like', '%no%')
-                                ->orWhere('respuesta_2', 'like', '%No%')
-                                ->count();
-                            $totalRecomendaciones = $recomendacionesSi + $recomendacionesNo;
-                            $porcentajeSi = $totalRecomendaciones > 0 ? round(($recomendacionesSi / $totalRecomendaciones) * 100, 1) : 0;
+                        $recomendacionesSi = App\Models\Envio::where('estado', 'completado')
+                        ->where('respuesta_2', 'like', '%si%')
+                        ->orWhere('respuesta_2', 'like', '%Si%')
+                        ->count();
+                        $recomendacionesNo = App\Models\Envio::where('estado', 'completado')
+                        ->where('respuesta_2', 'like', '%no%')
+                        ->orWhere('respuesta_2', 'like', '%No%')
+                        ->count();
+                        $totalRecomendaciones = $recomendacionesSi + $recomendacionesNo;
+                        $porcentajeSi = $totalRecomendaciones > 0 ? round(($recomendacionesSi / $totalRecomendaciones) * 100, 1) : 0;
                         @endphp
-                        
+
                         <div class="text-center">
                             <div class="text-3xl font-bold text-green-600 mb-2">{{ $porcentajeSi }}%</div>
                             <div class="text-sm text-gray-600">Recomendarían Konkret</div>
                         </div>
-                        
+
                         <div class="grid grid-cols-2 gap-4 text-center">
                             <div class="p-3 bg-green-50 rounded-lg">
                                 <div class="text-lg font-bold text-green-600">{{ $recomendacionesSi }}</div>
@@ -329,36 +329,36 @@
                     <div class="p-6">
                         <div class="space-y-4">
                             @php
-                                $estados = [
-                                    'completado' => ['nombre' => 'Completados', 'color' => 'green', 'icon' => '✓'],
-                                    'en_proceso' => ['nombre' => 'En Proceso', 'color' => 'purple', 'icon' => '⏳'],
-                                    'pendiente' => ['nombre' => 'Pendientes', 'color' => 'yellow', 'icon' => '⏰'],
-                                    'cancelado' => ['nombre' => 'Cancelados', 'color' => 'red', 'icon' => '✗']
-                                ];
+                            $estados = [
+                            'completado' => ['nombre' => 'Completados', 'color' => 'green', 'icon' => '✓'],
+                            'en_proceso' => ['nombre' => 'En Proceso', 'color' => 'purple', 'icon' => '⏳'],
+                            'pendiente' => ['nombre' => 'Pendientes', 'color' => 'yellow', 'icon' => '⏰'],
+                            'cancelado' => ['nombre' => 'Cancelados', 'color' => 'red', 'icon' => '✗']
+                            ];
                             @endphp
-                            
+
                             @foreach($estados as $estado => $info)
-                                @php
-                                    $total = $enviosPorEstado->where('estado', $estado)->first()->total ?? 0;
-                                    $porcentaje = $totalEnvios > 0 ? round(($total / $totalEnvios) * 100, 1) : 0;
-                                @endphp
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <div class="w-8 h-8 bg-{{ $info['color'] }}-100 rounded-full flex items-center justify-center mr-3">
-                                            <span class="text-{{ $info['color'] }}-600 font-medium text-sm">{{ $info['icon'] }}</span>
-                                        </div>
-                                        <div>
-                                            <div class="text-sm font-medium text-gray-900">{{ $info['nombre'] }}</div>
-                                            <div class="text-sm text-gray-500">{{ $total }} envíos</div>
-                                        </div>
+                            @php
+                            $total = $enviosPorEstado->where('estado', $estado)->first()->total ?? 0;
+                            $porcentaje = $totalEnvios > 0 ? round(($total / $totalEnvios) * 100, 1) : 0;
+                            @endphp
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-{{ $info['color'] }}-100 rounded-full flex items-center justify-center mr-3">
+                                        <span class="text-{{ $info['color'] }}-600 font-medium text-sm">{{ $info['icon'] }}</span>
                                     </div>
-                                    <div class="flex items-center">
-                                        <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                                            <div class="bg-{{ $info['color'] }}-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
-                                        </div>
-                                        <span class="text-sm font-medium text-gray-900">{{ $porcentaje }}%</span>
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $info['nombre'] }}</div>
+                                        <div class="text-sm text-gray-500">{{ $total }} envíos</div>
                                     </div>
                                 </div>
+                                <div class="flex items-center">
+                                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                                        <div class="bg-{{ $info['color'] }}-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
+                                    </div>
+                                    <span class="text-sm font-medium text-gray-900">{{ $porcentaje }}%</span>
+                                </div>
+                            </div>
                             @endforeach
                         </div>
                     </div>
@@ -375,39 +375,39 @@
                     <div class="p-6">
                         <div class="space-y-4">
                             @php
-                                $enviosRecientes = App\Models\Envio::with('cliente')
-                                    ->where('fecha_envio', '>=', Carbon\Carbon::now()->subDays(7))
-                                    ->orderBy('fecha_envio', 'desc')
-                                    ->limit(5)
-                                    ->get();
+                            $enviosRecientes = App\Models\Envio::with('cliente')
+                            ->where('fecha_envio', '>=', Carbon\Carbon::now()->subDays(7))
+                            ->orderBy('fecha_envio', 'desc')
+                            ->limit(5)
+                            ->get();
                             @endphp
-                            
+
                             @forelse($enviosRecientes as $envio)
-                                <div class="flex items-center justify-between">
-                                    <div class="flex items-center">
-                                        <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
-                                            <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                            </svg>
-                                        </div>
-                                        <div>
-                                            <div class="text-sm font-medium text-gray-900">{{ $envio->cliente->razon_social ?? 'Cliente' }}</div>
-                                            <div class="text-sm text-gray-500">{{ $envio->fecha_envio ? $envio->fecha_envio->format('d/m H:i') : 'N/A' }}</div>
-                                        </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
                                     </div>
-                                    <div class="flex items-center">
-                                        <span class="px-2 py-1 text-xs font-semibold rounded-full 
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-900">{{ $envio->cliente->razon_social ?? 'Cliente' }}</div>
+                                        <div class="text-sm text-gray-500">{{ $envio->fecha_envio ? $envio->fecha_envio->format('d/m H:i') : 'N/A' }}</div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center">
+                                    <span class="px-2 py-1 text-xs font-semibold rounded-full 
                                             {{ $envio->estado === 'completado' ? 'bg-green-100 text-green-800' : 
                                                ($envio->estado === 'en_proceso' ? 'bg-purple-100 text-purple-800' : 
                                                ($envio->estado === 'pendiente' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')) }}">
-                                            {{ ucfirst($envio->estado) }}
-                                        </span>
-                                    </div>
+                                        {{ ucfirst($envio->estado) }}
+                                    </span>
                                 </div>
+                            </div>
                             @empty
-                                <div class="text-center py-4">
-                                    <p class="text-sm text-gray-500">No hay actividad reciente</p>
-                                </div>
+                            <div class="text-center py-4">
+                                <p class="text-sm text-gray-500">No hay actividad reciente</p>
+                            </div>
                             @endforelse
                         </div>
                     </div>

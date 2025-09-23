@@ -25,11 +25,11 @@ class DashboardController extends Controller
         // Estadísticas del mes actual
         $mesActual = Carbon::now()->month;
         $añoActual = Carbon::now()->year;
-        
+
         $enviosMesActual = Envio::whereMonth('fecha_envio', $mesActual)
             ->whereYear('fecha_envio', $añoActual)
             ->count();
-        
+
         $enviosMesAnterior = Envio::whereMonth('fecha_envio', $mesActual - 1)
             ->whereYear('fecha_envio', $añoActual)
             ->count();
@@ -58,9 +58,9 @@ class DashboardController extends Controller
 
         // Envíos por día de la semana (últimos 30 días)
         $enviosPorDia = Envio::select(
-                DB::raw('DAYOFWEEK(fecha_envio) as dia_semana'),
-                DB::raw('count(*) as total')
-            )
+            DB::raw('DAYOFWEEK(fecha_envio) as dia_semana'),
+            DB::raw('count(*) as total')
+        )
             ->where('fecha_envio', '>=', Carbon::now()->subDays(30))
             ->groupBy('dia_semana')
             ->orderBy('dia_semana')
@@ -68,9 +68,9 @@ class DashboardController extends Controller
 
         // Envíos por hora del día (últimos 7 días)
         $enviosPorHora = Envio::select(
-                DB::raw('HOUR(fecha_envio) as hora'),
-                DB::raw('count(*) as total')
-            )
+            DB::raw('HOUR(fecha_envio) as hora'),
+            DB::raw('count(*) as total')
+        )
             ->where('fecha_envio', '>=', Carbon::now()->subDays(7))
             ->groupBy('hora')
             ->orderBy('hora')
@@ -90,7 +90,7 @@ class DashboardController extends Controller
                 ->whereNotNull('fecha_respuesta')
                 ->whereNotNull('fecha_envio')
                 ->get()
-                ->avg(function($envio) {
+                ->avg(function ($envio) {
                     return Carbon::parse($envio->fecha_envio)
                         ->diffInHours(Carbon::parse($envio->fecha_respuesta));
                 });
@@ -99,11 +99,11 @@ class DashboardController extends Controller
         // Datos para gráficas
         $datosGraficaMensual = $this->obtenerDatosGraficaMensual();
         $datosGraficaSemanal = $this->obtenerDatosGraficaSemanal();
-        
+
         // Datos del NPS (Net Promoter Score) usando promedio_respuesta_1
         $datosNPS = $this->obtenerDatosNPS();
         $npsPromedio = $this->calcularNPSPromedio();
-        
+
         // Estadísticas de calidad del producto (preguntas 1.1 a 1.5)
         $estadisticasCalidad = $this->obtenerEstadisticasCalidad();
 
@@ -137,13 +137,13 @@ class DashboardController extends Controller
     private function obtenerDatosGraficaMensual()
     {
         return Envio::select(
-                DB::raw('MONTH(fecha_envio) as mes'),
-                DB::raw('YEAR(fecha_envio) as año'),
-                DB::raw('count(*) as total'),
-                DB::raw('count(CASE WHEN estado = "completado" THEN 1 END) as completados'),
-                DB::raw('count(CASE WHEN estado = "cancelado" THEN 1 END) as cancelados'),
-                DB::raw('count(CASE WHEN estado = "pendiente" THEN 1 END) as pendientes')
-            )
+            DB::raw('MONTH(fecha_envio) as mes'),
+            DB::raw('YEAR(fecha_envio) as año'),
+            DB::raw('count(*) as total'),
+            DB::raw('count(CASE WHEN estado = "completado" THEN 1 END) as completados'),
+            DB::raw('count(CASE WHEN estado = "cancelado" THEN 1 END) as cancelados'),
+            DB::raw('count(CASE WHEN estado = "pendiente" THEN 1 END) as pendientes')
+        )
             ->whereNotNull('fecha_envio')
             ->where('fecha_envio', '>=', Carbon::now()->subMonths(1))
             ->groupBy('mes', 'año')
@@ -158,11 +158,11 @@ class DashboardController extends Controller
     private function obtenerDatosGraficaSemanal()
     {
         return Envio::select(
-                DB::raw('WEEK(fecha_envio) as semana'),
-                DB::raw('YEAR(fecha_envio) as año'),
-                DB::raw('count(*) as total'),
-                DB::raw('count(CASE WHEN estado = "completado" THEN 1 END) as completados')
-            )
+            DB::raw('WEEK(fecha_envio) as semana'),
+            DB::raw('YEAR(fecha_envio) as año'),
+            DB::raw('count(*) as total'),
+            DB::raw('count(CASE WHEN estado = "completado" THEN 1 END) as completados')
+        )
             ->whereNotNull('fecha_envio')
             ->where('fecha_envio', '>=', Carbon::now()->subWeeks(8))
             ->groupBy('semana', 'año')
@@ -177,14 +177,14 @@ class DashboardController extends Controller
     private function obtenerDatosNPS()
     {
         return Envio::select(
-                DB::raw('MONTH(fecha_envio) as mes'),
-                DB::raw('YEAR(fecha_envio) as año'),
-                DB::raw('AVG(promedio_respuesta_1) as nps_promedio'),
-                DB::raw('count(*) as total_respuestas'),
-                DB::raw('count(CASE WHEN promedio_respuesta_1 >= 9 THEN 1 END) as promotores'),
-                DB::raw('count(CASE WHEN promedio_respuesta_1 >= 7 AND promedio_respuesta_1 < 9 THEN 1 END) as pasivos'),
-                DB::raw('count(CASE WHEN promedio_respuesta_1 < 7 THEN 1 END) as detractores')
-            )
+            DB::raw('MONTH(fecha_envio) as mes'),
+            DB::raw('YEAR(fecha_envio) as año'),
+            DB::raw('AVG(promedio_respuesta_1) as nps_promedio'),
+            DB::raw('count(*) as total_respuestas'),
+            DB::raw('count(CASE WHEN promedio_respuesta_1 >= 9 THEN 1 END) as promotores'),
+            DB::raw('count(CASE WHEN promedio_respuesta_1 >= 7 AND promedio_respuesta_1 < 9 THEN 1 END) as pasivos'),
+            DB::raw('count(CASE WHEN promedio_respuesta_1 < 7 THEN 1 END) as detractores')
+        )
             ->whereNotNull('fecha_envio')
             ->whereNotNull('promedio_respuesta_1')
             ->where('estado', 'completado')
@@ -249,7 +249,7 @@ class DashboardController extends Controller
     {
         $enviosCompletados = Envio::where('estado', 'completado')
             ->whereNotNull('promedio_respuesta_1')
-            ->get();
+            ->first();
 
         if ($enviosCompletados->count() === 0) {
             return [
@@ -257,22 +257,22 @@ class DashboardController extends Controller
                 'mejor_aspecto' => 'N/A',
                 'peor_aspecto' => 'N/A',
                 'aspectos' => [
-                    '1_1' => ['nombre' => 'Calidad General', 'promedio' => 0],
-                    '1_2' => ['nombre' => 'Durabilidad', 'promedio' => 0],
-                    '1_3' => ['nombre' => 'Presentación', 'promedio' => 0],
-                    '1_4' => ['nombre' => 'Funcionalidad', 'promedio' => 0],
-                    '1_5' => ['nombre' => 'Satisfacción General', 'promedio' => 0]
+                    '1_1' => ['nombre' => 'Calidad del Producto', 'promedio' => 0],
+                    '1_2' => ['nombre' => 'Puntualidad de Entrega', 'promedio' => 0],
+                    '1_3' => ['nombre' => 'Trato del Asesor', 'promedio' => 0],
+                    '1_4' => ['nombre' => 'Precio', 'promedio' => 0],
+                    '1_5' => ['nombre' => 'Rapidez de Progremación', 'promedio' => 0]
                 ]
             ];
         }
 
         // Calcular promedios por aspecto
         $aspectos = [
-            '1_1' => ['nombre' => 'Calidad General', 'campo' => 'respuesta_1_1'],
-            '1_2' => ['nombre' => 'Durabilidad', 'campo' => 'respuesta_1_2'],
-            '1_3' => ['nombre' => 'Presentación', 'campo' => 'respuesta_1_3'],
-            '1_4' => ['nombre' => 'Funcionalidad', 'campo' => 'respuesta_1_4'],
-            '1_5' => ['nombre' => 'Satisfacción General', 'campo' => 'respuesta_1_5']
+            '1_1' => ['nombre' => 'Calidad del Producto', 'campo' => 'respuesta_1_1'],
+            '1_2' => ['nombre' => 'Puntualidad de Entrega', 'campo' => 'respuesta_1_2'],
+            '1_3' => ['nombre' => 'Trato del Asesor', 'campo' => 'respuesta_1_3'],
+            '1_4' => ['nombre' => 'Precio', 'campo' => 'respuesta_1_4'],
+            '1_5' => ['nombre' => 'Rapidez de Programación', 'campo' => 'respuesta_1_5'],
         ];
 
         foreach ($aspectos as $key => $aspecto) {
@@ -285,7 +285,7 @@ class DashboardController extends Controller
         $promedios = collect($aspectos)->pluck('promedio', 'nombre');
         $mejorAspecto = $promedios->filter()->max();
         $peorAspecto = $promedios->filter()->min();
-        
+
         $mejorAspectoNombre = $promedios->search($mejorAspecto);
         $peorAspectoNombre = $promedios->search($peorAspecto);
 
@@ -304,7 +304,7 @@ class DashboardController extends Controller
     {
         $enviosHoy = Envio::whereDate('fecha_envio', Carbon::today())->count();
         $respuestasHoy = ChatRespuesta::whereDate('created_at', Carbon::today())->count();
-        
+
         return response()->json([
             'envios_hoy' => $enviosHoy,
             'respuestas_hoy' => $respuestasHoy,

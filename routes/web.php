@@ -34,6 +34,15 @@ Route::resource('envios', EnvioController::class)
 
 // Rutas adicionales para envíos
 
+
+// ruta para visualizar la encuesta en web
+Route::get('encuesta/{idenvio}', [App\Http\Controllers\EncuestaController::class, 'mostrar'])
+    ->name('encuesta.mostrar');
+
+Route::post('encuesta/{idenvio}/responder', [App\Http\Controllers\EncuestaController::class, 'responder'])
+    ->name('encuesta.responder');
+
+
 Route::post('envios/{idenvio}/enviar-por-whatsapp', [EnvioController::class, 'enviarPorWhatsApp'])
     ->name('envios.enviar-por-whatsapp')
     ->middleware(['auth']);
@@ -146,5 +155,25 @@ Route::prefix('twilio')->middleware(['auth'])->group(function () {
     Route::post('/probar', [TwilioController::class, 'probarConexion'])
         ->name('twilio.probar');
 });
+
+// Ruta de prueba para diagnosticar encuestas
+Route::get('/test-encuesta/{idenvio}', function($idenvio) {
+    try {
+        $envio = \App\Models\Envio::with('cliente')->findOrFail($idenvio);
+        return response()->json([
+            'success' => true,
+            'envio' => $envio,
+            'cliente' => $envio->cliente,
+            'estado' => $envio->estado,
+            'pregunta_actual' => $envio->pregunta_actual
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
+})->name('test.encuesta');
 
 

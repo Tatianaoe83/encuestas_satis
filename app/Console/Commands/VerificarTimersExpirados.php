@@ -38,9 +38,21 @@ class VerificarTimersExpirados extends Command
      */
     public function handle()
     {
-        $this->info('Iniciando verificación de timers expirados...');
+        $this->info('Iniciando verificación de timers y recordatorios...');
         
         try {
+            // Primero verificar recordatorios
+            $this->info('Verificando recordatorios...');
+            $resultadoRecordatorios = $this->twilioService->verificarRecordatorios();
+            
+            if ($resultadoRecordatorios['success']) {
+                $this->info("Recordatorios enviados: " . $resultadoRecordatorios['recordatorios_enviados']);
+            } else {
+                $this->error("Error enviando recordatorios: " . $resultadoRecordatorios['error']);
+            }
+            
+            // Luego verificar timers expirados
+            $this->info('Verificando timers expirados...');
             $resultado = $this->twilioService->verificarTimersExpirados();
             
             if ($resultado['success']) {
@@ -48,6 +60,7 @@ class VerificarTimersExpirados extends Command
                 $this->info("Timers cancelados: " . $resultado['timers_cancelados']);
                 
                 Log::info("Comando de verificación de timers ejecutado", [
+                    'recordatorios_enviados' => $resultadoRecordatorios['recordatorios_enviados'],
                     'timers_cancelados' => $resultado['timers_cancelados'],
                     'timestamp' => now()
                 ]);
@@ -70,6 +83,6 @@ class VerificarTimersExpirados extends Command
             ]);
         }
         
-        $this->info('Verificación de timers finalizada.');
+        $this->info('Verificación de timers y recordatorios finalizada.');
     }
 }

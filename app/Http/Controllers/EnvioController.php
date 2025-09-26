@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use App\Services\TwilioService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
 
 class EnvioController extends Controller
 {
@@ -284,6 +285,29 @@ class EnvioController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al procesar respuesta: ' . $e->getMessage());
             return response()->json(['error' => 'Error al procesar la respuesta'], 500);
+        }
+    }
+
+    /**
+     * Generar URL encriptada para la encuesta
+     */
+    public function generarUrlEncriptada($idenvio)
+    {
+        try {
+            $envio = Envio::findOrFail($idenvio);
+            $idencrypted = Crypt::encryptString($idenvio);
+            $url = route('encuesta.mostrar', ['idencrypted' => $idencrypted]);
+            
+            return response()->json([
+                'success' => true,
+                'url' => $url
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Error al generar URL encriptada: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al generar el enlace de la encuesta'
+            ], 500);
         }
     }
 } 

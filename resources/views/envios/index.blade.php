@@ -582,31 +582,45 @@
 
         // Función para copiar enlace de encuesta
         function copiarEnlaceEncuesta(envioId) {
-            const enlace = `${window.location.origin}/encuesta/${envioId}`;
-            
-            // Crear un elemento temporal para copiar
-            const textArea = document.createElement('textarea');
-            textArea.value = enlace;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            // Mostrar notificación
-            const notification = document.createElement('div');
-            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
-            notification.innerHTML = `
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Enlace copiado al portapapeles
-            `;
-            document.body.appendChild(notification);
-            
-            // Remover notificación después de 3 segundos
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 3000);
+            // Obtener URL encriptada del backend
+            fetch(`/envios/${envioId}/url-encriptada`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const enlace = data.url;
+                        
+                        // Crear un elemento temporal para copiar
+                        const textArea = document.createElement('textarea');
+                        textArea.value = enlace;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        // Mostrar notificación
+                        const notification = document.createElement('div');
+                        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
+                        notification.innerHTML = `
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Enlace copiado al portapapeles
+                        `;
+                        document.body.appendChild(notification);
+                        
+                        // Remover notificación después de 3 segundos
+                        setTimeout(() => {
+                            document.body.removeChild(notification);
+                        }, 3000);
+                    } else {
+                        // Mostrar error
+                        alert('Error al generar el enlace: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al generar el enlace de la encuesta');
+                });
         }
     </script>
 </x-app-layout> 

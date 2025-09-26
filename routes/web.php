@@ -35,11 +35,11 @@ Route::resource('envios', EnvioController::class)
 // Rutas adicionales para envíos
 
 
-// ruta para visualizar la encuesta en web
-Route::get('encuesta/{idenvio}', [App\Http\Controllers\EncuestaController::class, 'mostrar'])
+// ruta para visualizar la encuesta en web (con idencriptado para seguridad)
+Route::get('encuesta/{idencrypted}', [App\Http\Controllers\EncuestaController::class, 'mostrar'])
     ->name('encuesta.mostrar');
 
-Route::post('encuesta/{idenvio}/responder', [App\Http\Controllers\EncuestaController::class, 'responder'])
+Route::post('encuesta/{idencrypted}/responder', [App\Http\Controllers\EncuestaController::class, 'responder'])
     ->name('encuesta.responder');
 
 
@@ -53,6 +53,10 @@ Route::post('envios/{idenvio}/marcar-enviado', [EnvioController::class, 'marcarE
 
     Route::post('envios/{idenvio}/marcar-respondido', [EnvioController::class, 'marcarRespondido'])
     ->name('envios.marcar-respondido')
+    ->middleware(['auth']);
+
+Route::get('envios/{idenvio}/url-encriptada', [EnvioController::class, 'generarUrlEncriptada'])
+    ->name('envios.url-encriptada')
     ->middleware(['auth']);
 
 // Ruta para visualización de resultados
@@ -156,9 +160,11 @@ Route::prefix('twilio')->middleware(['auth'])->group(function () {
         ->name('twilio.probar');
 });
 
-// Ruta de prueba para diagnosticar encuestas
-Route::get('/test-encuesta/{idenvio}', function($idenvio) {
+// Ruta de prueba para diagnosticar encuestas (con idencriptado)
+Route::get('/test-encuesta/{idencrypted}', function($idencrypted) {
     try {
+        // Desencriptar el ID del envío
+        $idenvio = \Illuminate\Support\Facades\Crypt::decryptString($idencrypted);
         $envio = \App\Models\Envio::with('cliente')->findOrFail($idenvio);
         return response()->json([
             'success' => true,

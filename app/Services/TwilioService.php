@@ -5,6 +5,7 @@ namespace App\Services;
 use Twilio\Rest\Client;
 use App\Models\Envio;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
 
 class TwilioService
 {
@@ -37,7 +38,7 @@ class TwilioService
             // Preparar variables de contenido
             $contentVariables = [
                 'nombre' => $cliente->nombre_completo ?? 'Cliente',
-                'idencuesta' => (string) ($envio->idenvio ?? '0')
+                'idencuesta' => Crypt::encryptString($envio->idenvio ?? '0')
             ];
 
             $message = $this->client->messages->create(

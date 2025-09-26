@@ -6,15 +6,26 @@ use App\Models\Envio;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Crypt;
 
 class EncuestaController extends Controller
 {
     /**
+     * Generar URL encriptada para la encuesta
+     */
+    public static function generarUrlEncriptada($idenvio)
+    {
+        $idencrypted = Crypt::encryptString($idenvio);
+        return route('encuesta.mostrar', ['idencrypted' => $idencrypted]);
+    }
+    /**
      * Mostrar la encuesta en el navegador
      */
-    public function mostrar($idenvio)
+    public function mostrar($idencrypted)
     {
         try {
+            // Desencriptar el ID del envío
+            $idenvio = Crypt::decryptString($idencrypted);
             $envio = Envio::with('cliente')->findOrFail($idenvio);
             
             // Verificar que el envío existe y tiene un cliente asociado
@@ -51,9 +62,11 @@ class EncuestaController extends Controller
     /**
      * Procesar respuesta de la encuesta
      */
-    public function responder(Request $request, $idenvio)
+    public function responder(Request $request, $idencrypted)
     {
         try {
+            // Desencriptar el ID del envío
+            $idenvio = Crypt::decryptString($idencrypted);
             $envio = Envio::with('cliente')->findOrFail($idenvio);
             
             // Verificar que el envío existe y no está completado

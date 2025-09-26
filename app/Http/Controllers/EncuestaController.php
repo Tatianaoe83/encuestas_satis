@@ -11,12 +11,48 @@ use Illuminate\Support\Facades\Crypt;
 class EncuestaController extends Controller
 {
     /**
-     * Generar URL encriptada para la encuesta
+     * Generar token corto para la encuesta
      */
-    public static function generarUrlEncriptada($idenvio)
+    public static function generarTokenCorto($idenvio)
     {
-        $idencrypted = Crypt::encryptString($idenvio);
-        return route('encuesta.mostrar', ['idencrypted' => $idencrypted]);
+        // Crear un token único de 16 caracteres usando el ID + salt fijo
+        $salt = 'encuestas_satis_2024'; // Salt fijo para consistencia
+        $hash = hash('sha256', $idenvio . $salt);
+        $token = substr($hash, 0, 16); // Tomar solo los primeros 16 caracteres
+        
+        // Agregar el ID al final para poder recuperarlo (formato: token_id)
+        return $token . '_' . $idenvio;
+    }
+
+    /**
+     * Extraer ID del token corto
+     */
+    public static function extraerIdDelToken($token)
+    {
+        // El formato es: token_id
+        $partes = explode('_', $token);
+        if (count($partes) === 2) {
+            return $partes[1]; // Retornar el ID
+        }
+        throw new \Exception('Token inválido');
+    }
+
+    /**
+     * Verificar si el token es válido
+     */
+    public static function verificarToken($token, $idenvio)
+    {
+        $tokenGenerado = self::generarTokenCorto($idenvio);
+        return hash_equals($token, $tokenGenerado);
+    }
+
+    /**
+     * Generar URL corta para la encuesta
+     */
+    public static function generarUrlCorta($idenvio)
+    {
+        $token = self::generarTokenCorto($idenvio);
+        return route('encuesta.mostrar', ['idencrypted' => $token]);
     }
     /**
      * Mostrar la encuesta en el navegador
@@ -24,9 +60,16 @@ class EncuestaController extends Controller
     public function mostrar($idencrypted)
     {
         try {
-            // Desencriptar el ID del envío
-            $idenvio = Crypt::decryptString($idencrypted);
+            // Extraer el ID del token corto
+            $idenvio = self::extraerIdDelToken($idencrypted);
             $envio = Envio::with('cliente')->findOrFail($idenvio);
+            
+            // Verificar que el token es válido
+            if (!self::verificarToken($idencrypted, $idenvio)) {
+                return view('encuesta.error', [
+                    'mensaje' => 'Enlace de encuesta no válido.'
+                ]);
+            }
             
             // Verificar que el envío existe y tiene un cliente asociado
             if (!$envio->cliente) {
@@ -65,9 +108,17 @@ class EncuestaController extends Controller
     public function responder(Request $request, $idencrypted)
     {
         try {
-            // Desencriptar el ID del envío
-            $idenvio = Crypt::decryptString($idencrypted);
+            // Extraer el ID del token corto
+            $idenvio = self::extraerIdDelToken($idencrypted);
             $envio = Envio::with('cliente')->findOrFail($idenvio);
+            
+            // Verificar que el token es válido
+            if (!self::verificarToken($idencrypted, $idenvio)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Enlace de encuesta no válido.'
+                ], 400);
+            }
             
             // Verificar que el envío existe y no está completado
             if ($envio->estado === 'completado') {

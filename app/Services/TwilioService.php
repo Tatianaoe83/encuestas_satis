@@ -38,7 +38,7 @@ class TwilioService
             // Preparar variables de contenido
             $contentVariables = [
                 'nombre' => $cliente->nombre_completo ?? 'Cliente',
-                'idencuesta' => Crypt::encryptString($envio->idenvio ?? '0')
+                'idencuesta' => \App\Http\Controllers\EncuestaController::generarTokenCorto($envio->idenvio ?? '0')
             ];
 
             $message = $this->client->messages->create(

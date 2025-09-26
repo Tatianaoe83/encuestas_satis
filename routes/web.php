@@ -160,11 +160,20 @@ Route::prefix('twilio')->middleware(['auth'])->group(function () {
         ->name('twilio.probar');
 });
 
-// Ruta de prueba para diagnosticar encuestas (con idencriptado)
+// Ruta de prueba para diagnosticar encuestas (con token corto)
 Route::get('/test-encuesta/{idencrypted}', function($idencrypted) {
     try {
-        // Desencriptar el ID del envío
-        $idenvio = \Illuminate\Support\Facades\Crypt::decryptString($idencrypted);
+        // Extraer el ID del token corto
+        $idenvio = \App\Http\Controllers\EncuestaController::extraerIdDelToken($idencrypted);
+        
+        // Verificar que el token es válido
+        if (!\App\Http\Controllers\EncuestaController::verificarToken($idencrypted, $idenvio)) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Token inválido'
+            ]);
+        }
+        
         $envio = \App\Models\Envio::with('cliente')->findOrFail($idenvio);
         return response()->json([
             'success' => true,

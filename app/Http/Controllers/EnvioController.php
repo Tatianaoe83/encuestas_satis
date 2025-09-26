@@ -289,21 +289,20 @@ class EnvioController extends Controller
     }
 
     /**
-     * Generar URL encriptada para la encuesta
+     * Generar URL corta para la encuesta
      */
     public function generarUrlEncriptada($idenvio)
     {
         try {
             $envio = Envio::findOrFail($idenvio);
-            $idencrypted = Crypt::encryptString($idenvio);
-            $url = route('encuesta.mostrar', ['idencrypted' => $idencrypted]);
+            $url = \App\Http\Controllers\EncuestaController::generarUrlCorta($idenvio);
             
             return response()->json([
                 'success' => true,
                 'url' => $url
             ]);
         } catch (\Exception $e) {
-            Log::error('Error al generar URL encriptada: ' . $e->getMessage());
+            Log::error('Error al generar URL corta: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'Error al generar el enlace de la encuesta'

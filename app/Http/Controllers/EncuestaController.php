@@ -7,6 +7,7 @@ use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class EncuestaController extends Controller
 {
@@ -16,11 +17,10 @@ class EncuestaController extends Controller
     public static function generarTokenCorto($idenvio)
     {
         // Crear un token único de 16 caracteres usando el ID + salt fijo
-        $salt = 'encuestas_satis_2024'; // Salt fijo para consistencia
+        $salt = 'encuestas_satis_2024';
         $hash = hash('sha256', $idenvio . $salt);
-        $token = substr($hash, 0, 16); // Tomar solo los primeros 16 caracteres
+        $token = substr($hash, 0, 16);
         
-        // Agregar el ID al final para poder recuperarlo (formato: token_id)
         return $token . '_' . $idenvio;
     }
 
@@ -32,7 +32,7 @@ class EncuestaController extends Controller
         // El formato es: token_id
         $partes = explode('_', $token);
         if (count($partes) === 2) {
-            return $partes[1]; // Retornar el ID
+            return $partes[1];
         }
         throw new \Exception('Token inválido');
     }
@@ -84,6 +84,13 @@ class EncuestaController extends Controller
                     'envio' => $envio,
                     'cliente' => $envio->cliente
                 ]);
+            }else if($envio->estado === 'cancelado'){
+                return view('encuesta.error', [
+                    'envio' => $envio,
+                    'cliente' => $envio->cliente,
+                    'preguntaActual' => $envio->pregunta_actual,
+                    'idencrypted' => $idencrypted
+                ]);
             }
 
             // Determinar qué pregunta mostrar
@@ -92,7 +99,8 @@ class EncuestaController extends Controller
             return view('encuesta.mostrar', [
                 'envio' => $envio,
                 'cliente' => $envio->cliente,
-                'preguntaActual' => $preguntaActual
+                'preguntaActual' => $preguntaActual,
+                'idencrypted' => $idencrypted
             ]);
 
         } catch (\Exception $e) {
@@ -107,6 +115,7 @@ class EncuestaController extends Controller
      */
     public function responder(Request $request, $idencrypted)
     {
+     
         try {
             // Extraer el ID del token corto
             $idenvio = self::extraerIdDelToken($idencrypted);
@@ -315,6 +324,11 @@ class EncuestaController extends Controller
 
         // Actualizar pregunta_actual
         $datosActualizacion['pregunta_actual'] = $pregunta;
+
+        // Si es la primera pregunta (cualquiera de las 1.1 a 1.5), cambiar estado a en_proceso
+        if (in_array($pregunta, ['1.1', '1.2', '1.3', '1.4', '1.5']) && $envio->estado !== 'en_proceso') {
+            $datosActualizacion['estado'] = 'en_proceso';
+        }
 
         // Si es la última pregunta, marcar como completado
         if ($pregunta === '3' || ($pregunta === '2' && trim(strtolower($respuesta)) === 'si')) {

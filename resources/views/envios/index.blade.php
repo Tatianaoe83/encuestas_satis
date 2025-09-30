@@ -1,4 +1,12 @@
 <x-app-layout>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pagination-custom.css') }}">
+    @endpush
+    
+    @push('scripts')
+        <script src="{{ asset('js/pagination-enhancements.js') }}"></script>
+    @endpush
+    
     <x-slot name="header">
         <div class="flex justify-between items-center">
             <div>
@@ -42,7 +50,7 @@
                 <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-green-100 text-sm font-medium">Completados</p>
+                            <p class="text-green-100 text-sm font-medium">Respondido</p>
                             <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'completado')->count() }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -59,7 +67,7 @@
                 <div class="bg-red-600 rounded-xl shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-red-100 text-sm font-medium">Cancelados</p>
+                            <p class="text-red-100 text-sm font-medium">Sin respuesta</p>
                             <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'cancelado')->count() }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -75,7 +83,7 @@
                 <div class="bg-yellow-600 rounded-xl shadow-lg p-6 text-white">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-yellow-100 text-sm font-medium">Pendientes</p>
+                            <p class="text-yellow-100 text-sm font-medium">Pendiente de envío</p>
                             <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'pendiente')->count() }}</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-3">
@@ -222,7 +230,7 @@
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                    Pendiente
+                                                    Pendiente de envío
                                                 </span>
                                                 @break
                                             @case('enviado')
@@ -230,23 +238,16 @@
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                                                     </svg>
-                                                    Enviado
+                                                    Enviado por WhatsApp
                                                 </span>
                                                 @break
-                                            @case('respondido')
-                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                                    </svg>
-                                                    Respondido
-                                                </span>
-                                                @break
+                                            
                                             @case('cancelado')
                                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                                     </svg>
-                                                    Cancelado
+                                                    Sin respuesta
                                                 </span>
                                                 @break
                                             @case('en_proceso')
@@ -265,12 +266,12 @@
                                                     Completado
                                                 </span>
                                                 @break
-                                            @case('esperando_respuesta')
+                                            @case('recordatorio_enviado')
                                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                    Esperando respuesta
+                                                    Recordatorio enviado
                                                 </span>
                                                 @break
 
@@ -408,10 +409,25 @@
                     $('#tabla-envios').DataTable({
                         responsive: true,
                         language: {
-                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json',
+                            paginate: {
+                                first: "Primero",
+                                last: "Último",
+                                next: "Siguiente",
+                                previous: "Anterior"
+                            },
+                            info: "Mostrando _START_ a _END_ de _TOTAL_ envíos",
+                            infoEmpty: "No hay envíos disponibles",
+                            infoFiltered: "(filtrado de _MAX_ envíos totales)",
+                            lengthMenu: "Mostrar _MENU_ envíos",
+                            search: "Buscar envíos:",
+                            zeroRecords: "No se encontraron envíos coincidentes",
+                            processing: "Procesando envíos...",
+                            loadingRecords: "Cargando envíos...",
+                            emptyTable: "No hay envíos disponibles en la tabla"
                         },
                         pageLength: 10,
-                        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+                        lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "Todos"]],
                         order: [[0, 'desc']],
                         columnDefs: [
                             {
@@ -428,9 +444,27 @@
                         processing: true,
                         deferRender: true,
                         destroy: true,
+                        stateSave: true,
+                        stateDuration: 60 * 60 * 24, // 24 horas
+                        pagingType: 'full_numbers',
+                        dom: '<"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"<"flex flex-col sm:flex-row sm:items-center gap-4"l><"flex flex-col sm:flex-row sm:items-center gap-4"f>>rt<"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6"<"flex items-center"i><"flex items-center"p>>',
+                        drawCallback: function(settings) {
+                            // Agregar clases personalizadas después de cada redibujado
+                            $('.dataTables_wrapper .dataTables_paginate .paginate_button').addClass('transition-all duration-300');
+                        },
                         initComplete: function() {
                             // Actualizar contador de total de envíos
                             $('#total-envios').text(this.api().data().count());
+                            
+                            // Agregar tooltips a los botones de paginación
+                            $('.dataTables_wrapper .dataTables_paginate .paginate_button').attr('title', function() {
+                                var text = $(this).text();
+                                if (text.includes('Primero')) return 'Ir a la primera página';
+                                if (text.includes('Último')) return 'Ir a la última página';
+                                if (text.includes('Siguiente')) return 'Ir a la siguiente página';
+                                if (text.includes('Anterior')) return 'Ir a la página anterior';
+                                return 'Ir a la página ' + text;
+                            });
                         }
                     });
                 });

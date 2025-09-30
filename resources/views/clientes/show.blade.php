@@ -25,32 +25,32 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
                                 <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Asesor Comercial</h4>
-                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->asesor_comercial }}</p>
+                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->asesor_comercial ?? 'N/A' }}</p>
                             </div>
 
                             <div>
                                 <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Razón Social</h4>
-                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->razon_social }}</p>
+                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->razon_social ?? 'N/A' }}</p>
                             </div>
 
                             <div>
                                 <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Nombre Completo</h4>
-                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->nombre_completo }}</p>
+                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->nombre_completo ?? 'N/A' }}</p>
                             </div>
 
                             <div>
                                 <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Puesto</h4>
-                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->puesto }}</p>
+                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->puesto ?? 'N/A' }}</p>
                             </div>
 
                             <div>
                                 <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Celular</h4>
-                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->celular }}</p>
+                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->celular ?? 'N/A' }}</p>
                             </div>
 
                             <div>
                                 <h4 class="text-sm font-medium text-gray-500 uppercase tracking-wide">Correo</h4>
-                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->correo }}</p>
+                                <p class="mt-1 text-lg text-gray-900">{{ $cliente->correo ?? 'N/A' }}</p>
                             </div>
                         </div>
 
@@ -60,7 +60,7 @@
                                     <span class="font-medium">Creado:</span> {{ $cliente->created_at->format('d/m/Y H:i') }}
                                 </div>
                                 <div>
-                                    <span class="font-medium">Última actualización:</span> {{ $cliente->updated_at->format('d/m/Y H:i') }}
+                                    <span class="font-medium">Última actualización:</span> {{ $cliente->updated_at ? $cliente->updated_at->format('d/m/Y H:i') : 'N/A' }}
                                 </div>
                             </div>
                         </div>

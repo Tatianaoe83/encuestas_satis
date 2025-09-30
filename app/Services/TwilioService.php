@@ -67,7 +67,7 @@ class TwilioService
                 'timer_activo' => true,
                 'estado_timer' => 'activo',
                 'recordatorio_enviado' => false,
-                'pregunta_actual' => 1.1  // Usar valor numérico para la primera pregunta
+                'pregunta_actual' => null  // Usar valor numérico para la primera pregunta
             ]);
 
             return true;
@@ -132,7 +132,6 @@ class TwilioService
             $mensaje .= "Hola {$cliente->nombre_completo},\n\n";
             $mensaje .= "Te recordamos que tienes una encuesta pendiente que solo te tomará 1 minuto completar.\n\n";
             $mensaje .= "Tu opinión es muy importante para nosotros y nos ayuda a mejorar nuestros servicios.\n\n";
-            $mensaje .= "⏰ *Tiempo restante:* " . $this->calcularTiempoRestante($envio) . "\n\n";
             $mensaje .= "¡Gracias por tu tiempo! 😊\n\n";
             $mensaje .= "---\n";
             $mensaje .= "Atentamente *KONKRET, UNA EMPRESA DE GRUPO PROSER*";
@@ -149,7 +148,8 @@ class TwilioService
             $envio->update([
                 'recordatorio_enviado' => true,
                 'recordatorio_enviado_at' => now(),
-                'whatsapp_message' => $mensaje
+                'whatsapp_message' => $mensaje,
+                'estado' => 'recordatorio_enviado'
             ]);
 
             return true;

@@ -27,6 +27,11 @@ Route::view('profile', 'profile')
 Route::resource('clientes', ClienteController::class)
     ->middleware(['auth']);
 
+// Ruta adicional para reactivar clientes
+Route::post('clientes/{id}/restore', [ClienteController::class, 'restore'])
+    ->name('clientes.restore')
+    ->middleware(['auth']);
+
 // Rutas para el módulo de envíos
 Route::resource('envios', EnvioController::class)
     ->parameters(['envios' => 'idenvio'])

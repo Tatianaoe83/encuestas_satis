@@ -303,7 +303,8 @@
     </div>
 
     <script>
-        const envioId = {{$envio->idenvio}};
+        const envioId = '{{$idencrypted}}';
+       
         const preguntaActual = '{{ $preguntaActual }}';
         let progresoActual = 0;
 

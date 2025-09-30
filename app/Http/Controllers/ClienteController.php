@@ -12,8 +12,13 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        $clientes = Cliente::latest()->get();
-        return view('clientes.index', compact('clientes'));
+        $clientes_activos = Cliente::latest()->get();
+        $clientes_inactivos = Cliente::onlyTrashed()->latest('deleted_at')->get();
+        $clientes = $clientes_activos->concat($clientes_inactivos);
+        $total_clientes = $clientes->count();
+        $total_activos = $clientes_activos->count();
+        $total_inactivos = $clientes_inactivos->count();
+        return view('clientes.index', compact('clientes', 'total_clientes', 'total_activos', 'total_inactivos'));
     }
 
     /**
@@ -50,24 +55,28 @@ class ClienteController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Cliente $cliente)
+    public function show($id)
     {
+        $cliente = Cliente::withTrashed()->findOrFail($id);
         return view('clientes.show', compact('cliente'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Cliente $cliente)
+    public function edit($id)
     {
+        $cliente = Cliente::withTrashed()->findOrFail($id);
         return view('clientes.edit', compact('cliente'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cliente $cliente)
+    public function update(Request $request, $id)
     {
+        $cliente = Cliente::withTrashed()->findOrFail($id);
+        
         $request->validate([
             'asesor_comercial' => 'required|string|max:255',
             'razon_social' => 'required|string|max:255',
@@ -87,13 +96,26 @@ class ClienteController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Inactivate the specified resource (soft delete).
      */
-    public function destroy(Cliente $cliente)
+    public function destroy($id)
     {
+        $cliente = Cliente::findOrFail($id);
         $cliente->delete();
 
         return redirect()->route('clientes.index')
-            ->with('success', 'Cliente eliminado exitosamente.');
+            ->with('success', 'Cliente inactivado exitosamente.');
+    }
+
+    /**
+     * Restore the specified resource from storage.
+     */
+    public function restore($id)
+    {
+        $cliente = Cliente::withTrashed()->findOrFail($id);
+        $cliente->restore();
+
+        return redirect()->route('clientes.index')
+            ->with('success', 'Cliente reactivado exitosamente.');
     }
 } 

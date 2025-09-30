@@ -1,0 +1,198 @@
+/* Estilos personalizados para paginación mejorada */
+
+/* Contenedor principal del paginado */
+.dataTables_wrapper .dataTables_paginate {
+    margin-top: 20px !important;
+    text-align: center !important;
+}
+
+/* Botones de paginación base */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    border: 2px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 10px 16px !important;
+    margin: 0 4px !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%) !important;
+    color: #374151 !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+    cursor: pointer !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 44px !important;
+    height: 44px !important;
+}
+
+/* Efecto hover para botones */
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+    border-color: #3b82f6 !important;
+    color: white !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3) !important;
+}
+
+/* Botón activo/actual */
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+    border-color: #10b981 !important;
+    color: white !important;
+    transform: scale(1.05) !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4) !important;
+}
+
+/* Botones deshabilitados */
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    color: #9ca3af !important;
+    cursor: not-allowed !important;
+    opacity: 0.6 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled:hover {
+    background: #f3f4f6 !important;
+    border-color: #d1d5db !important;
+    color: #9ca3af !important;
+    transform: none !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Iconos para botones Previous/Next */
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous:before {
+    content: "←" !important;
+    margin-right: 8px !important;
+    font-size: 16px !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.next:before {
+    content: "→" !important;
+    margin-left: 8px !important;
+    font-size: 16px !important;
+}
+
+/* Información del paginado */
+.dataTables_wrapper .dataTables_info {
+    color: #6b7280 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    margin-top: 15px !important;
+    padding: 12px 20px !important;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+    border-radius: 12px !important;
+    border: 1px solid #e5e7eb !important;
+    display: inline-block !important;
+}
+
+/* Selector de elementos por página */
+.dataTables_wrapper .dataTables_length {
+    margin-bottom: 20px !important;
+}
+
+.dataTables_wrapper .dataTables_length select {
+    border: 2px solid #e5e7eb !important;
+    border-radius: 8px !important;
+    padding: 8px 12px !important;
+    background: white !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+}
+
+.dataTables_wrapper .dataTables_length select:focus {
+    border-color: #3b82f6 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Búsqueda mejorada */
+.dataTables_wrapper .dataTables_filter {
+    margin-bottom: 20px !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    border: 2px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    padding: 12px 16px !important;
+    background: white !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+    width: 300px !important;
+}
+
+.dataTables_wrapper .dataTables_filter input:focus {
+    border-color: #3b82f6 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
+}
+
+/* Contenedor de controles */
+.dataTables_wrapper .dataTables_length,
+.dataTables_wrapper .dataTables_filter {
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+}
+
+.dataTables_wrapper .dataTables_length label,
+.dataTables_wrapper .dataTables_filter label {
+    font-weight: 600 !important;
+    color: #374151 !important;
+    margin: 0 !important;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+        padding: 8px 12px !important;
+        margin: 0 2px !important;
+        min-width: 36px !important;
+        height: 36px !important;
+        font-size: 12px !important;
+    }
+    
+    .dataTables_wrapper .dataTables_filter input {
+        width: 200px !important;
+        padding: 10px 12px !important;
+    }
+    
+    .dataTables_wrapper .dataTables_info {
+        font-size: 12px !important;
+        padding: 8px 12px !important;
+    }
+}
+
+/* Animaciones adicionales */
+@keyframes pulse-pagination {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    animation: pulse-pagination 2s infinite !important;
+}
+
+/* Efecto de carga */
+.dataTables_wrapper .dataTables_processing {
+    background: rgba(255, 255, 255, 0.95) !important;
+    border-radius: 12px !important;
+    border: 2px solid #e5e7eb !important;
+    color: #374151 !important;
+    font-weight: 600 !important;
+    padding: 20px !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Mejoras para el wrapper general */
+.dataTables_wrapper {
+    background: white !important;
+    border-radius: 16px !important;
+    padding: 24px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+    border: 1px solid #e5e7eb !important;
+}

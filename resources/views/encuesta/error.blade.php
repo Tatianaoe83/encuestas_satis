@@ -245,7 +245,7 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <div class="gradient-bg min-h-screen py-8">
+    <div class="bg-[#0E1D49] min-h-screen py-8">
         <div class="container mx-auto px-4 max-w-2xl">
             <!-- Header -->
             <div class="text-center mb-8">
@@ -253,7 +253,7 @@
                     <img src="{{ asset('images/Recurso_4.png') }}" alt="Logo Konkret" class="w-12 h-12 object-contain">
                 </div>
                 <h1 class="text-4xl font-bold text-white mb-4">Encuesta de Satisfacción</h1>
-                <p class="text-red-100 text-xl">Esta encuesta ya no está disponible</p>
+                <p class="text-white text-xl">Esta encuesta ya no está disponible</p>
             </div>
 
             <!-- Error Message -->
@@ -291,7 +291,7 @@
 
             <!-- Footer -->
             <div class="text-center mt-8">
-                <p class="text-red-100 text-sm">
+                <p class="text-white text-sm">
                     Si el problema persiste, contacta a soporte técnico
                 </p>
             </div>

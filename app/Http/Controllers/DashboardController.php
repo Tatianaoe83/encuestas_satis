@@ -242,9 +242,11 @@ class DashboardController extends Controller
     {
         $enviosCompletados = Envio::where('estado', 'completado')
             ->whereNotNull('promedio_respuesta_1')
-            ->first();
+            ->get();
 
-        if ($enviosCompletados->count() === 0) {
+   
+
+        if ($enviosCompletados->count() === 0 ) {
             return [
                 'promedio_general' => 0,
                 'mejor_aspecto' => 'N/A',

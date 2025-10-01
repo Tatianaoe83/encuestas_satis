@@ -35,7 +35,7 @@
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-green-100 text-xs sm:text-sm font-medium">Encuestas Completadas</p>
-                            <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ number_format($enviosRespondido) }}</p>
+                            <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ number_format($enviosCompletados) }}</p>
                             <p class="text-green-100 text-xs sm:text-sm mt-1 truncate">{{ $tasaRespuesta }}% tasa de respuesta</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">

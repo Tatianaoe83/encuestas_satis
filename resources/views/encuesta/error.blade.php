@@ -260,9 +260,9 @@
             <div class="bg-white rounded-lg shadow-lg p-8 text-center">
                 <div class="mb-6">
                     <i class="fas fa-times-circle text-6xl text-red-400 mb-4"></i>
-                    <h3 class="text-2xl font-bold text-gray-800 mb-4">La encuesta ha expirado</h3>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Encuesta no disponible</h3>
                     <p class="text-gray-600 text-lg leading-relaxed">
-                        Lo sentimos, esta encuesta ya no está disponible. El período de tiempo para responder ha finalizado.
+                        {{ $mensaje ?? 'Lo sentimos, esta encuesta ya no está disponible.' }}
                     </p>
                 </div>
 
@@ -272,9 +272,9 @@
                         <span class="font-semibold text-red-800">Información adicional</span>
                     </div>
                     <ul class="text-red-700 text-sm text-left space-y-1">
-                        <li>• La encuesta ha superado su fecha de vencimiento</li>
-                        <li>• El período de respuesta ha finalizado</li>
-                        <li>• La encuesta ya no está activa</li>
+                        <li>• La encuesta puede haber sido cancelada</li>
+                        <li>• Puede haber ocurrido un error técnico</li>
+                        <li>• El período de respuesta puede haber finalizado</li>
                         <li>• Contacta al administrador para más información</li>
                     </ul>
                 </div>

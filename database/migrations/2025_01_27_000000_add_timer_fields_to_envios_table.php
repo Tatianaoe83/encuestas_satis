@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('envios', function (Blueprint $table) {
-            $table->string('content_sid')->nullable()->after('twilio_conversation_sid');
-            $table->timestamp('esperando_respuesta_desde')->nullable()->after('whatsapp_responded_at');
+            $table->string('content_sid')->nullable()->after('cliente_id');
+            $table->timestamp('esperando_respuesta_desde')->nullable()->after('content_sid');
             $table->integer('tiempo_espera_minutos')->default(30)->after('esperando_respuesta_desde');
             $table->timestamp('tiempo_expiracion')->nullable()->after('tiempo_espera_minutos');
             $table->boolean('timer_activo')->default(false)->after('tiempo_expiracion');

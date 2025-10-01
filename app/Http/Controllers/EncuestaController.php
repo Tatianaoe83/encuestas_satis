@@ -59,51 +59,75 @@ class EncuestaController extends Controller
      */
     public function mostrar($idencrypted)
     {
+        //dd(self::extraerIdDelToken($idencrypted));
         try {
             // Extraer el ID del token corto
             $idenvio = self::extraerIdDelToken($idencrypted);
+            Log::info('Token recibido: ' . $idencrypted . ' | ID extraído: ' . $idenvio);
+            
             $envio = Envio::with('cliente')->findOrFail($idenvio);
+            Log::info('Envío encontrado - ID: ' . $envio->id . ' | Estado: ' . $envio->estado);
             
             // Verificar que el token es válido
             if (!self::verificarToken($idencrypted, $idenvio)) {
+                Log::error('Token inválido - Token recibido: ' . $idencrypted . ' | Token esperado: ' . self::generarTokenCorto($idenvio));
                 return view('encuesta.error', [
                     'mensaje' => 'Enlace de encuesta no válido.'
                 ]);
             }
             
+            Log::info('Token válido');
+            
             // Verificar que el envío existe y tiene un cliente asociado
             if (!$envio->cliente) {
+                Log::error('No se encontró cliente asociado al envío ID: ' . $envio->id);
                 return view('encuesta.error', [
                     'mensaje' => 'No se encontró información del cliente para esta encuesta.'
                 ]);
             }
+            
+            Log::info('Cliente asociado encontrado - ID: ' . $envio->cliente->id);
 
-            // Verificar si la encuesta ya fue completada
-            if ($envio->estado === 'completado') {
-                return view('encuesta.completada', [
-                    'envio' => $envio,
-                    'cliente' => $envio->cliente
-                ]);
-            }else if($envio->estado === 'cancelado'){
-                return view('encuesta.error', [
-                    'envio' => $envio,
-                    'cliente' => $envio->cliente,
-                    'preguntaActual' => $envio->pregunta_actual,
-                    'idencrypted' => $idencrypted
-                ]);
+            // Verificar el estado del envío y mostrar la vista correspondiente
+            switch ($envio->estado) {
+                case 'cancelado':
+                    Log::warning('Encuesta cancelada - Envío ID: ' . $envio->id);
+                    return view('encuesta.error', [
+                        'mensaje' => $envio->estado === 'cancelado' 
+                            ? 'Esta encuesta ha sido cancelada.' 
+                            : 'Ha ocurrido un error con esta encuesta.'
+                    ]);
+                case 'error':
+                    Log::error('Encuesta con error - Envío ID: ' . $envio->id);
+                    return view('encuesta.error', [
+                        'mensaje' => $envio->estado === 'error' 
+                            ? 'Ha ocurrido un error con esta encuesta.'
+                            : 'Ha ocurrido un error con esta encuesta.'
+                    ]);
+               
+                case 'completado':
+                    Log::info('Mostrando encuesta completada - Envío ID: ' . $envio->id);
+                    return view('encuesta.completada', [
+                        'envio' => $envio,
+                        'cliente' => $envio->cliente
+                    ]);
+                
+                default:
+                    // Para estados como 'pendiente', 'enviado', 'en_proceso', etc.
+                    // Determinar qué pregunta mostrar
+                    $preguntaActual = $this->determinarPreguntaActual($envio);
+                    Log::info('Mostrando encuesta - Envío ID: ' . $envio->id . ' | Estado: ' . $envio->estado . ' | Pregunta actual: ' . $preguntaActual);
+                    
+                    return view('encuesta.mostrar', [
+                        'envio' => $envio,
+                        'cliente' => $envio->cliente,
+                        'preguntaActual' => $preguntaActual,
+                        'idencrypted' => $idencrypted
+                    ]);
             }
 
-            // Determinar qué pregunta mostrar
-            $preguntaActual = $this->determinarPreguntaActual($envio);
-            
-            return view('encuesta.mostrar', [
-                'envio' => $envio,
-                'cliente' => $envio->cliente,
-                'preguntaActual' => $preguntaActual,
-                'idencrypted' => $idencrypted
-            ]);
-
         } catch (\Exception $e) {
+            Log::error('Excepción al mostrar encuesta: ' . $e->getMessage() . ' | Trace: ' . $e->getTraceAsString());
             return view('encuesta.error', [
                 'mensaje' => 'No se pudo cargar la encuesta. Verifique que el enlace sea correcto.'
             ]);

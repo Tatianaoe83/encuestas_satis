@@ -8,37 +8,38 @@
     @endpush
     
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <div>
-                <h2 class="font-bold text-2xl text-gray-800 leading-tight">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
+            <div class="flex-1">
+                <h2 class="font-bold text-xl sm:text-2xl text-gray-800 leading-tight">
                     {{ __('Gestión de Envíos') }}
                 </h2>
-                <p class="text-gray-600 mt-1">Administra el envío de encuestas a tus clientes</p>
+                <p class="text-gray-600 mt-1 text-sm sm:text-base">Administra el envío de encuestas a tus clientes</p>
             </div>
             <div class="flex items-center space-x-3">
                
-                <a href="{{ route('envios.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('envios.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center text-sm sm:text-base">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                     </svg>
-                    Nuevo Envío
+                    <span class="hidden sm:inline">Nuevo Envío</span>
+                    <span class="sm:hidden">Nuevo</span>
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-4 sm:py-6 lg:py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Estadísticas rápidas -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="bg-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100 text-sm font-medium">Total Envíos</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->count() }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-blue-100 text-xs sm:text-sm font-medium">Total Envíos</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $envios->count() }}</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clip-rule="evenodd"/>
                                 <path fill-rule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clip-rule="evenodd"/>
                               </svg>
@@ -47,14 +48,14 @@
                     </div>
                 </div>
 
-                <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-green-100 text-sm font-medium">Respondido</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'completado')->count() }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-green-100 text-xs sm:text-sm font-medium">Respondido por el usuario</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $envios->where('estado', 'completado')->count() }}</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd"/>
                               </svg>
                               
@@ -64,14 +65,14 @@
                     </div>
                 </div>
 
-                <div class="bg-red-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-red-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-red-100 text-sm font-medium">Sin respuesta</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'cancelado')->count() }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-red-100 text-xs sm:text-sm font-medium">Sin respuesta</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $envios->where('estado', 'cancelado')->count() }}</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
                               </svg>
                               
@@ -80,14 +81,14 @@
                     </div>
                 </div>
 
-                <div class="bg-yellow-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-yellow-100 text-sm font-medium">Pendiente de envío</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'pendiente')->count() }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-yellow-100 text-xs sm:text-sm font-medium truncate">Pendiente de envío</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $envios->where('estado', 'pendiente')->count() }}</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
                               </svg>
                               
@@ -97,16 +98,16 @@
             </div>
 
             <!-- Saldo de Twilio -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-800 flex items-center">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                         </svg>
                         Saldo de Twilio
                     </h2>
-                    <button onclick="actualizarSaldoTwilio()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onclick="actualizarSaldoTwilio()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center transition-colors text-sm sm:text-base w-full sm:w-auto justify-center">
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
                         Actualizar
@@ -114,16 +115,16 @@
                 </div>
 
                 @if($saldoTwilio['success'])
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <!-- Saldo Actual -->
                         <div class="bg-purple-600 from-purple-600 to-purple-700 rounded-lg p-4 shadow-lg text-purple-800">
                             <div class="flex items-center justify-between text-purple-800">
-                                <div>
-                                    <p class="text-purple-100 text-sm font-medium">Saldo Actual</p>
-                                    <p class="text-2xl font-bold mt-1 text-purple-100">{{ $saldoTwilio['balance_formatted'] }}</p>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-purple-100 text-xs sm:text-sm font-medium">Saldo Actual</p>
+                                    <p class="text-xl sm:text-2xl font-bold mt-1 text-purple-100">{{ $saldoTwilio['balance_formatted'] }}</p>
                                 </div>
-                                <div class="bg-white bg-opacity-20 rounded-full p-3">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                                     </svg>
                                 </div>
@@ -194,10 +195,10 @@
             @endif
 
             <!-- Tabla de envíos mejorada -->
-            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
             
 
-                <div class="p-6">
+                <div class="p-3 sm:p-6 overflow-x-auto">
                     <table class="w-full display responsive nowrap" id="tabla-envios" style="width: 100%;">
                         <thead>
                             <tr>
@@ -255,7 +256,7 @@
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                    En proceso
+                                                    Usuario respondiendo
                                                 </span>
                                                 @break
                                             @case('completado')
@@ -263,7 +264,7 @@
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                                     </svg>
-                                                    Completado
+                                                    Respondido por el usuario
                                                 </span>
                                                 @break
                                             @case('recordatorio_enviado')

@@ -9,38 +9,39 @@
     
     <x-slot name="header">
         
-        <div class="flex justify-between items-center">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
             <div class="flex-1">
-                <h2 class="font-bold text-2xl text-gray-800 leading-tight">
+                <h2 class="font-bold text-xl sm:text-2xl text-gray-800 leading-tight">
                     {{ __('Gestión de Clientes') }}
                 </h2>
-                <p class="text-gray-600 mt-1">Administra la información de tus clientes de manera eficiente</p>
+                <p class="text-gray-600 mt-1 text-sm sm:text-base">Administra la información de tus clientes de manera eficiente</p>
             </div>
             <div class="flex items-center space-x-3">
-                <a href="{{ route('clientes.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center group">
-                    <svg class="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('clientes.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center group text-sm sm:text-base">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 group-hover:rotate-90 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                     </svg>
-                    Nuevo Cliente
+                    <span class="hidden sm:inline">Nuevo Cliente</span>
+                    <span class="sm:hidden">Nuevo</span>
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-4 sm:py-6 lg:py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Estadísticas rápidas -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
                 <!-- Total Clientes -->
-                <div class="bg-blue-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
                     <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <p class="text-blue-100 text-sm font-semibold tracking-wide">Total Clientes</p>
-                            <p class="text-2xl font-bold mt-1">{{ $total_clientes }}</p>
-                            <p class="text-blue-200 text-xs mt-1">Registros en el sistema</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-blue-100 text-xs sm:text-sm font-semibold tracking-wide">Total Clientes</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $total_clientes }}</p>
+                            <p class="text-blue-200 text-xs mt-1 truncate">Registros en el sistema</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M12 6a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm-1.5 8a4 4 0 0 0-4 4 2 2 0 0 0 2 2h7a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-3Zm6.82-3.096a5.51 5.51 0 0 0-2.797-6.293 3.5 3.5 0 1 1 2.796 6.292ZM19.5 18h.5a2 2 0 0 0 2-2 4 4 0 0 0-4-4h-1.1a5.503 5.503 0 0 1-.471.762A5.998 5.998 0 0 1 19.5 18ZM4 7.5a3.5 3.5 0 0 1 5.477-2.889 5.5 5.5 0 0 0-2.796 6.293A3.501 3.501 0 0 1 4 7.5ZM7.1 12H6a4 4 0 0 0-4 4 2 2 0 0 0 2 2h.5a5.998 5.998 0 0 1 3.071-5.238A5.505 5.505 0 0 1 7.1 12Z" clip-rule="evenodd"/>
                               </svg>    
                               
@@ -49,15 +50,15 @@
                 </div>
 
                 <!-- Clientes Activos -->
-                <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
                     <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <p class="text-green-100 text-sm font-semibold tracking-wide">Activos</p>
-                            <p class="text-2xl font-bold mt-1">{{ $total_activos }}</p>
-                            <p class="text-green-200 text-xs mt-1">Disponibles para envíos</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-green-100 text-xs sm:text-sm font-semibold tracking-wide">Activos</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $total_activos }}</p>
+                            <p class="text-green-200 text-xs mt-1 truncate">Disponibles para envíos</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                               </svg>                              
                         </div>
@@ -65,15 +66,15 @@
                 </div>
 
                 <!-- Clientes Inactivos -->
-                <div class="bg-orange-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-orange-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
                     <div class="flex items-center justify-between">
-                        <div class="flex-1">
-                            <p class="text-orange-100 text-sm font-semibold tracking-wide">Inactivos</p>
-                            <p class="text-2xl font-bold mt-1">{{ $total_inactivos }}</p>
-                            <p class="text-orange-200 text-xs mt-1">Pueden ser reactivados</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-orange-100 text-xs sm:text-sm font-semibold tracking-wide">Inactivos</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $total_inactivos }}</p>
+                            <p class="text-orange-200 text-xs mt-1 truncate">Pueden ser reactivados</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728"></path>
                               </svg>                              
                         </div>
@@ -82,17 +83,17 @@
             </div>
 
             <!-- Tabla de clientes con DataTables -->
-            <div class="bg-white rounded-2xl shadow-xl border border-gray-200 overflow-hidden backdrop-blur-sm">
-                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
-                    <h3 class="text-xl font-bold text-gray-800 flex items-center">
-                        <svg class="w-6 h-6 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-lg sm:rounded-2xl shadow-xl border border-gray-200 overflow-hidden backdrop-blur-sm">
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+                    <h3 class="text-lg sm:text-xl font-bold text-gray-800 flex items-center">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
                         Todos los Clientes
                     </h3>
                 </div>
 
-                <div class="p-6">
+                <div class="p-3 sm:p-6 overflow-x-auto">
                     <table id="clientes-table" class="w-full display responsive nowrap" style="width:100%">
                         <thead>
                             <tr>

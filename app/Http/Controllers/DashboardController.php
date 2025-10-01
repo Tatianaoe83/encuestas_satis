@@ -76,11 +76,7 @@ class DashboardController extends Controller
             ->orderBy('hora')
             ->get();
 
-        // Estadísticas de chat y respuestas
-        $totalRespuestas = ChatRespuesta::count();
-        $respuestasHoy = ChatRespuesta::whereDate('created_at', Carbon::today())->count();
-        $respuestasSemana = ChatRespuesta::where('created_at', '>=', Carbon::now()->subWeek())->count();
-
+      
         // Tasa de respuesta por tipo de envío
         $tasaRespuesta = $totalEnvios > 0 ? round(($enviosCancelados / $totalEnvios) * 100, 2) : 0;
         // Métricas de rendimiento
@@ -119,9 +115,6 @@ class DashboardController extends Controller
             'topAsesoresMes',
             'enviosPorDia',
             'enviosPorHora',
-            'totalRespuestas',
-            'respuestasHoy',
-            'respuestasSemana',
             'promedioRespuesta',
             'datosGraficaMensual',
             'datosGraficaSemanal',

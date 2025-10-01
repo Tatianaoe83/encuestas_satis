@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('envios', function (Blueprint $table) {
             // Agregar campo para calcular el promedio de la pregunta 1
-            $table->decimal('promedio_pregunta_1', 3, 2)->nullable()->comment('Promedio de las 5 respuestas de pregunta 1');
+            $table->decimal('promedio_respuesta_1', 3, 2)->nullable()->comment('Promedio de las 5 respuestas de pregunta 1');
         });
     }
 

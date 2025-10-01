@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 Route::redirect('/', '/login');
 
 Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('dashboard');
 
 Route::get('dashboard/estadisticas-tiempo-real', [App\Http\Controllers\DashboardController::class, 'estadisticasTiempoReal'])

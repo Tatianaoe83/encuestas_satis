@@ -344,17 +344,7 @@
                                                 @endif
                                             @endif
                                             
-                                            @if($envio->estado === 'enviado')
-                                                <form action="{{ route('envios.marcar-respondido', $envio->idenvio) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200 transition-colors duration-200">
-                                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                                        </svg>
-                                                        Respondido
-                                                    </button>
-                                                </form>
-                                            @endif
+                        
                                             
                                             <form action="{{ route('envios.destroy', $envio->idenvio) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este envío?')">
                                                 @csrf

@@ -12,12 +12,12 @@
                     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6 sm:mb-8">
                         <h3 class="text-base sm:text-lg font-medium">Información del Envío</h3>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <a href="{{ route('envios.edit', $envio->idenvio) }}" class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
+                            <!--<a href="{{ route('envios.edit', $envio->idenvio) }}" class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
                                 <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                 </svg>
                                 Editar
-                            </a>
+                            </a>-->
                             <a href="{{ route('envios.index') }}" class="inline-flex items-center justify-center bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
                                 <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
@@ -66,42 +66,11 @@
                                 <div>
                                     <span class="text-sm font-medium text-gray-500">Estado:</span>
                                     <div class="mt-1">
-                                        @switch($envio->estado)
-                                            @case('pendiente')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                    Pendiente
-                                                </span>
-                                                @break
-                                            @case('enviado')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                    Enviado
-                                                </span>
-                                                @break
-                                            @case('esperando_respuesta')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
-                                                    Esperando respuesta
-                                                </span>
-                                                @break
-                                            @case('respondido')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Respondido
-                                                </span>
-                                                @break
-                                            @case('cancelado')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                    Cancelado
-                                                </span>
-                                                @break
-                                            @case('completado')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Completado
-                                                </span>
-                                                @break
-                                            @default
+                            
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    {{ ucfirst($envio->estado) }}
+                                                    {{ ucfirst($envio->estado === 'completado' ? 'Respondido por el usuario' : ($envio->estado === 'en_proceso' ? 'Usuario respondiendo' : ($envio->estado === 'pendiente' ? 'Pendiente de envío' : 'Sin respuesta'))) }}
                                                 </span>
-                                        @endswitch
+                                       
                                     </div>
                                 </div>
                                 <div>
@@ -260,7 +229,7 @@
                              </div>
 
                              <!-- Pregunta 3 - Mejoras (solo si respondió "No") -->
-                             @if($envio->respuesta_2 == 'No' && $envio->respuesta_3)
+                             @if($envio->respuesta_2 == 'no' && $envio->respuesta_3)
                              <div class="bg-white p-4 rounded border-l-4 border-orange-500">
                                  <h5 class="font-medium text-gray-900 mb-3">Pregunta 3 - ¿Qué podríamos hacer para mejorar tu experiencia?</h5>
                                  <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">

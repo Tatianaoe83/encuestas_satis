@@ -12,6 +12,10 @@
 
     <div class="py-6 sm:py-8 lg:py-12">
         <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
+            <!-- Indicador de carga para móviles -->
+            <div id="mobile-loading-indicator" class="fixed top-0 left-0 w-full h-1 bg-blue-600 z-50 transform -translate-y-full transition-transform duration-300">
+                <div class="h-full bg-blue-400 animate-pulse"></div>
+            </div>
             <!-- Cards de estadísticas mejoradas -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
                 <!-- Card 1 - Total Envíos -->

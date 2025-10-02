@@ -304,12 +304,12 @@
                                                 </svg>
                                                 Ver
                                             </a>
-                                            <a href="{{ route('envios.edit', $envio->idenvio) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 transition-colors duration-200">
+                                            <!--<a href="{{ route('envios.edit', $envio->idenvio) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 transition-colors duration-200">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                 </svg>
                                                 Editar
-                                            </a>
+                                            </a>-->
                                             
                                             <!-- Botón para enlace de encuesta web -->
                                             <button onclick="copiarEnlaceEncuesta({{ $envio->idenvio }})" 
@@ -346,16 +346,12 @@
                                             
                         
                                             
-                                            <form action="{{ route('envios.destroy', $envio->idenvio) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este envío?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200">
-                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                    </svg>
-                                                    Eliminar
-                                                </button>
-                                            </form>
+                                            <button onclick="mostrarModalEliminar({{ $envio->idenvio }}, '{{ $envio->cliente->nombre_completo }}')" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                                Eliminar
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -552,8 +548,70 @@
                 #tabla-envios tbody tr:hover {
                     background: #f9fafb !important;
                 }
+
+                /* Estilos para el modal de eliminación */
+                #modalEliminar {
+                    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+                    opacity: 0;
+                    transform: scale(0.95);
+                }
+
+                #modalEliminar.opacity-100 {
+                    opacity: 1;
+                }
+
+                #modalEliminar.scale-100 {
+                    transform: scale(1);
+                }
+
+                #modalEliminar .relative {
+                    transition: transform 0.2s ease-in-out;
+                }
             </style>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div id="modalEliminar" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-xl bg-white">
+            <div class="mt-3 text-center">
+                <!-- Icono de advertencia -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <svg class="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                </div>
+                
+                <!-- Título -->
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Confirmar eliminación</h3>
+                
+                <!-- Mensaje -->
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500 mb-3">
+                        ¿Estás seguro de que quieres eliminar el envío del cliente <span id="nombreCliente" class="font-semibold text-gray-900"></span>?
+                    </p>
+                    <p class="text-xs text-red-600 bg-red-50 p-3 rounded-lg">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        Esta acción no se puede deshacer.
+                    </p>
+                </div>
+                
+                <!-- Botones -->
+                <div class="flex items-center justify-center gap-3 px-4 py-3">
+                    <button id="cancelarEliminar" class="px-4 py-2 bg-gray-300 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200">
+                        Cancelar
+                    </button>
+                    <button id="confirmarEliminar" class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Eliminar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -604,6 +662,90 @@
                 `;
             });
         }
+
+        // Variables globales para el modal de eliminación
+        let envioIdParaEliminar = null;
+
+        // Función para mostrar el modal de eliminación
+        function mostrarModalEliminar(envioId, nombreCliente) {
+            envioIdParaEliminar = envioId;
+            document.getElementById('nombreCliente').textContent = nombreCliente;
+            document.getElementById('modalEliminar').classList.remove('hidden');
+            
+            // Agregar animación de entrada
+            setTimeout(() => {
+                const modal = document.getElementById('modalEliminar');
+                modal.classList.add('opacity-100', 'scale-100');
+                modal.classList.remove('opacity-0', 'scale-95');
+            }, 10);
+        }
+
+        // Función para ocultar el modal
+        function ocultarModalEliminar() {
+            const modal = document.getElementById('modalEliminar');
+            modal.classList.add('opacity-0', 'scale-95');
+            modal.classList.remove('opacity-100', 'scale-100');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('opacity-0', 'scale-95');
+            }, 200);
+        }
+
+        // Función para confirmar eliminación
+        function confirmarEliminacion() {
+            if (envioIdParaEliminar) {
+                // Crear y enviar formulario
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/envios/${envioIdParaEliminar}`;
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                const methodField = document.createElement('input');
+                methodField.type = 'hidden';
+                methodField.name = '_method';
+                methodField.value = 'DELETE';
+                
+                form.appendChild(csrfToken);
+                form.appendChild(methodField);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Event listeners para el modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('modalEliminar');
+            const cancelarBtn = document.getElementById('cancelarEliminar');
+            const confirmarBtn = document.getElementById('confirmarEliminar');
+            
+            // Cerrar modal al hacer clic en cancelar
+            cancelarBtn.addEventListener('click', ocultarModalEliminar);
+            
+            // Cerrar modal al hacer clic en confirmar
+            confirmarBtn.addEventListener('click', function() {
+                ocultarModalEliminar();
+                confirmarEliminacion();
+            });
+            
+            // Cerrar modal al hacer clic fuera de él
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    ocultarModalEliminar();
+                }
+            });
+            
+            // Cerrar modal con tecla Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    ocultarModalEliminar();
+                }
+            });
+        });
 
         // Función para copiar enlace de encuesta
         function copiarEnlaceEncuesta(envioId) {

@@ -13,6 +13,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Headers para evitar caché en móviles
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
         // Estadísticas generales de envíos
         $totalEnvios = Envio::count();
         $enviosCompletados = Envio::where('estado', 'completado')->count();

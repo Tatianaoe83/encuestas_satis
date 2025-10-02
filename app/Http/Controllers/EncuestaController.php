@@ -302,10 +302,10 @@ class EncuestaController extends Controller
                 ];
             }
 
-            if (strlen(trim($respuesta)) < 10) {
+            if (strlen(trim($respuesta)) < 5) {
                 return [
                     'valida' => false,
-                    'mensaje' => 'Por favor, escriba al menos 10 caracteres.'
+                    'mensaje' => 'Por favor, escriba al menos 5 caracteres.'
                 ];
             }
             return ['valida' => true];

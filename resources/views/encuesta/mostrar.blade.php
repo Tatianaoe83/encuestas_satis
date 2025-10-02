@@ -689,10 +689,12 @@
                                 <span id="rating-text"></span>
                             </div>
                             
-                            <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
-                                <i class="fas fa-arrow-right mr-2 text-lg"></i>
-                                Continuar
-                            </button>
+                            <div class="flex justify-center">
+                                <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
+                                    <i class="fas fa-arrow-right mr-2 text-lg"></i>
+                                    Continuar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -807,10 +809,12 @@
                                 </button>
                             </div>
                             
-                            <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
-                                <i class="fas fa-arrow-right mr-2 text-lg"></i>
-                                Continuar
-                            </button>
+                            <div class="flex justify-center">
+                                <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
+                                    <i class="fas fa-arrow-right mr-2 text-lg"></i>
+                                    Continuar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -832,7 +836,7 @@
                                       class="w-full h-40 p-6 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-all duration-300 shadow-sm focus:shadow-lg"
                                       placeholder="Escribe tu sugerencia o comentario aquí..."></textarea>
                             
-                            <div class="mt-6">
+                            <div class="mt-6 flex justify-center">
                                 <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
                                     <i class="fas fa-arrow-right mr-2 text-lg"></i>
                                     Finalizar Encuesta
@@ -908,12 +912,14 @@
                         </p>
                     </div>
 
-                    <button onclick="enviarRespuesta()" 
-                            class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-                            id="submit-btn" disabled>
-                        <i class="fas fa-paper-plane mr-2 text-lg"></i>
-                        Enviar Respuesta
-                    </button>
+                    <div class="flex justify-center">
+                        <button onclick="enviarRespuesta()" 
+                                class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                id="submit-btn" disabled>
+                            <i class="fas fa-paper-plane mr-2 text-lg"></i>
+                            Enviar Respuesta
+                        </button>
+                    </div>
                 </div>
             `;
         }
@@ -935,11 +941,13 @@
                         </p>
                     </div>
 
-                     <button onclick="window.close()"
-                        class="bg-red-600 hover:bg-red-700 hover:scale-105 text-white font-bold py-3 px-8 rounded-lg transition duration-200 mr-4 flex items-center justify-center">
-                        <i class="fas fa-times mr-2 text-lg"></i>
-                        Cerrar Ventana
-                    </button>
+                    <div class="flex justify-center">
+                        <button onclick="window.close()"
+                            class="bg-red-600 hover:bg-red-700 hover:scale-105 text-white font-bold py-3 px-8 rounded-lg transition duration-200 flex items-center justify-center">
+                            <i class="fas fa-times mr-2 text-lg"></i>
+                            Cerrar Ventana
+                        </button>
+                    </div>
                 </div>
             `;
             actualizarProgreso('completado');

@@ -733,11 +733,15 @@
 
             console.log('Seleccionando rating:', rating); // Debug
 
+            // Primero limpiar todas las estrellas
+            stars.forEach(star => {
+                star.classList.remove('selected', 'hovered');
+            });
+
+            // Luego seleccionar solo las estrellas hasta el rating seleccionado
             stars.forEach((star, index) => {
                 if (index < rating) {
                     star.classList.add('selected');
-                } else {
-                    star.classList.remove('selected');
                 }
             });
 
@@ -960,10 +964,12 @@
             let respuesta = '';
 
             // Si hay estrellas seleccionadas, usar esa respuesta
-            const selectedStar = document.querySelector('.star.selected');
-            if (selectedStar) {
-                respuesta = selectedStar.dataset.rating;
-                console.log('Estrella seleccionada:', selectedStar.dataset.rating); // Debug
+            const selectedStars = document.querySelectorAll('.star.selected');
+            if (selectedStars.length > 0) {
+                // Contar cuántas estrellas están seleccionadas para obtener el rating correcto
+                respuesta = selectedStars.length.toString();
+                console.log('Estrellas seleccionadas:', selectedStars.length); // Debug
+                console.log('Respuesta a enviar:', respuesta); // Debug
             }
             // Si hay botones Sí/No seleccionados
             else if (document.getElementById('btn-si') && document.getElementById('btn-si').classList.contains('selected')) {

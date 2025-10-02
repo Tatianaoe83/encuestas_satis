@@ -6,10 +6,10 @@
     </x-slot>
 
     <div class="py-6 sm:py-8 lg:py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <div class="bg-white overflow-hidden shadow-sm rounded-lg sm:rounded-lg">
-                <div class="p-4 sm:p-6 text-gray-900">
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 sm:mb-6">
+                <div class="p-6 sm:p-8 text-gray-900">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6 sm:mb-8">
                         <h3 class="text-base sm:text-lg font-medium">Crear Nuevo Cliente</h3>
                         <a href="{{ route('clientes.index') }}" class="inline-flex items-center justify-center bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
                             <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -19,10 +19,10 @@
                         </a>
                     </div>
 
-                    <form action="{{ route('clientes.store') }}" method="POST" class="space-y-4 sm:space-y-6">
+                    <form action="{{ route('clientes.store') }}" method="POST" class="space-y-6 sm:space-y-8">
                         @csrf
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                             <div>
                                 <x-input-label for="asesor_comercial" :value="__('Asesor Comercial')" />
                                 <x-text-input id="asesor_comercial" class="block mt-1 w-full" type="text" name="asesor_comercial" :value="old('asesor_comercial')" required autofocus />
@@ -73,7 +73,7 @@
                             </div>
                         </div>
 
-                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 mt-4 sm:mt-6">
+                        <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 mt-6 sm:mt-8">
                             <x-primary-button class="w-full sm:w-auto justify-center">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

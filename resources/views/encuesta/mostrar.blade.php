@@ -170,12 +170,20 @@
         /* Responsive para móvil */
         @media (max-width: 640px) {
             .star {
-                font-size: 1.5rem;
+                font-size: 2rem !important;
+                padding: 8px !important;
+                min-width: 44px !important;
+                min-height: 44px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
             }
 
             .star-rating {
-                gap: 2px;
-                margin: 15px 0;
+                gap: 4px !important;
+                margin: 20px 0 !important;
+                justify-content: center !important;
+                flex-wrap: wrap !important;
             }
 
             .question-card {
@@ -192,24 +200,57 @@
 
             .btn-primary,
             .btn-success {
-                padding: 10px 24px;
-                font-size: 1rem;
+                padding: 12px 28px !important;
+                font-size: 1rem !important;
+                min-height: 48px !important;
+                width: 100% !important;
+                max-width: 300px !important;
+                margin: 0 auto !important;
             }
 
             .rating-button {
-                width: 24px;
-                height: 24px;
+                width: 80px !important;
+                height: 80px !important;
+                font-size: 1.5rem !important;
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                justify-content: center !important;
+            }
+
+            /* Asegurar que los iconos se muestren correctamente */
+            .fas, .far, .fab {
+                display: inline-block !important;
+                font-style: normal !important;
+                font-variant: normal !important;
+                text-rendering: auto !important;
+                line-height: 1 !important;
+            }
+
+            /* Mejorar botones de Si/No */
+            #btn-si, #btn-no {
+                width: 100px !important;
+                height: 100px !important;
+                font-size: 1.8rem !important;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.9rem !important;
+                margin-top: 4px !important;
             }
         }
 
         @media (max-width: 480px) {
             .star {
-                font-size: 1.2rem;
+                font-size: 1.8rem !important;
+                padding: 6px !important;
+                min-width: 40px !important;
+                min-height: 40px !important;
             }
 
             .star-rating {
-                gap: 1px;
-                margin: 10px 0;
+                gap: 3px !important;
+                margin: 15px 0 !important;
             }
 
             .question-card {
@@ -232,15 +273,134 @@
                 padding-left: 0.75rem;
                 padding-right: 0.75rem;
             }
+
+            .btn-primary,
+            .btn-success {
+                padding: 10px 24px !important;
+                font-size: 0.9rem !important;
+                min-height: 44px !important;
+                width: 100% !important;
+                max-width: 280px !important;
+                margin: 0 auto !important;
+            }
+
+            .rating-button {
+                width: 70px !important;
+                height: 70px !important;
+                font-size: 1.3rem !important;
+            }
+
+            #btn-si, #btn-no {
+                width: 90px !important;
+                height: 90px !important;
+                font-size: 1.6rem !important;
+            }
         }
 
         @media (max-width: 360px) {
             .star {
-                font-size: 1rem;
+                font-size: 1.5rem !important;
+                padding: 4px !important;
+                min-width: 36px !important;
+                min-height: 36px !important;
             }
 
             .star-rating {
-                gap: 0.5px;
+                gap: 2px !important;
+            }
+
+            .rating-button {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 1.1rem !important;
+            }
+
+            #btn-si, #btn-no {
+                width: 80px !important;
+                height: 80px !important;
+                font-size: 1.4rem !important;
+            }
+
+            .btn-primary,
+            .btn-success {
+                padding: 8px 20px !important;
+                font-size: 0.85rem !important;
+                min-height: 40px !important;
+                width: 100% !important;
+                max-width: 260px !important;
+                margin: 0 auto !important;
+            }
+        }
+
+        /* Estilos adicionales para asegurar visibilidad en móviles */
+        @media (max-width: 768px) {
+            .star:hover {
+                transform: scale(1.1) !important;
+            }
+
+            .rating-button:hover {
+                transform: scale(1.05) !important;
+            }
+
+            /* Mejorar la experiencia táctil */
+            .star, .rating-button, .btn-primary, .btn-success {
+                touch-action: manipulation !important;
+                -webkit-tap-highlight-color: transparent !important;
+            }
+
+            /* Asegurar que FontAwesome se cargue correctamente */
+            @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
+        }
+
+        /* Estilos para dispositivos con pantalla muy pequeña */
+        @media (max-width: 320px) {
+            .star {
+                font-size: 1.2rem !important;
+                min-width: 32px !important;
+                min-height: 32px !important;
+                padding: 2px !important;
+            }
+
+            .star-rating {
+                gap: 1px !important;
+                margin: 10px 0 !important;
+            }
+
+            .rating-button {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 1rem !important;
+            }
+
+            #btn-si, #btn-no {
+                width: 70px !important;
+                height: 70px !important;
+                font-size: 1.2rem !important;
+            }
+
+            .btn-primary, .btn-success {
+                padding: 6px 16px !important;
+                font-size: 0.8rem !important;
+                min-height: 36px !important;
+                width: 100% !important;
+                max-width: 240px !important;
+                margin: 0 auto !important;
+            }
+
+            .question-card {
+                padding: 0.75rem !important;
+            }
+
+            .text-3xl {
+                font-size: 1.1rem !important;
+            }
+
+            .text-xl {
+                font-size: 0.9rem !important;
+            }
+
+            .text-lg {
+                font-size: 0.8rem !important;
             }
         }
     </style>
@@ -422,8 +582,8 @@
                                 <span id="rating-text"></span>
                             </div>
                             
-                            <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                                <i class="fas fa-arrow-right mr-2"></i>
+                            <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
+                                <i class="fas fa-arrow-right mr-2 text-lg"></i>
                                 Continuar
                             </button>
                         </div>
@@ -473,7 +633,7 @@
 
             const descriptions = {
                 1: 'Muy malo',
-                2: 'Malo',
+                2: 'Perfecto',
                 3: 'Regular',
                 4: 'Bueno',
                 5: 'Muy bueno',
@@ -521,18 +681,18 @@
                     <div class="max-w-2xl mx-auto mb-8">
                         <div class="bg-white rounded-xl p-8 border-2 border-gray-200 shadow-lg">
                             <div class="flex justify-center gap-8 mb-8">
-                                <button id="btn-si" class="rating-button w-24 h-24 bg-green-500 text-white text-2xl font-bold rounded-full transition-all duration-300">
-                                    <i class="fas fa-thumbs-up"></i>
-                                    <div class="text-sm mt-1">Sí</div>
+                                <button id="btn-si" class="rating-button w-24 h-24 bg-green-500 text-white text-2xl font-bold rounded-full transition-all duration-300 flex flex-col items-center justify-center">
+                                    <i class="fas fa-thumbs-up text-2xl mb-1"></i>
+                                    <div class="text-sm font-medium">Sí</div>
                                 </button>
-                                <button id="btn-no" class="rating-button w-24 h-24 bg-red-500 text-white text-2xl font-bold rounded-full transition-all duration-300">
-                                    <i class="fas fa-thumbs-down"></i>
-                                    <div class="text-sm mt-1">No</div>
+                                <button id="btn-no" class="rating-button w-24 h-24 bg-red-500 text-white text-2xl font-bold rounded-full transition-all duration-300 flex flex-col items-center justify-center">
+                                    <i class="fas fa-thumbs-down text-2xl mb-1"></i>
+                                    <div class="text-sm font-medium">No</div>
                                 </button>
                             </div>
                             
-                            <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                                <i class="fas fa-arrow-right mr-2"></i>
+                            <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
+                                <i class="fas fa-arrow-right mr-2 text-lg"></i>
                                 Continuar
                             </button>
                         </div>
@@ -557,8 +717,8 @@
                                       placeholder="Escribe tu sugerencia o comentario aquí..."></textarea>
                             
                             <div class="mt-6">
-                                <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                                    <i class="fas fa-arrow-right mr-2"></i>
+                                <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
+                                    <i class="fas fa-arrow-right mr-2 text-lg"></i>
                                     Finalizar Encuesta
                                 </button>
                             </div>
@@ -633,9 +793,9 @@
                     </div>
 
                     <button onclick="enviarRespuesta()" 
-                            class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
+                            class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                             id="submit-btn" disabled>
-                        <i class="fas fa-paper-plane mr-2"></i>
+                        <i class="fas fa-paper-plane mr-2 text-lg"></i>
                         Enviar Respuesta
                     </button>
                 </div>
@@ -659,9 +819,9 @@
                         </p>
                     </div>
 
-                     <button onclick="window.location.href='/'"
-                        class="bg-red-600 hover:bg-red-700 hover:scale-105 text-white font-bold py-3 px-8 rounded-lg transition duration-200 mr-4">
-                        <i class="fas fa-times mr-2"></i>
+                     <button onclick="window.close()"
+                        class="bg-red-600 hover:bg-red-700 hover:scale-105 text-white font-bold py-3 px-8 rounded-lg transition duration-200 mr-4 flex items-center justify-center">
+                        <i class="fas fa-times mr-2 text-lg"></i>
                         Cerrar Ventana
                     </button>
                 </div>

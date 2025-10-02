@@ -97,7 +97,7 @@ class EncuestasExport implements FromCollection, WithHeadings, WithMapping, With
             $cliente->puesto ?? 'N/A',
             $cliente->celular ?? 'N/A',
             $cliente->correo ?? 'N/A',
-            strtoupper($envio->estado),
+            strtoupper($envio->estado === 'completado' ? 'Respondido por el usuario' : ($envio->estado === 'en_proceso' ? 'Usuario respondiendo' : ($envio->estado === 'pendiente' ? 'Pendiente de envío' : ($envio->estado === 'enviado' ? 'Enviado por Whatsapp' : ($envio->estado === 'cancelado' ? 'Sin respuesta' : 'Sin respuesta'))))),
             $envio->fecha_envio ? $envio->fecha_envio->format('d/m/Y H:i:s') : 'N/A',
             $envio->fecha_respuesta ? $envio->fecha_respuesta->format('d/m/Y H:i:s') : 'N/A',
             $envio->created_at->format('d/m/Y H:i:s'),

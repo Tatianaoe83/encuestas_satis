@@ -14,11 +14,11 @@
     </x-slot>
 
     <div class="py-6 sm:py-8 lg:py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <!-- Estadísticas por asesor -->
-            <div class="bg-white overflow-hidden shadow-sm rounded-lg sm:rounded-lg mb-6 sm:mb-8">
-                <div class="p-4 sm:p-6">
-                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Estadísticas por Asesor Comercial</h3>
+            <div class="bg-white overflow-hidden shadow-sm rounded-lg sm:rounded-lg mb-8 sm:mb-12">
+                <div class="p-6 sm:p-8">
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Estadísticas por Asesor Comercial</h3>
                     <div class="overflow-x-auto -mx-4 sm:mx-0">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
@@ -65,8 +65,8 @@
 
             <!-- Envíos recientes -->
             <div class="bg-white overflow-hidden shadow-sm rounded-lg sm:rounded-lg">
-                <div class="p-4 sm:p-6">
-                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Envíos Recientes</h3>
+                <div class="p-6 sm:p-8">
+                    <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">Envíos Recientes</h3>
                     <div class="overflow-x-auto -mx-4 sm:mx-0">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">

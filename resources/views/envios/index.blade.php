@@ -28,11 +28,11 @@
         </div>
     </x-slot>
 
-    <div class="py-4 sm:py-6 lg:py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="py-6 sm:py-8 lg:py-12">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <!-- Estadísticas rápidas -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
+                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-blue-100 text-xs sm:text-sm font-medium">Total Envíos</p>
@@ -48,7 +48,7 @@
                     </div>
                 </div>
 
-                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
+                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-green-100 text-xs sm:text-sm font-medium">Respondido por el usuario</p>
@@ -65,7 +65,7 @@
                     </div>
                 </div>
 
-                <div class="bg-red-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
+                <div class="bg-red-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-red-100 text-xs sm:text-sm font-medium">Sin respuesta</p>
@@ -81,7 +81,7 @@
                     </div>
                 </div>
 
-                <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
+                <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-yellow-100 text-xs sm:text-sm font-medium truncate">Pendiente de envío</p>
@@ -98,7 +98,7 @@
             </div>
 
             <!-- Saldo de Twilio -->
-            <div class="bg-white rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
+            <div class="bg-white rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 mb-8 sm:mb-12">
                 <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
                     <h2 class="text-lg sm:text-xl font-semibold text-gray-800 flex items-center">
                         <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -115,9 +115,9 @@
                 </div>
 
                 @if($saldoTwilio['success'])
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Saldo Actual -->
-                        <div class="bg-purple-600 from-purple-600 to-purple-700 rounded-lg p-4 shadow-lg text-purple-800">
+                        <div class="bg-purple-600 from-purple-600 to-purple-700 rounded-lg p-6 shadow-lg text-purple-800">
                             <div class="flex items-center justify-between text-purple-800">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-purple-100 text-xs sm:text-sm font-medium">Saldo Actual</p>
@@ -132,7 +132,7 @@
                         </div>
 
                         <!-- Información de Cuenta -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
                             <h3 class="text-sm font-medium text-gray-500 mb-2">Información de Cuenta</h3>
                             <div class="space-y-1">
                                
@@ -149,7 +149,7 @@
                         </div>
 
                         <!-- Moneda -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
                             <h3 class="text-sm font-medium text-gray-500 mb-2">Moneda</h3>
                             <p class="text-2xl font-bold text-gray-900">{{ $saldoTwilio['currency'] }}</p>
                             <p class="text-xs text-gray-500 mt-1">Código de moneda</p>
@@ -157,7 +157,7 @@
 
                     </div>
                 @else
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
                         <div class="flex items-center">
                             <svg class="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
@@ -198,7 +198,7 @@
             <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
             
 
-                <div class="p-3 sm:p-6 overflow-x-auto">
+                <div class="p-6 sm:p-8 overflow-x-auto">
                     <table class="w-full display responsive nowrap" id="tabla-envios" style="width: 100%;">
                         <thead>
                             <tr>

@@ -354,6 +354,12 @@ class EncuestaController extends Controller
             $datosActualizacion['estado'] = 'en_proceso';
         }
 
+        // Si es la pregunta 1.5, calcular el promedio de las respuestas 1_1 a 1_5
+        if ($pregunta === '1.5') {
+            $promedio = $this->calcularPromedioRespuestas1($envio, (int) $respuesta);
+            $datosActualizacion['promedio_respuesta_1'] = $promedio;
+        }
+
         // Si es la última pregunta, marcar como completado
         if ($pregunta === '3' || ($pregunta === '2' && trim(strtolower($respuesta)) === 'si')) {
             $datosActualizacion['estado'] = 'completado';
@@ -412,5 +418,33 @@ class EncuestaController extends Controller
         if ($siguientePregunta !== 'completado') {
             $envio->update(['pregunta_actual' => $siguientePregunta]);
         }
+    }
+
+    /**
+     * Calcular el promedio de las respuestas 1_1 a 1_5
+     */
+    private function calcularPromedioRespuestas1($envio, $respuesta1_5)
+    {
+        $respuestas = [
+            $envio->respuesta_1_1,
+            $envio->respuesta_1_2,
+            $envio->respuesta_1_3,
+            $envio->respuesta_1_4,
+            $respuesta1_5
+        ];
+
+        // Filtrar valores nulos y calcular promedio
+        $respuestasValidas = array_filter($respuestas, function($valor) {
+            return $valor !== null && $valor !== '';
+        });
+
+        if (empty($respuestasValidas)) {
+            return 0;
+        }
+
+        $suma = array_sum($respuestasValidas);
+        $cantidad = count($respuestasValidas);
+        
+        return round($suma / $cantidad, 2);
     }
 }

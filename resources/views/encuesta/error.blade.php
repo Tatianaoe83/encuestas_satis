@@ -191,8 +191,12 @@
 
             .btn-primary,
             .btn-success {
-                padding: 10px 24px;
-                font-size: 1rem;
+                padding: 12px 28px !important;
+                font-size: 1rem !important;
+                min-height: 48px !important;
+                width: 100% !important;
+                max-width: 300px !important;
+                margin: 0 auto !important;
             }
 
             .rating-button {
@@ -231,6 +235,16 @@
                 padding-left: 0.75rem;
                 padding-right: 0.75rem;
             }
+
+            .btn-primary,
+            .btn-success {
+                padding: 10px 24px !important;
+                font-size: 0.9rem !important;
+                min-height: 44px !important;
+                width: 100% !important;
+                max-width: 280px !important;
+                margin: 0 auto !important;
+            }
         }
 
         @media (max-width: 360px) {
@@ -240,6 +254,28 @@
 
             .star-rating {
                 gap: 0.5px;
+            }
+
+            .btn-primary,
+            .btn-success {
+                padding: 8px 20px !important;
+                font-size: 0.85rem !important;
+                min-height: 40px !important;
+                width: 100% !important;
+                max-width: 260px !important;
+                margin: 0 auto !important;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .btn-primary,
+            .btn-success {
+                padding: 6px 16px !important;
+                font-size: 0.8rem !important;
+                min-height: 36px !important;
+                width: 100% !important;
+                max-width: 240px !important;
+                margin: 0 auto !important;
             }
         }
     </style>

@@ -6,10 +6,10 @@
     </x-slot>
 
     <div class="py-6 sm:py-8 lg:py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <div class="bg-white overflow-hidden shadow-sm rounded-lg sm:rounded-lg">
-                <div class="p-4 sm:p-6 text-gray-900">
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4 sm:mb-6">
+                <div class="p-6 sm:p-8 text-gray-900">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6 sm:mb-8">
                         <h3 class="text-base sm:text-lg font-medium">Información del Envío</h3>
                         <div class="flex flex-col sm:flex-row gap-2">
                             <a href="{{ route('envios.edit', $envio->idenvio) }}" class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
@@ -27,9 +27,9 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         <!-- Información del Cliente -->
-                        <div class="bg-gray-50 p-4 sm:p-6 rounded-lg">
+                        <div class="bg-gray-50 p-6 sm:p-8 rounded-lg">
                             <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Información del Cliente</h4>
                             <div class="space-y-3">
                                 <div>
@@ -60,7 +60,7 @@
                         </div>
 
                         <!-- Estado y Fechas -->
-                        <div class="bg-gray-50 p-4 sm:p-6 rounded-lg">
+                        <div class="bg-gray-50 p-6 sm:p-8 rounded-lg">
                             <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Estado y Fechas</h4>
                             <div class="space-y-3">
                                 <div>
@@ -120,7 +120,7 @@
                         </div>
 
                         <!-- Información de WhatsApp -->
-                        <div class="bg-gray-50 p-4 sm:p-6 rounded-lg">
+                        <div class="bg-gray-50 p-6 sm:p-8 rounded-lg">
                             <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">📱 Información de WhatsApp</h4>
                             <div class="space-y-3">
                                 @if($envio->whatsapp_number)
@@ -155,9 +155,9 @@
                     </div>
 
                     <!-- Preguntas y Respuestas -->
-                    <div class="mt-4 sm:mt-6 bg-gray-50 p-4 sm:p-6 rounded-lg">
+                    <div class="mt-6 sm:mt-8 bg-gray-50 p-6 sm:p-8 rounded-lg">
                         <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">📋 Preguntas del Envío</h4>
-                        <div class="space-y-4 text-sm mb-6">
+                        <div class="space-y-6 text-sm mb-8">
                             <div class="bg-white p-3 rounded border-l-4 border-blue-500">
                                 <h5 class="font-medium text-gray-900 mb-1">Pregunta 1 (Escala 1-10):</h5>
                                 <p class="text-gray-700">En una escala del 1-10, ¿Cómo calificarías nuestro servicio con base en los siguientes puntos?</p>
@@ -184,12 +184,12 @@
                         </div>
 
                         <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">✍️ Respuestas del Cliente</h4>
-                        <div class="space-y-4">
+                        <div class="space-y-6">
                             <!-- Pregunta 1 - Subpreguntas 1.1 a 1.5 -->
                             <div class="bg-white p-4 rounded border-l-4 border-blue-500">
                                 <h5 class="font-medium text-gray-900 mb-3">Pregunta 1 - Calificaciones (Escala 1-10)</h5>
                                 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                                          <div class="bg-gray-50 p-3 rounded">
                                          <span class="text-sm font-medium text-gray-500">1.1. Calidad del producto:</span>
                                          @if($envio->respuesta_1_1)

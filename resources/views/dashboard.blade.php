@@ -10,12 +10,12 @@
         </div>
     </x-slot>
 
-    <div class="py-4 sm:py-6 lg:py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="py-6 sm:py-8 lg:py-12">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <!-- Cards de estadísticas mejoradas -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
                 <!-- Card 1 - Total Envíos -->
-                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-blue-100 text-xs sm:text-sm font-medium">Total Envíos</p>
@@ -31,7 +31,7 @@
                 </div>
 
                 <!-- Card 2 - Encuestas Completadas -->
-                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-green-100 text-xs sm:text-sm font-medium">Encuestas Completadas</p>
@@ -47,7 +47,7 @@
                 </div>
 
                 <!-- Card 3 - NPS Score -->
-                <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-yellow-100 text-xs sm:text-sm font-medium">NPS Score</p>
@@ -63,7 +63,7 @@
                 </div>
 
                 <!-- Card 4 - Calidad Promedio -->
-                <div class="bg-purple-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-purple-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-purple-100 text-xs sm:text-sm font-medium">Calidad Promedio</p>
@@ -80,10 +80,10 @@
             </div>
 
             <!-- Gráfico y tabla mejorados -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfico del NPS -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100">
+                    <div class="p-6 sm:p-8 border-b border-gray-100">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900">Net Promoter Score (NPS)</h3>
                             <div class="flex items-center space-x-2">
@@ -92,7 +92,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <!-- NPS Score Principal -->
                         <div class="text-center mb-4 sm:mb-6">
                             <div class="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{{ $npsPromedio['nps_score'] }}</div>
@@ -155,7 +155,7 @@
 
                 <!-- Tabla de estados de envíos -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100">
+                    <div class="p-6 sm:p-8 border-b border-gray-100">
                         <div class="flex items-center justify-between">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900">Estados de Envíos</h3>
                             <a href="{{ route('envios.index') }}" class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium">Ver todos</a>
@@ -165,24 +165,28 @@
                         <table class="w-full min-w-[500px]">
                             <thead class="bg-gray-50">
                                 <tr>
+                                  
                                     <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                                     <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Porcentaje</th>
-                                    <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-100">
                                 @forelse($enviosPorEstado->take(5) as $estado)
                                 <tr class="hover:bg-gray-50 transition-colors duration-200">
-                                    <td class="px-3 sm:px-6 py-3 sm:py-4">
-                                        <div class="flex items-center">
-                                            <div class="w-7 h-7 sm:w-8 sm:h-8 {{ $estado->estado === 'completado' ? 'bg-green-100' : ($estado->estado === 'enviado' ? 'bg-blue-100' : 'bg-yellow-100') }} rounded-full flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
-                                                <span class="{{ $estado->estado === 'completado' ? 'text-green-600' : ($estado->estado === 'enviado' ? 'text-blue-600' : 'text-yellow-600') }} font-medium text-xs sm:text-sm">{{ strtoupper(substr($estado->estado, 0, 1)) }}</span>
-                                            </div>
-                                            <div class="min-w-0">
-                                                <div class="text-xs sm:text-sm font-medium text-gray-900 truncate">{{ ucfirst($estado->estado) }}</div>
-                                                <div class="text-xs sm:text-sm text-gray-500">{{ $estado->total }} envíos</div>
-                                            </div>
-                                        </div>
+                                    <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-500">
+                                        @if($estado->estado === 'completado')
+                                        <span class="text-green-600">✓ Respondido por el usuario</span>
+                                        @elseif($estado->estado === 'enviado')
+                                        <span class="text-blue-600">📤 Enviado por Whatsapp</span>
+                                        @elseif($estado->estado === 'pendiente')
+                                        <span class="text-yellow-600">⏳ Pendiente de envío</span>
+                                        @elseif($estado->estado === 'cancelado')
+                                        <span class="text-red-600">✗ Sin respuesta</span>
+                                        @elseif($estado->estado === 'recordatorio_enviado')
+                                        <span class="text-orange-600">⏳ Recordatorio enviado</span>
+                                        @elseif($estado->estado === 'en_proceso')
+                                        <span class="text-purple-600">⏳ Usuario respondiendo</span>
+                                        @endif
                                     </td>
                                     <td class="px-3 sm:px-6 py-3 sm:py-4">
                                         <div class="flex items-center">
@@ -195,15 +199,7 @@
                                             <span class="ml-1 sm:ml-2 text-xs sm:text-sm font-medium text-gray-900 whitespace-nowrap">{{ round($porcentaje, 1) }}%</span>
                                         </div>
                                     </td>
-                                    <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-500">
-                                        @if($estado->estado === 'completado')
-                                        <span class="text-green-600">✓ Completado</span>
-                                        @elseif($estado->estado === 'enviado')
-                                        <span class="text-blue-600">📤 Enviado</span>
-                                        @else
-                                        <span class="text-yellow-600">⏳ Pendiente</span>
-                                        @endif
-                                    </td>
+                                    
                                 </tr>
                                 @empty
                                 <tr>
@@ -219,10 +215,10 @@
             </div>
 
             <!-- Nueva sección: Análisis de Calidad del Producto -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfico de aspectos de calidad -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100">
+                    <div class="p-6 sm:p-8 border-b border-gray-100">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900">Aspectos de Calidad</h3>
                             <div class="flex items-center space-x-2">
@@ -231,7 +227,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="space-y-3 sm:space-y-4">
                             @foreach($estadisticasCalidad['aspectos'] as $aspecto)
                             <div class="flex items-center justify-between gap-2">
@@ -266,7 +262,7 @@
                 </div>
 
                 <!-- Top asesores comerciales -->
-                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6">
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 p-6 sm:p-8">
                     <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Top Asesores del Mes</h3>
                     <div class="space-y-2 sm:space-y-3">
                         @forelse($topAsesoresMes as $asesor)
@@ -281,7 +277,7 @@
                 </div>
 
                 <!-- Resumen de recomendaciones -->
-                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 p-4 sm:p-6">
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 p-6 sm:p-8">
                     <h3 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4">Resumen de Recomendaciones</h3>
                     <div class="space-y-3 sm:space-y-4">
                         @php
@@ -317,16 +313,16 @@
             </div>
 
             <!-- Sección adicional: Estadísticas detalladas -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10">
                 <!-- Envíos por estado -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100">
+                    <div class="p-6 sm:p-8 border-b border-gray-100">
                         <div class="flex items-center justify-between">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900">Envíos por Estado</h3>
                             <a href="{{ route('envios.index') }}" class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium">Ver todos</a>
                         </div>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="space-y-3 sm:space-y-4">
                             @php
                             $estados = [
@@ -368,13 +364,16 @@
 
                 <!-- Actividad reciente -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100">
+                    <div class="p-6 sm:p-8 border-b border-gray-100">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">Actividad Reciente</h3>
-                            <span class="text-xs sm:text-sm text-gray-600">{{ Carbon\Carbon::now()->format('d/m/Y') }}</span>
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">Actividad Reciente </h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                                <span class="text-xs sm:text-sm text-gray-600">7 días</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="space-y-3 sm:space-y-4">
                             @php
                             $enviosRecientes = App\Models\Envio::with('cliente')
@@ -394,7 +393,7 @@
                                     </div>
                                     <div class="min-w-0">
                                         <div class="text-xs sm:text-sm font-medium text-gray-900 truncate">{{ $envio->cliente->razon_social ?? 'Cliente' }}</div>
-                                        <div class="text-xs sm:text-sm text-gray-500">{{ $envio->fecha_envio ? $envio->fecha_envio->format('d/m H:i') : 'N/A' }}</div>
+                                        <div class="text-xs sm:text-sm text-gray-500">{{ $envio->fecha_envio ? $envio->fecha_envio->format('d/m/Y H:i') : 'N/A' }}</div>
                                     </div>
                                 </div>
                                 <div class="flex items-center flex-shrink-0">
@@ -402,7 +401,7 @@
                                             {{ $envio->estado === 'completado' ? 'bg-green-100 text-green-800' : 
                                                ($envio->estado === 'en_proceso' ? 'bg-purple-100 text-purple-800' : 
                                                ($envio->estado === 'pendiente' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800')) }}">
-                                        {{ ucfirst($envio->estado) }}
+                                        {{ ucfirst($envio->estado === 'completado' ? 'Respondido por el usuario' : ($envio->estado === 'en_proceso' ? 'Usuario respondiendo' : ($envio->estado === 'pendiente' ? 'Pendiente de envío' : 'Sin respuesta'))) }}
                                     </span>
                                 </div>
                             </div>

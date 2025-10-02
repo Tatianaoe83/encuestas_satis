@@ -32,11 +32,11 @@
         </div>
     </x-slot>
 
-    <div class="py-4 sm:py-6 lg:py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="py-6 sm:py-8 lg:py-12">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <!-- Tarjetas de estadísticas generales mejoradas -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 mb-6 sm:mb-8">
-                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 mb-8 sm:mb-12">
+                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-blue-100 text-xs sm:text-sm font-medium">Total Envíos</p>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 
-                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-green-100 text-xs sm:text-sm font-medium">Respondido por el usuario</p>
@@ -67,7 +67,7 @@
                     </div>
                 </div>
                 
-                <div class="bg-red-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-red-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-red-100 text-xs sm:text-sm font-medium">Sin respuesta</p>
@@ -115,10 +115,10 @@
             </div>
 
             <!-- Sección 1: Métricas Clave y NPS -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfica de dona - Envíos por estado -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900">📊 Envíos por Estado</h3>
                             <div class="flex items-center space-x-2">
@@ -128,7 +128,7 @@
                         </div>
                         <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Estado actual de todas las encuestas enviadas</p>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="relative h-64">
                             <canvas id="chartEstados"></canvas>
                         </div>
@@ -137,7 +137,7 @@
 
                 <!-- Gráfica de dona - NPS -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-green-50 to-emerald-50">
+                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-green-50 to-emerald-50">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900">⭐ Net Promoter Score</h3>
                             <div class="flex items-center space-x-2">
@@ -147,7 +147,7 @@
                         </div>
                         <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Medida de lealtad y satisfacción del cliente</p>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <!-- NPS Score Principal -->
                         <div class="text-center mb-4 sm:mb-6">
                             <div class="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{{ $npsData['nps_score'] }}</div>
@@ -213,7 +213,7 @@
 
                 <!-- Top Asesores -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900">👥 Top Asesores</h3>
                             <div class="flex items-center space-x-2">
@@ -223,7 +223,7 @@
                         </div>
                         <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Asesores con mayor volumen de envíos</p>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="relative h-64">
                             <canvas id="chartAsesores"></canvas>
                         </div>
@@ -232,7 +232,7 @@
             </div>
 
             <!-- Sección 2: Análisis Temporal -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfica de línea - Envíos por mes -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                     <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-indigo-50">
@@ -245,7 +245,7 @@
                         </div>
                         <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Evolución de envíos a lo largo del tiempo con métricas detalladas</p>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="mb-4 grid grid-cols-3 gap-2 sm:gap-3 text-center">
                             <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-2 sm:p-3 border border-purple-200">
                                 <div class="text-base sm:text-lg font-bold text-purple-600" id="totalEnviados">--</div>
@@ -278,7 +278,7 @@
                         </div>
                         <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Porcentaje de encuestas respondidas por mes</p>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="mb-4 text-center">
                             <div class="text-2xl sm:text-3xl font-bold text-emerald-600 mb-2" id="tasaRespuestaPromedio">--</div>
                             <div class="text-sm text-gray-600 font-medium">Tasa de Respuesta Promedio</div>
@@ -292,7 +292,7 @@
             </div>
 
             <!-- Sección 3: Análisis Detallado -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfica de barras apiladas - Envíos por estado por mes -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                     <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-blue-50">
@@ -305,7 +305,7 @@
                         </div>
                         <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Distribución de envíos respondidos por el usuario, sin respuesta y pendiente de envío por mes</p>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="mb-4 flex flex-wrap items-center justify-center gap-3 sm:gap-6">
                             <div class="flex items-center space-x-2">
                                 <div class="w-4 h-4 bg-green-500 rounded"></div>
@@ -338,7 +338,7 @@
                         </div>
                         <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Análisis de patrones semanales en el envío de encuestas</p>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="relative h-64">
                             <canvas id="chartDias"></canvas>
                         </div>
@@ -347,7 +347,7 @@
             </div>
 
             <!-- Sección 5: Análisis de Respuestas por Pregunta -->
-            <div class="mb-6 sm:mb-8">
+            <div class="mb-8 sm:mb-12">
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                     <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-gray-50">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -361,9 +361,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="p-4 sm:p-6">
+                    <div class="p-6 sm:p-8">
                         <!-- Sección: Calidad del Producto (Preguntas 1.1 a 1.5) -->
-                        <div class="mb-6 sm:mb-8">
+                        <div class="mb-8 sm:mb-12">
                             <h4 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
                                 <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">📊</span>
                                 Calidad del Producto - Análisis Detallado

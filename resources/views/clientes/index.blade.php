@@ -28,12 +28,12 @@
         </div>
     </x-slot>
 
-    <div class="py-4 sm:py-6 lg:py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="py-6 sm:py-8 lg:py-12">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <!-- Estadísticas rápidas -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
                 <!-- Total Clientes -->
-                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
+                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-blue-100 text-xs sm:text-sm font-semibold tracking-wide">Total Clientes</p>
@@ -50,7 +50,7 @@
                 </div>
 
                 <!-- Clientes Activos -->
-                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
+                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-green-100 text-xs sm:text-sm font-semibold tracking-wide">Activos</p>
@@ -66,7 +66,7 @@
                 </div>
 
                 <!-- Clientes Inactivos -->
-                <div class="bg-orange-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white">
+                <div class="bg-orange-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-orange-100 text-xs sm:text-sm font-semibold tracking-wide">Inactivos</p>
@@ -84,7 +84,7 @@
 
             <!-- Tabla de clientes con DataTables -->
             <div class="bg-white rounded-lg sm:rounded-2xl shadow-xl border border-gray-200 overflow-hidden backdrop-blur-sm">
-                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+                <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 sm:px-8 py-4 sm:py-6 border-b border-gray-200">
                     <h3 class="text-lg sm:text-xl font-bold text-gray-800 flex items-center">
                         <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 sm:mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
@@ -93,7 +93,7 @@
                     </h3>
                 </div>
 
-                <div class="p-3 sm:p-6 overflow-x-auto">
+                <div class="p-6 sm:p-8 overflow-x-auto">
                     <table id="clientes-table" class="w-full display responsive nowrap" style="width:100%">
                         <thead>
                             <tr>

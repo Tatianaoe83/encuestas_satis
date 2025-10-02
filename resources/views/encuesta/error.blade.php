@@ -167,7 +167,127 @@
         }
 
         /* Responsive para móvil */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
+            .text-4xl {
+                font-size: 2rem;
+            }
+
+            .text-xl {
+                font-size: 1.125rem;
+            }
+
+            .text-2xl {
+                font-size: 1.5rem;
+            }
+
+            .text-lg {
+                font-size: 1rem;
+            }
+
+            .w-20 {
+                width: 4rem;
+            }
+
+            .h-20 {
+                height: 4rem;
+            }
+
+            .w-12 {
+                width: 2.5rem;
+            }
+
+            .h-12 {
+                height: 2.5rem;
+            }
+
+            .text-6xl {
+                font-size: 3rem;
+            }
+
+            .p-8 {
+                padding: 1.5rem;
+            }
+
+            .p-6 {
+                padding: 1rem;
+            }
+
+            .py-3 {
+                padding-top: 0.75rem;
+                padding-bottom: 0.75rem;
+            }
+
+            .px-8 {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+        }
+
         @media (max-width: 640px) {
+            .container {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+
+            .text-4xl {
+                font-size: 1.75rem;
+            }
+
+            .text-xl {
+                font-size: 1rem;
+            }
+
+            .text-2xl {
+                font-size: 1.25rem;
+            }
+
+            .text-lg {
+                font-size: 0.9rem;
+            }
+
+            .w-20 {
+                width: 3.5rem;
+            }
+
+            .h-20 {
+                height: 3.5rem;
+            }
+
+            .w-12 {
+                width: 2rem;
+            }
+
+            .h-12 {
+                height: 2rem;
+            }
+
+            .text-6xl {
+                font-size: 2.5rem;
+            }
+
+            .p-8 {
+                padding: 1.25rem;
+            }
+
+            .p-6 {
+                padding: 0.75rem;
+            }
+
+            .py-3 {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
+
+            .px-8 {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+
             .star {
                 font-size: 1.5rem;
             }
@@ -181,22 +301,17 @@
                 padding: 1.5rem;
             }
 
-            .text-2xl {
-                font-size: 1.5rem;
-            }
-
-            .text-lg {
-                font-size: 1rem;
-            }
-
             .btn-primary,
             .btn-success {
-                padding: 12px 28px !important;
-                font-size: 1rem !important;
-                min-height: 48px !important;
-                width: 100% !important;
-                max-width: 300px !important;
-                margin: 0 auto !important;
+                padding: 12px 28px;
+                font-size: 1rem;
+                min-height: 48px;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .rating-button {
@@ -206,6 +321,81 @@
         }
 
         @media (max-width: 480px) {
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .text-4xl {
+                font-size: 1.5rem;
+            }
+
+            .text-xl {
+                font-size: 0.9rem;
+            }
+
+            .text-2xl {
+                font-size: 1.125rem;
+            }
+
+            .text-lg {
+                font-size: 0.85rem;
+            }
+
+            .text-sm {
+                font-size: 0.75rem;
+            }
+
+            .w-20 {
+                width: 3rem;
+            }
+
+            .h-20 {
+                height: 3rem;
+            }
+
+            .w-12 {
+                width: 1.75rem;
+            }
+
+            .h-12 {
+                height: 1.75rem;
+            }
+
+            .text-6xl {
+                font-size: 2rem;
+            }
+
+            .p-8 {
+                padding: 1rem;
+            }
+
+            .p-6 {
+                padding: 0.5rem;
+            }
+
+            .py-3 {
+                padding-top: 0.5rem;
+                padding-bottom: 0.5rem;
+            }
+
+            .px-8 {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
+            }
+
+            .mb-6 {
+                margin-bottom: 1rem;
+            }
+
+            .mb-4 {
+                margin-bottom: 0.75rem;
+            }
+
+            .mb-2 {
+                margin-bottom: 0.5rem;
+            }
+
             .star {
                 font-size: 1.2rem;
             }
@@ -219,35 +409,91 @@
                 padding: 1rem;
             }
 
-            .text-2xl {
-                font-size: 1.25rem;
-            }
-
-            .text-lg {
-                font-size: 0.9rem;
-            }
-
-            .text-sm {
-                font-size: 0.75rem;
-            }
-
-            .container {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
-            }
-
             .btn-primary,
             .btn-success {
-                padding: 10px 24px !important;
-                font-size: 0.9rem !important;
-                min-height: 44px !important;
-                width: 100% !important;
-                max-width: 280px !important;
-                margin: 0 auto !important;
+                padding: 10px 24px;
+                font-size: 0.9rem;
+                min-height: 44px;
+                max-width: 280px;
             }
         }
 
         @media (max-width: 360px) {
+            .container {
+                padding-left: 0.25rem;
+                padding-right: 0.25rem;
+            }
+
+            .text-4xl {
+                font-size: 1.25rem;
+            }
+
+            .text-xl {
+                font-size: 0.85rem;
+            }
+
+            .text-2xl {
+                font-size: 1rem;
+            }
+
+            .text-lg {
+                font-size: 0.8rem;
+            }
+
+            .text-sm {
+                font-size: 0.7rem;
+            }
+
+            .w-20 {
+                width: 2.5rem;
+            }
+
+            .h-20 {
+                height: 2.5rem;
+            }
+
+            .w-12 {
+                width: 1.5rem;
+            }
+
+            .h-12 {
+                height: 1.5rem;
+            }
+
+            .text-6xl {
+                font-size: 1.75rem;
+            }
+
+            .p-8 {
+                padding: 0.75rem;
+            }
+
+            .p-6 {
+                padding: 0.375rem;
+            }
+
+            .py-3 {
+                padding-top: 0.375rem;
+                padding-bottom: 0.375rem;
+            }
+
+            .px-8 {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .mb-6 {
+                margin-bottom: 0.75rem;
+            }
+
+            .mb-4 {
+                margin-bottom: 0.5rem;
+            }
+
+            .mb-2 {
+                margin-bottom: 0.375rem;
+            }
+
             .star {
                 font-size: 1rem;
             }
@@ -258,24 +504,95 @@
 
             .btn-primary,
             .btn-success {
-                padding: 8px 20px !important;
-                font-size: 0.85rem !important;
-                min-height: 40px !important;
-                width: 100% !important;
-                max-width: 260px !important;
-                margin: 0 auto !important;
+                padding: 8px 20px;
+                font-size: 0.85rem;
+                min-height: 40px;
+                max-width: 260px;
             }
         }
 
         @media (max-width: 320px) {
+            .container {
+                padding-left: 0.125rem;
+                padding-right: 0.125rem;
+            }
+
+            .text-4xl {
+                font-size: 1.125rem;
+            }
+
+            .text-xl {
+                font-size: 0.8rem;
+            }
+
+            .text-2xl {
+                font-size: 0.9rem;
+            }
+
+            .text-lg {
+                font-size: 0.75rem;
+            }
+
+            .text-sm {
+                font-size: 0.65rem;
+            }
+
+            .w-20 {
+                width: 2rem;
+            }
+
+            .h-20 {
+                height: 2rem;
+            }
+
+            .w-12 {
+                width: 1.25rem;
+            }
+
+            .h-12 {
+                height: 1.25rem;
+            }
+
+            .text-6xl {
+                font-size: 1.5rem;
+            }
+
+            .p-8 {
+                padding: 0.5rem;
+            }
+
+            .p-6 {
+                padding: 0.25rem;
+            }
+
+            .py-3 {
+                padding-top: 0.25rem;
+                padding-bottom: 0.25rem;
+            }
+
+            .px-8 {
+                padding-left: 0.375rem;
+                padding-right: 0.375rem;
+            }
+
+            .mb-6 {
+                margin-bottom: 0.5rem;
+            }
+
+            .mb-4 {
+                margin-bottom: 0.375rem;
+            }
+
+            .mb-2 {
+                margin-bottom: 0.25rem;
+            }
+
             .btn-primary,
             .btn-success {
-                padding: 6px 16px !important;
-                font-size: 0.8rem !important;
-                min-height: 36px !important;
-                width: 100% !important;
-                max-width: 240px !important;
-                margin: 0 auto !important;
+                padding: 6px 16px;
+                font-size: 0.8rem;
+                min-height: 36px;
+                max-width: 240px;
             }
         }
     </style>

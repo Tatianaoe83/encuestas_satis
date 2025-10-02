@@ -168,239 +168,346 @@
         }
 
         /* Responsive para móvil */
-        @media (max-width: 640px) {
-            .star {
-                font-size: 2rem !important;
-                padding: 8px !important;
-                min-width: 44px !important;
-                min-height: 44px !important;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-            }
-
-            .star-rating {
-                gap: 4px !important;
-                margin: 20px 0 !important;
-                justify-content: center !important;
-                flex-wrap: wrap !important;
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
             .question-card {
                 padding: 1.5rem;
+                margin: 0.5rem;
             }
 
-            .text-2xl {
-                font-size: 1.5rem;
+            .text-3xl {
+                font-size: 1.75rem;
+            }
+
+            .text-xl {
+                font-size: 1.125rem;
             }
 
             .text-lg {
                 font-size: 1rem;
             }
 
+            .star-rating {
+                gap: 6px;
+                margin: 20px 0;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .star {
+                font-size: 2rem;
+                padding: 8px;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
             .btn-primary,
             .btn-success {
-                padding: 12px 28px !important;
-                font-size: 1rem !important;
-                min-height: 48px !important;
-                width: 100% !important;
-                max-width: 300px !important;
-                margin: 0 auto !important;
+                padding: 12px 28px;
+                font-size: 1rem;
+                min-height: 48px;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .rating-button {
-                width: 80px !important;
-                height: 80px !important;
-                font-size: 1.5rem !important;
-                display: flex !important;
-                flex-direction: column !important;
-                align-items: center !important;
-                justify-content: center !important;
+                width: 80px;
+                height: 80px;
+                font-size: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #btn-si, #btn-no {
+                width: 100px;
+                height: 100px;
+                font-size: 1.8rem;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.9rem;
+                margin-top: 4px;
             }
 
             /* Asegurar que los iconos se muestren correctamente */
             .fas, .far, .fab {
-                display: inline-block !important;
-                font-style: normal !important;
-                font-variant: normal !important;
-                text-rendering: auto !important;
-                line-height: 1 !important;
-            }
-
-            /* Mejorar botones de Si/No */
-            #btn-si, #btn-no {
-                width: 100px !important;
-                height: 100px !important;
-                font-size: 1.8rem !important;
-            }
-
-            #btn-si div, #btn-no div {
-                font-size: 0.9rem !important;
-                margin-top: 4px !important;
+                display: inline-block;
+                font-style: normal;
+                font-variant: normal;
+                text-rendering: auto;
+                line-height: 1;
             }
         }
 
-        @media (max-width: 480px) {
-            .star {
-                font-size: 1.8rem !important;
-                padding: 6px !important;
-                min-width: 40px !important;
-                min-height: 40px !important;
-            }
-
-            .star-rating {
-                gap: 3px !important;
-                margin: 15px 0 !important;
+        @media (max-width: 640px) {
+            .container {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
             }
 
             .question-card {
-                padding: 1rem;
+                padding: 1.25rem;
+                margin: 0.25rem;
             }
 
-            .text-2xl {
-                font-size: 1.25rem;
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+
+            .text-xl {
+                font-size: 1rem;
             }
 
             .text-lg {
                 font-size: 0.9rem;
             }
 
+            .star-rating {
+                gap: 4px;
+                margin: 15px 0;
+            }
+
+            .star {
+                font-size: 1.8rem;
+                padding: 6px;
+                min-width: 40px;
+                min-height: 40px;
+            }
+
+            .btn-primary,
+            .btn-success {
+                padding: 10px 24px;
+                font-size: 0.9rem;
+                min-height: 44px;
+                max-width: 280px;
+            }
+
+            .rating-button {
+                width: 70px;
+                height: 70px;
+                font-size: 1.3rem;
+            }
+
+            #btn-si, #btn-no {
+                width: 90px;
+                height: 90px;
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .question-card {
+                padding: 1rem;
+                margin: 0.25rem;
+            }
+
+            .text-3xl {
+                font-size: 1.25rem;
+            }
+
+            .text-xl {
+                font-size: 0.9rem;
+            }
+
+            .text-lg {
+                font-size: 0.85rem;
+            }
+
             .text-sm {
                 font-size: 0.75rem;
             }
 
-            .container {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
+            .star-rating {
+                gap: 3px;
+                margin: 12px 0;
+            }
+
+            .star {
+                font-size: 1.6rem;
+                padding: 4px;
+                min-width: 36px;
+                min-height: 36px;
             }
 
             .btn-primary,
             .btn-success {
-                padding: 10px 24px !important;
-                font-size: 0.9rem !important;
-                min-height: 44px !important;
-                width: 100% !important;
-                max-width: 280px !important;
-                margin: 0 auto !important;
+                padding: 8px 20px;
+                font-size: 0.85rem;
+                min-height: 40px;
+                max-width: 260px;
             }
 
             .rating-button {
-                width: 70px !important;
-                height: 70px !important;
-                font-size: 1.3rem !important;
+                width: 60px;
+                height: 60px;
+                font-size: 1.1rem;
             }
 
             #btn-si, #btn-no {
-                width: 90px !important;
-                height: 90px !important;
-                font-size: 1.6rem !important;
+                width: 80px;
+                height: 80px;
+                font-size: 1.4rem;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.8rem;
+                margin-top: 2px;
             }
         }
 
         @media (max-width: 360px) {
-            .star {
-                font-size: 1.5rem !important;
-                padding: 4px !important;
-                min-width: 36px !important;
-                min-height: 36px !important;
+            .container {
+                padding-left: 0.25rem;
+                padding-right: 0.25rem;
+            }
+
+            .question-card {
+                padding: 0.75rem;
+                margin: 0.125rem;
+            }
+
+            .text-3xl {
+                font-size: 1.1rem;
+            }
+
+            .text-xl {
+                font-size: 0.85rem;
+            }
+
+            .text-lg {
+                font-size: 0.8rem;
             }
 
             .star-rating {
-                gap: 2px !important;
+                gap: 2px;
+                margin: 10px 0;
+            }
+
+            .star {
+                font-size: 1.4rem;
+                padding: 3px;
+                min-width: 32px;
+                min-height: 32px;
             }
 
             .rating-button {
-                width: 60px !important;
-                height: 60px !important;
-                font-size: 1.1rem !important;
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
             }
 
             #btn-si, #btn-no {
-                width: 80px !important;
-                height: 80px !important;
-                font-size: 1.4rem !important;
+                width: 70px;
+                height: 70px;
+                font-size: 1.2rem;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.7rem;
+                margin-top: 1px;
             }
 
             .btn-primary,
             .btn-success {
-                padding: 8px 20px !important;
-                font-size: 0.85rem !important;
-                min-height: 40px !important;
-                width: 100% !important;
-                max-width: 260px !important;
-                margin: 0 auto !important;
+                padding: 6px 16px;
+                font-size: 0.8rem;
+                min-height: 36px;
+                max-width: 240px;
             }
-        }
-
-        /* Estilos adicionales para asegurar visibilidad en móviles */
-        @media (max-width: 768px) {
-            .star:hover {
-                transform: scale(1.1) !important;
-            }
-
-            .rating-button:hover {
-                transform: scale(1.05) !important;
-            }
-
-            /* Mejorar la experiencia táctil */
-            .star, .rating-button, .btn-primary, .btn-success {
-                touch-action: manipulation !important;
-                -webkit-tap-highlight-color: transparent !important;
-            }
-
-            /* Asegurar que FontAwesome se cargue correctamente */
-            @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
         }
 
         /* Estilos para dispositivos con pantalla muy pequeña */
         @media (max-width: 320px) {
-            .star {
-                font-size: 1.2rem !important;
-                min-width: 32px !important;
-                min-height: 32px !important;
-                padding: 2px !important;
-            }
-
-            .star-rating {
-                gap: 1px !important;
-                margin: 10px 0 !important;
-            }
-
-            .rating-button {
-                width: 50px !important;
-                height: 50px !important;
-                font-size: 1rem !important;
-            }
-
-            #btn-si, #btn-no {
-                width: 70px !important;
-                height: 70px !important;
-                font-size: 1.2rem !important;
-            }
-
-            .btn-primary, .btn-success {
-                padding: 6px 16px !important;
-                font-size: 0.8rem !important;
-                min-height: 36px !important;
-                width: 100% !important;
-                max-width: 240px !important;
-                margin: 0 auto !important;
+            .container {
+                padding-left: 0.125rem;
+                padding-right: 0.125rem;
             }
 
             .question-card {
-                padding: 0.75rem !important;
+                padding: 0.5rem;
+                margin: 0.125rem;
             }
 
             .text-3xl {
-                font-size: 1.1rem !important;
+                font-size: 1rem;
             }
 
             .text-xl {
-                font-size: 0.9rem !important;
+                font-size: 0.8rem;
             }
 
             .text-lg {
-                font-size: 0.8rem !important;
+                font-size: 0.75rem;
+            }
+
+            .star-rating {
+                gap: 1px;
+                margin: 8px 0;
+            }
+
+            .star {
+                font-size: 1.2rem;
+                min-width: 28px;
+                min-height: 28px;
+                padding: 2px;
+            }
+
+            .rating-button {
+                width: 45px;
+                height: 45px;
+                font-size: 0.9rem;
+            }
+
+            #btn-si, #btn-no {
+                width: 65px;
+                height: 65px;
+                font-size: 1.1rem;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.65rem;
+                margin-top: 1px;
+            }
+
+            .btn-primary, .btn-success {
+                padding: 5px 12px;
+                font-size: 0.75rem;
+                min-height: 32px;
+                max-width: 220px;
+            }
+        }
+
+        /* Mejorar la experiencia táctil para todos los dispositivos móviles */
+        @media (max-width: 768px) {
+            .star, .rating-button, .btn-primary, .btn-success {
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .star:hover {
+                transform: scale(1.1);
+            }
+
+            .rating-button:hover {
+                transform: scale(1.05);
             }
         }
     </style>
@@ -600,6 +707,7 @@
             stars.forEach(star => {
                 star.addEventListener('click', () => {
                     selectedRating = parseInt(star.dataset.rating);
+                    console.log('Clic en estrella:', selectedRating); // Debug
                     seleccionarRating(selectedRating);
                     submitBtn.disabled = false;
                 });
@@ -623,6 +731,8 @@
             const description = document.getElementById('rating-description');
             const ratingText = document.getElementById('rating-text');
 
+            console.log('Seleccionando rating:', rating); // Debug
+
             stars.forEach((star, index) => {
                 if (index < rating) {
                     star.classList.add('selected');
@@ -631,9 +741,11 @@
                 }
             });
 
+            console.log('Estrellas con clase selected:', document.querySelectorAll('.star.selected').length); // Debug
+
             const descriptions = {
                 1: 'Muy malo',
-                2: 'Perfecto',
+                2: 'Malo',
                 3: 'Regular',
                 4: 'Bueno',
                 5: 'Muy bueno',
@@ -851,6 +963,7 @@
             const selectedStar = document.querySelector('.star.selected');
             if (selectedStar) {
                 respuesta = selectedStar.dataset.rating;
+                console.log('Estrella seleccionada:', selectedStar.dataset.rating); // Debug
             }
             // Si hay botones Sí/No seleccionados
             else if (document.getElementById('btn-si') && document.getElementById('btn-si').classList.contains('selected')) {
@@ -865,6 +978,8 @@
                     respuesta = textarea.value.trim();
                 }
             }
+
+            console.log('Respuesta a enviar:', respuesta); // Debug
 
             // Enviar respuesta
             fetch(`/encuesta/${envioId}/responder`, {

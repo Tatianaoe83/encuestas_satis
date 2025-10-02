@@ -42,7 +42,7 @@ class CorregirEstadosEnvioCommand extends Command
             
             $envio->update([
                 'estado' => 'completado',
-                'fecha_respuesta' => $envio->fecha_respuesta ?: now()
+                'fecha_respuesta' => $envio->fecha_respuesta ?: \Carbon\Carbon::now()
             ]);
             
             $corregidos++;
@@ -54,7 +54,7 @@ class CorregirEstadosEnvioCommand extends Command
         $enviosSinRespuesta = Envio::where('estado', 'enviado')
             ->whereNull('respuesta_3')
             ->where('timer_activo', true)
-            ->where('tiempo_expiracion', '<', now())
+            ->where('tiempo_expiracion', '<', \Carbon\Carbon::now())
             ->get();
         
         $this->info("Encontrados {$enviosSinRespuesta->count()} envíos expirados sin respuesta");

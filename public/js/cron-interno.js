@@ -38,9 +38,14 @@
                 lastExecution = new Date();
                 retryCount = 0;
                 
-                // Log de timers cancelados si los hay
-                if (data.data && data.data.timers_cancelados > 0) {
-                    console.log(`🕐 ${data.data.timers_cancelados} timers cancelados automáticamente`);
+                // Log de timers cancelados y recordatorios enviados si los hay
+                if (data.data) {
+                    if (data.data.timers_cancelados > 0) {
+                        console.log(`🕐 ${data.data.timers_cancelados} timers cancelados automáticamente`);
+                    }
+                    if (data.data.recordatorios_enviados > 0) {
+                        console.log(`📨 ${data.data.recordatorios_enviados} recordatorios enviados`);
+                    }
                 }
             } else {
                 console.warn('⚠️ Cron interno no ejecutado:', data.message);

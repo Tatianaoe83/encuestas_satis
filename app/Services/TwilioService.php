@@ -6,6 +6,7 @@ use Twilio\Rest\Client;
 use App\Models\Envio;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Crypt;
+use Carbon\Carbon;
 
 class TwilioService
 {
@@ -50,8 +51,8 @@ class TwilioService
                 ]
             );
 
-            $tiempoExpiracion = now()->addMinutes(30);
-            $tiempoRecordatorio = now()->addMinutes(15);
+            $tiempoExpiracion = Carbon::now()->addMinutes(30);
+            $tiempoRecordatorio = Carbon::now()->addMinutes(15);
 
             // Actualizar el envío - solo contenido, sin preguntas
             $envio->update([
@@ -59,8 +60,8 @@ class TwilioService
                 'twilio_message_sid' => $message->sid,
                 'content_sid' => $contentSid,
                 'estado' => 'enviado',
-                'fecha_envio' => now(),
-                'whatsapp_sent_at' => now(),
+                'fecha_envio' => Carbon::now(),
+                'whatsapp_sent_at' => Carbon::now(),
                 'tiempo_espera_minutos' => 30,
                 'tiempo_expiracion' => $tiempoExpiracion,
                 'tiempo_recordatorio' => $tiempoRecordatorio,
@@ -93,8 +94,8 @@ class TwilioService
         try {
             $enviosParaRecordatorio = Envio::where('timer_activo', true)
                 ->where('recordatorio_enviado', false)
-                ->where('tiempo_recordatorio', '<=', now())
-                ->where('tiempo_expiracion', '>', now())
+                ->where('tiempo_recordatorio', '<=', Carbon::now())
+                ->where('tiempo_expiracion', '>', Carbon::now())
                 ->whereIn('estado', ['enviado'])
                 ->get();
 
@@ -147,7 +148,7 @@ class TwilioService
             // Marcar recordatorio como enviado
             $envio->update([
                 'recordatorio_enviado' => true,
-                'recordatorio_enviado_at' => now(),
+                'recordatorio_enviado_at' => Carbon::now(),
                 'whatsapp_message' => $mensaje,
                 'estado' => 'recordatorio_enviado'
             ]);
@@ -168,7 +169,7 @@ class TwilioService
             return 'No configurado';
         }
 
-        $tiempoRestante = $envio->tiempo_expiracion->diffInMinutes(now());
+        $tiempoRestante = Carbon::parse($envio->tiempo_expiracion)->diffInMinutes(Carbon::now());
         
         if ($tiempoRestante <= 0) {
             return 'Expirado';
@@ -184,8 +185,8 @@ class TwilioService
     {
         try {
             $enviosExpirados = Envio::where('timer_activo', true)
-                ->where('tiempo_expiracion', '<', now())
-                ->whereIn('estado', ['enviado', 'esperando_respuesta'])
+                ->where('tiempo_expiracion', '<', Carbon::now())
+                ->whereIn('estado', ['enviado', 'en_proceso', 'recordatorio_enviado'])
                 ->get();
 
             foreach ($enviosExpirados as $envio) {
@@ -278,7 +279,7 @@ class TwilioService
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'body' => "🧪 *Prueba de conexión*\n\nEste es un mensaje de prueba para verificar que la integración con Twilio funciona correctamente.\n\nFecha: " . now()->format('d/m/Y H:i:s') . "\n\n✅ Si recibes este mensaje, la configuración está correcta."
+                    'body' => "🧪 *Prueba de conexión*\n\nEste es un mensaje de prueba para verificar que la integración con Twilio funciona correctamente.\n\nFecha: " . Carbon::now()->format('d/m/Y H:i:s') . "\n\n✅ Si recibes este mensaje, la configuración está correcta."
                 ]
             );
 
@@ -389,7 +390,7 @@ class TwilioService
                 'balance' => $balance->balance,
                 'currency' => $balance->currency,
                 'balance_formatted' => number_format($balance->balance, 2) . ' ' . $balance->currency,
-                'fecha_consulta' => now()->format('d/m/Y H:i:s')
+                'fecha_consulta' => Carbon::now()->format('d/m/Y H:i:s')
             ];
 
         } catch (\Exception $e) {
@@ -401,7 +402,7 @@ class TwilioService
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
-                'fecha_consulta' => now()->format('d/m/Y H:i:s')
+                'fecha_consulta' => Carbon::now()->format('d/m/Y H:i:s')
             ];
         }
     }

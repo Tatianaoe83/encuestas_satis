@@ -98,8 +98,8 @@ class ContenidoAprobadoController extends Controller
     {
         try {
             $timersActivos = Envio::where('timer_activo', true)
-                ->where('estado', 'esperando_respuesta')
-                ->where('tiempo_expiracion', '>', now())
+                ->whereIn('estado', ['enviado', 'en_proceso', 'recordatorio_enviado'])
+                ->where('tiempo_expiracion', '>', \Carbon\Carbon::now())
                 ->with('cliente')
                 ->get()
                 ->map(function ($envio) {
@@ -108,7 +108,7 @@ class ContenidoAprobadoController extends Controller
                         'cliente' => $envio->cliente->nombre_completo,
                         'numero' => $envio->cliente->celular,
                         'tiempo_expiracion' => $envio->tiempo_expiracion,
-                        'tiempo_restante_minutos' => $envio->tiempo_expiracion->diffInMinutes(now()),
+                        'tiempo_restante_minutos' => $envio->tiempo_expiracion->diffInMinutes(\Carbon\Carbon::now()),
                         'estado_timer' => $envio->estado_timer,
                         'esperando_desde' => $envio->esperando_respuesta_desde
                     ];
@@ -243,12 +243,12 @@ class ContenidoAprobadoController extends Controller
             $estadisticas = [
                 'total_timers_activos' => Envio::where('timer_activo', true)
                     ->where('estado', 'esperando_respuesta')
-                    ->where('tiempo_expiracion', '>', now())
+                    ->where('tiempo_expiracion', '>', \Carbon\Carbon::now())
                     ->count(),
                 
                 'total_timers_expirados' => Envio::where('timer_activo', true)
                     ->where('estado', 'esperando_respuesta')
-                    ->where('tiempo_expiracion', '<', now())
+                    ->where('tiempo_expiracion', '<', \Carbon\Carbon::now())
                     ->count(),
                 
                 'total_respondidos' => Envio::where('estado_timer', 'respondido')->count(),

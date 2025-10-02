@@ -357,7 +357,10 @@ class EncuestaController extends Controller
         // Si es la última pregunta, marcar como completado
         if ($pregunta === '3' || ($pregunta === '2' && trim(strtolower($respuesta)) === 'si')) {
             $datosActualizacion['estado'] = 'completado';
-            $datosActualizacion['fecha_respuesta'] = now();
+            $datosActualizacion['fecha_respuesta'] = \Carbon\Carbon::now();
+            // Desactivar timer cuando se completa la encuesta
+            $datosActualizacion['timer_activo'] = false;
+            $datosActualizacion['estado_timer'] = 'completado';
         }
 
         try {

@@ -23,7 +23,7 @@ class CronInternoController extends Controller
     {
         $cacheKey = 'internal_cron_last_run';
         $lastRun = Cache::get($cacheKey);
-        $now = now();
+        $now = \Carbon\Carbon::now();
         
         // Verificar si han pasado al menos 5 minutos desde la última ejecución
         if ($lastRun && $now->diffInMinutes($lastRun) < 5) {
@@ -44,11 +44,17 @@ class CronInternoController extends Controller
                 'user_agent' => $request->userAgent()
             ]);*/
             
-            // Ejecutar verificación de timers
-            $resultado = $this->twilioService->verificarTimersExpirados();
+            // Ejecutar verificación de timers y recordatorios
+            $resultadoTimers = $this->twilioService->verificarTimersExpirados();
+            $resultadoRecordatorios = $this->twilioService->verificarRecordatorios();
+            
+            $resultado = [
+                'timers_cancelados' => $resultadoTimers['timers_cancelados'] ?? 0,
+                'recordatorios_enviados' => $resultadoRecordatorios['recordatorios_enviados'] ?? 0
+            ];
             
             // Actualizar timestamp de última ejecución
-            Cache::put($cacheKey, $now, now()->addHours(1));
+            Cache::put($cacheKey, $now, \Carbon\Carbon::now()->addHours(1));
             
             Log::info('Cron interno ejecutado exitosamente', [
                 'timestamp' => $now,
@@ -61,6 +67,7 @@ class CronInternoController extends Controller
                 'data' => [
                     'timestamp' => $now,
                     'timers_cancelados' => $resultado['timers_cancelados'] ?? 0,
+                    'recordatorios_enviados' => $resultado['recordatorios_enviados'] ?? 0,
                     'last_run' => $now,
                     'next_run' => $now->addMinutes(5)
                 ]
@@ -88,7 +95,7 @@ class CronInternoController extends Controller
     {
         $cacheKey = 'internal_cron_last_run';
         $lastRun = Cache::get($cacheKey);
-        $now = now();
+        $now = \Carbon\Carbon::now();
         
         $estado = [
             'ultima_ejecucion' => $lastRun,
@@ -96,12 +103,12 @@ class CronInternoController extends Controller
             'proxima_ejecucion' => $lastRun ? $lastRun->addMinutes(5) : $now,
             'puede_ejecutar' => !$lastRun || $now->diffInMinutes($lastRun) >= 5,
             'timers_activos' => \App\Models\Envio::where('timer_activo', true)
-                ->where('estado', 'esperando_respuesta')
-                ->where('tiempo_expiracion', '>', now())
+                ->whereIn('estado', ['enviado', 'en_proceso', 'recordatorio_enviado'])
+                ->where('tiempo_expiracion', '>', \Carbon\Carbon::now())
                 ->count(),
             'timers_expirados' => \App\Models\Envio::where('timer_activo', true)
-                ->where('estado', 'esperando_respuesta')
-                ->where('tiempo_expiracion', '<', now())
+                ->whereIn('estado', ['enviado', 'en_proceso', 'recordatorio_enviado'])
+                ->where('tiempo_expiracion', '<', \Carbon\Carbon::now())
                 ->count()
         ];
         
@@ -118,20 +125,27 @@ class CronInternoController extends Controller
     {
         try {
             Log::info('Forzando ejecución del cron interno', [
-                'timestamp' => now(),
+                'timestamp' => \Carbon\Carbon::now(),
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent()
             ]);
             
-            // Ejecutar verificación de timers
-            $resultado = $this->twilioService->verificarTimersExpirados();
+            // Ejecutar verificación de timers y recordatorios
+            $resultadoTimers = $this->twilioService->verificarTimersExpirados();
+            $resultadoRecordatorios = $this->twilioService->verificarRecordatorios();
+            
+            $resultado = [
+                'timers_cancelados' => $resultadoTimers['timers_cancelados'] ?? 0,
+                'recordatorios_enviados' => $resultadoRecordatorios['recordatorios_enviados'] ?? 0
+            ];
             
             return response()->json([
                 'success' => true,
                 'message' => 'Cron forzado ejecutado exitosamente',
                 'data' => [
-                    'timestamp' => now(),
-                    'timers_cancelados' => $resultado['timers_cancelados'] ?? 0
+                    'timestamp' => \Carbon\Carbon::now(),
+                    'timers_cancelados' => $resultado['timers_cancelados'],
+                    'recordatorios_enviados' => $resultado['recordatorios_enviados']
                 ]
             ]);
             

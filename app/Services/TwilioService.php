@@ -6,6 +6,8 @@ use Twilio\Rest\Client;
 use App\Models\Envio;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class TwilioService
@@ -92,25 +94,68 @@ class TwilioService
     public function verificarRecordatorios()
     {
         try {
-            $enviosParaRecordatorio = Envio::where('timer_activo', true)
-                ->where('recordatorio_enviado', false)
-                ->where('tiempo_recordatorio', '<=', Carbon::now())
-                ->where('tiempo_expiracion', '>', Carbon::now())
-                ->whereIn('estado', ['enviado'])
-                ->get();
+            // Bloqueo a nivel de aplicación para prevenir ejecución concurrente
+            $lockKey = 'verificar_recordatorios_lock';
+            $lock = Cache::lock($lockKey, 60); // Bloqueo por 60 segundos
 
-            $recordatoriosEnviados = 0;
-
-            foreach ($enviosParaRecordatorio as $envio) {
-                if ($this->enviarRecordatorio($envio)) {
-                    $recordatoriosEnviados++;
-                }
+            if (!$lock->get()) {
+                // Ya hay otro proceso ejecutando recordatorios
+                return [
+                    'success' => true,
+                    'recordatorios_enviados' => 0,
+                    'message' => 'Proceso ya en ejecución'
+                ];
             }
 
-            return [
-                'success' => true,
-                'recordatorios_enviados' => $recordatoriosEnviados
-            ];
+            try {
+                // Usar bloqueo de base de datos para prevenir condiciones de carrera
+                $enviosParaRecordatorio = Envio::where('timer_activo', true)
+                    ->where('recordatorio_enviado', false)
+                    ->where('tiempo_recordatorio', '<=', Carbon::now())
+                    ->where('tiempo_expiracion', '>', Carbon::now())
+                    ->whereIn('estado', ['enviado'])
+                    ->lockForUpdate() // Bloquear registros para actualización
+                    ->get();
+
+                Log::info('Verificando recordatorios', [
+                    'envios_encontrados' => $enviosParaRecordatorio->count(),
+                    'timestamp' => Carbon::now()
+                ]);
+
+                $recordatoriosEnviados = 0;
+
+                foreach ($enviosParaRecordatorio as $envio) {
+                    // Bloqueo específico por envío individual
+                    $envioLockKey = "envio_recordatorio_lock_{$envio->idenvio}";
+                    $envioLock = Cache::lock($envioLockKey, 30); // Bloqueo por 30 segundos
+
+                    if ($envioLock->get()) {
+                        try {
+                            // Verificar nuevamente si el recordatorio ya fue enviado (doble verificación)
+                            if (!$envio->recordatorio_enviado && $this->enviarRecordatorio($envio)) {
+                                $recordatoriosEnviados++;
+                            }
+                        } finally {
+                            $envioLock->release();
+                        }
+                    }
+                }
+
+                Log::info('Verificación de recordatorios completada', [
+                    'recordatorios_enviados' => $recordatoriosEnviados,
+                    'envios_procesados' => $enviosParaRecordatorio->count(),
+                    'timestamp' => Carbon::now()
+                ]);
+
+                return [
+                    'success' => true,
+                    'recordatorios_enviados' => $recordatoriosEnviados
+                ];
+
+            } finally {
+                // Liberar el bloqueo
+                $lock->release();
+            }
             
         } catch (\Exception $e) {
             return [
@@ -126,14 +171,27 @@ class TwilioService
     protected function enviarRecordatorio(Envio $envio)
     {
         try {
-            $cliente = $envio->cliente;
-            $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
-            $contentSidRecordatorio = config('services.twilio.content_sid_recordatorio');
+            // Usar transacción para asegurar atomicidad
+            return \DB::transaction(function () use ($envio) {
+                // Verificar nuevamente si el recordatorio ya fue enviado (triple verificación)
+                $envioFresh = Envio::where('idenvio', $envio->idenvio)
+                    ->where('recordatorio_enviado', false)
+                    ->lockForUpdate()
+                    ->first();
 
-            // Preparar variables de contenido para el recordatorio
-            $contentVariables = [
-                'nombre' => $cliente->nombre_completo ?? 'Cliente',
-            ];
+                if (!$envioFresh) {
+                    // El recordatorio ya fue enviado por otro proceso
+                    return false;
+                }
+
+                $cliente = $envioFresh->cliente;
+                $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+                $contentSidRecordatorio = config('services.twilio.content_sid_recordatorio');
+
+                // Preparar variables de contenido para el recordatorio
+                $contentVariables = [
+                    'nombre' => $cliente->nombre_completo ?? 'Cliente',
+                ];
 
                 $message = $this->client->messages->create(
                     "whatsapp:{$numeroWhatsApp}",
@@ -144,16 +202,31 @@ class TwilioService
                     ]
                 );
 
-            // Marcar recordatorio como enviado
-            $envio->update([
-                'recordatorio_enviado' => true,
-                'recordatorio_enviado_at' => Carbon::now(),
-                'estado' => 'recordatorio_enviado'
-            ]);
+                // Marcar recordatorio como enviado de forma atómica
+                $envioFresh->update([
+                    'recordatorio_enviado' => true,
+                    'recordatorio_enviado_at' => Carbon::now(),
+                    'estado' => 'recordatorio_enviado'
+                ]);
 
-            return true;
+                Log::info('Recordatorio enviado exitosamente', [
+                    'envio_id' => $envioFresh->idenvio,
+                    'cliente' => $cliente->nombre_completo,
+                    'numero' => $numeroWhatsApp,
+                    'message_sid' => $message->sid,
+                    'timestamp' => Carbon::now()
+                ]);
+
+                return true;
+            });
 
         } catch (\Exception $e) {
+            Log::error('Error enviando recordatorio', [
+                'envio_id' => $envio->idenvio,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'timestamp' => Carbon::now()
+            ]);
             return false;
         }
     }

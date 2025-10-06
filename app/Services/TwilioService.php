@@ -130,19 +130,34 @@ class TwilioService
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
             $contentSidRecordatorio = config('services.twilio.content_sid_recordatorio');
 
+            if (!$contentSidRecordatorio) {
+                Log::warning('Content SID para recordatorio no configurado', [
+                    'envio_id' => $envio->id,
+                    'cliente_id' => $cliente->id
+                ]);
+                throw new \Exception('Content SID para recordatorio no está configurado');
+            }
+
             // Preparar variables de contenido para el recordatorio
             $contentVariables = [
                 'nombre' => $cliente->nombre_completo ?? 'Cliente',
             ];
 
-                $message = $this->client->messages->create(
-                    "whatsapp:{$numeroWhatsApp}",
-                    [
-                        'from' => "whatsapp:{$this->fromNumber}",
-                        'contentSid' => $contentSidRecordatorio,
-                        'contentVariables' => json_encode($contentVariables)
-                    ]
-                );
+            Log::info('Enviando recordatorio', [
+                'envio_id' => $envio->id,
+                'cliente_id' => $cliente->id,
+                'numero_whatsapp' => $numeroWhatsApp,
+                'content_sid' => $contentSidRecordatorio
+            ]);
+
+            $message = $this->client->messages->create(
+                "whatsapp:{$numeroWhatsApp}",
+                [
+                    'from' => "whatsapp:{$this->fromNumber}",
+                    'contentSidRecordatorio' => $contentSidRecordatorio,
+                    'contentVariables' => json_encode($contentVariables)
+                ]
+            );
 
             // Marcar recordatorio como enviado
             $envio->update([
@@ -151,9 +166,21 @@ class TwilioService
                 'estado' => 'recordatorio_enviado'
             ]);
 
+            Log::info('Recordatorio enviado exitosamente', [
+                'envio_id' => $envio->id,
+                'message_sid' => $message->sid,
+                'status' => $message->status
+            ]);
+
             return true;
 
         } catch (\Exception $e) {
+            Log::error('Error enviando recordatorio', [
+                'envio_id' => $envio->id,
+                'cliente_id' => $cliente->id ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return false;
         }
     }
@@ -220,9 +247,9 @@ class TwilioService
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'contentSid' => $contentSidVencimiento,
+                    'contentSidVencimiento' => $contentSidVencimiento,
                 ]
-            );
+            );  
                 
             // Actualizar estado del envío
             $envio->update([

@@ -24,6 +24,8 @@ class Envio extends Model
         'whatsapp_number',
         'twilio_message_sid',
         'content_sid',
+        'contentSidRecordatorio',
+        'contentSidVencimiento',
         'whatsapp_error',
         'whatsapp_sent_at',
         'whatsapp_responded_at',

@@ -37,6 +37,7 @@ class CronInternoCommand extends Command
         if (!$this->option('force') && $lastRun && $now->diffInMinutes($lastRun) < 5) {
             $this->info('Cron ya ejecutado recientemente. Última ejecución: ' . $lastRun->format('Y-m-d H:i:s'));
             $this->info('Próxima ejecución: ' . $lastRun->addMinutes(5)->format('Y-m-d H:i:s'));
+            $this->info('Usa --force para ejecutar de todas formas');
             return 0;
         }
         

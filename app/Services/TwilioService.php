@@ -154,7 +154,7 @@ class TwilioService
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'contentSidRecordatorio' => $contentSidRecordatorio,
+                    'contentSid' => $contentSidRecordatorio,
                     'contentVariables' => json_encode($contentVariables)
                 ]
             );
@@ -247,8 +247,8 @@ class TwilioService
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'contentSidVencimiento' => $contentSidVencimiento,
-                ]
+                    'contentSid' => $contentSidVencimiento,
+                ]   
             );  
                 
             // Actualizar estado del envío

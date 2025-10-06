@@ -12,12 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Cron interno para verificar timers expirados y recordatorios cada 5 minutos
-        $schedule->command('cron:interno')
-                ->everyFiveMinutes()
-                ->withoutOverlapping()
-                ->runInBackground()
-                ->appendOutputTo(storage_path('logs/cron-interno.log'));
+        // El cron interno se ejecuta directamente via cron job del sistema
+        // Comando: */5 * * * * cd /path/to/project && php artisan cron:interno
     }
 
     /**

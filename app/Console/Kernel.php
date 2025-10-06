@@ -12,11 +12,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // Verificar timers expirados cada 5 minutos
-        $schedule->command('timers:verificar')
+        // Cron interno para verificar timers expirados y recordatorios cada 5 minutos
+        $schedule->command('cron:interno')
                 ->everyFiveMinutes()
                 ->withoutOverlapping()
-                ->runInBackground();
+                ->runInBackground()
+                ->appendOutputTo(storage_path('logs/cron-interno.log'));
     }
 
     /**

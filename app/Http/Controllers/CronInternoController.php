@@ -16,77 +16,6 @@ class CronInternoController extends Controller
         $this->twilioService = $twilioService;
     }
 
-    /**
-     * Ejecutar cron interno automáticamente
-     */
-    public function ejecutarCronInterno(Request $request)
-    {
-        $cacheKey = 'internal_cron_last_run';
-        $lastRun = Cache::get($cacheKey);
-        $now = \Carbon\Carbon::now();
-        
-        // Verificar si han pasado al menos 5 minutos desde la última ejecución
-        if ($lastRun && $now->diffInMinutes($lastRun) < 5) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Cron ya ejecutado recientemente',
-                'last_run' => $lastRun,
-                'next_run' => $lastRun->addMinutes(5),
-                'wait_minutes' => 5 - $now->diffInMinutes($lastRun)
-            ]);
-        }
-        
-        try {
-            /*Log::info('Ejecutando cron interno automáticamente', [
-                'timestamp' => $now,
-                'last_run' => $lastRun,
-                'ip' => $request->ip(),
-                'user_agent' => $request->userAgent()
-            ]);*/
-            
-            // Ejecutar verificación de timers y recordatorios
-            $resultadoTimers = $this->twilioService->verificarTimersExpirados();
-            $resultadoRecordatorios = $this->twilioService->verificarRecordatorios();
-            
-            $resultado = [
-                'timers_cancelados' => $resultadoTimers['timers_cancelados'] ?? 0,
-                'recordatorios_enviados' => $resultadoRecordatorios['recordatorios_enviados'] ?? 0
-            ];
-            
-            // Actualizar timestamp de última ejecución
-            Cache::put($cacheKey, $now, \Carbon\Carbon::now()->addHours(1));
-            
-            Log::info('Cron interno ejecutado exitosamente', [
-                'timestamp' => $now,
-                'resultado' => $resultado
-            ]);
-            
-            return response()->json([
-                'success' => true,
-                'message' => 'Cron interno ejecutado exitosamente',
-                'data' => [
-                    'timestamp' => $now,
-                    'timers_cancelados' => $resultado['timers_cancelados'] ?? 0,
-                    'recordatorios_enviados' => $resultado['recordatorios_enviados'] ?? 0,
-                    'last_run' => $now,
-                    'next_run' => $now->addMinutes(5)
-                ]
-            ]);
-            
-        } catch (\Exception $e) {
-            Log::error('Error ejecutando cron interno', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'timestamp' => $now
-            ]);
-            
-            return response()->json([
-                'success' => false,
-                'message' => 'Error ejecutando cron interno',
-                'error' => $e->getMessage()
-            ], 500);
-        }
-    }
 
     /**
      * Verificar estado del cron interno
@@ -119,7 +48,7 @@ class CronInternoController extends Controller
     }
 
     /**
-     * Forzar ejecución del cron (para testing)
+     * Forzar ejecución del cron (para testing - la ejecución automática ahora es via schedule)
      */
     public function forzarEjecucion(Request $request)
     {

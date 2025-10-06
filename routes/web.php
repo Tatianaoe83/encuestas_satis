@@ -113,17 +113,14 @@ Route::prefix('contenido-aprobado')->middleware(['auth'])->group(function () {
         ->name('contenido-aprobado.estadisticas');
 });
 
-// Rutas para cron interno (sin autenticación para que funcione automáticamente)
+// Rutas para cron interno (solo para verificación y testing - la ejecución automática ahora es via schedule)
 Route::prefix('cron-interno')->group(function () {
-    Route::get('/ejecutar', [App\Http\Controllers\CronInternoController::class, 'ejecutarCronInterno'])
-        ->name('cron-interno.ejecutar');
-    
     Route::get('/estado', [App\Http\Controllers\CronInternoController::class, 'verificarEstadoCron'])
         ->name('cron-interno.estado');
     
     Route::post('/forzar', [App\Http\Controllers\CronInternoController::class, 'forzarEjecucion'])
         ->name('cron-interno.forzar');
-});
+})->middleware(App\Http\Middleware\InternalCronMiddleware::class);
 
 // Rutas para el chat y mensajería
 Route::prefix('chat')->group(function () {

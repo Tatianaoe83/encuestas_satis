@@ -22,6 +22,9 @@ class CronInternoController extends Controller
      */
     public function verificarEstadoCron()
     {
+        // Asegurar que se use la zona horaria correcta
+        date_default_timezone_set(config('app.timezone'));
+        
         $cacheKey = 'internal_cron_last_run';
         $lastRun = Cache::get($cacheKey);
         $now = \Carbon\Carbon::now();
@@ -53,6 +56,9 @@ class CronInternoController extends Controller
     public function forzarEjecucion(Request $request)
     {
         try {
+            // Asegurar que se use la zona horaria correcta
+            date_default_timezone_set(config('app.timezone'));
+            
             Log::info('Forzando ejecución del cron interno', [
                 'timestamp' => \Carbon\Carbon::now(),
                 'ip' => $request->ip(),

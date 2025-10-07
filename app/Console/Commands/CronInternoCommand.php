@@ -29,6 +29,9 @@ class CronInternoCommand extends Command
      */
     public function handle(TwilioService $twilioService)
     {
+        // Asegurar que se use la zona horaria correcta
+        date_default_timezone_set(config('app.timezone'));
+        
         $cacheKey = 'internal_cron_last_run';
         $lastRun = Cache::get($cacheKey);
         $now = \Carbon\Carbon::now();

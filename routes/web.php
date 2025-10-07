@@ -120,7 +120,7 @@ Route::prefix('cron-interno')->group(function () {
     
     Route::post('/forzar', [App\Http\Controllers\CronInternoController::class, 'forzarEjecucion'])
         ->name('cron-interno.forzar');
-})->middleware(App\Http\Middleware\InternalCronMiddleware::class);
+});
 
 // Rutas para el chat y mensajería
 Route::prefix('chat')->group(function () {

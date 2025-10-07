@@ -92,16 +92,29 @@ class TwilioService
     public function verificarRecordatorios()
     {
         try {
+            $now = Carbon::now();
+            Log::info('Verificando recordatorios', ['timestamp' => $now]);
+            
             $enviosParaRecordatorio = Envio::where('timer_activo', true)
                 ->where('recordatorio_enviado', false)
-                ->where('tiempo_recordatorio', '<=', Carbon::now())
-                ->where('tiempo_expiracion', '>', Carbon::now())
+                ->where('tiempo_recordatorio', '<=', $now)
+                ->where('tiempo_expiracion', '>', $now)
                 ->whereIn('estado', ['enviado'])
                 ->get();
+
+            Log::info('Envios para recordatorio encontrados', [
+                'count' => $enviosParaRecordatorio->count(),
+                'envios' => $enviosParaRecordatorio->pluck('idenvio')->toArray()
+            ]);
 
             $recordatoriosEnviados = 0;
 
             foreach ($enviosParaRecordatorio as $envio) {
+                Log::info('Enviando recordatorio', [
+                    'idenvio' => $envio->idenvio,
+                    'tiempo_recordatorio' => $envio->tiempo_recordatorio,
+                    'tiempo_expiracion' => $envio->tiempo_expiracion
+                ]);
                 if ($this->enviarRecordatorio($envio)) {
                     $recordatoriosEnviados++;
                 }
@@ -113,6 +126,7 @@ class TwilioService
             ];
             
         } catch (\Exception $e) {
+            Log::error('Error verificando recordatorios', ['error' => $e->getMessage()]);
             return [
                 'success' => false,
                 'error' => $e->getMessage()
@@ -209,22 +223,36 @@ class TwilioService
     public function verificarTimersExpirados()
     {
         try {
+            $now = Carbon::now();
+            Log::info('Verificando timers expirados', ['timestamp' => $now]);
+            
             $enviosExpirados = Envio::where('timer_activo', true)
-                ->where('tiempo_expiracion', '<', Carbon::now())
+                ->where('tiempo_expiracion', '<', $now)
                 ->whereIn('estado', ['enviado', 'en_proceso', 'recordatorio_enviado'])
                 ->get();
 
+            Log::info('Envios expirados encontrados', [
+                'count' => $enviosExpirados->count(),
+                'envios' => $enviosExpirados->pluck('idenvio')->toArray()
+            ]);
+
             foreach ($enviosExpirados as $envio) {
+                Log::info('Cancelando timer expirado', [
+                    'idenvio' => $envio->idenvio,
+                    'estado' => $envio->estado,
+                    'tiempo_expiracion' => $envio->tiempo_expiracion
+                ]);
                 $this->cancelarTimerExpirado($envio);
             }
 
-                    return [
+            return [
                 'success' => true,
                 'timers_cancelados' => $enviosExpirados->count()
-                    ];
+            ];
                 
         } catch (\Exception $e) {
-                    return [
+            Log::error('Error verificando timers expirados', ['error' => $e->getMessage()]);
+            return [
                 'success' => false,
                 'error' => $e->getMessage()
             ];

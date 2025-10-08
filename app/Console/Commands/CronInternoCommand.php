@@ -37,9 +37,9 @@ class CronInternoCommand extends Command
         $now = \Carbon\Carbon::now();
         
         // Verificar si han pasado al menos 5 minutos desde la última ejecución (a menos que se fuerce)
-        if (!$this->option('force') && $lastRun && $now->diffInMinutes($lastRun) < 5) {
+        if (!$this->option('force') && $lastRun && $now->diffInMinutes($lastRun) < 1) {
             $this->info('Cron ya ejecutado recientemente. Última ejecución: ' . $lastRun->format('Y-m-d H:i:s'));
-            $this->info('Próxima ejecución: ' . $lastRun->addMinutes(5)->format('Y-m-d H:i:s'));
+            $this->info('Próxima ejecución: ' . $lastRun->addMinutes(1)->format('Y-m-d H:i:s'));
             $this->info('Usa --force para ejecutar de todas formas');
             return 0;
         }

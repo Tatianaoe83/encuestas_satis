@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 Route::redirect('/', '/login');
 
 Route::get('dashboard', [App\Http\Controllers\DashboardController::class, 'index'])
-    ->middleware(['auth', 'verified'])
+    ->middleware(['auth'])
     ->name('dashboard');
 
 Route::get('dashboard/estadisticas-tiempo-real', [App\Http\Controllers\DashboardController::class, 'estadisticasTiempoReal'])
@@ -27,6 +27,11 @@ Route::view('profile', 'profile')
 Route::resource('clientes', ClienteController::class)
     ->middleware(['auth']);
 
+// Ruta adicional para reactivar clientes
+Route::post('clientes/{id}/restore', [ClienteController::class, 'restore'])
+    ->name('clientes.restore')
+    ->middleware(['auth']);
+
 // Rutas para el módulo de envíos
 Route::resource('envios', EnvioController::class)
     ->parameters(['envios' => 'idenvio'])
@@ -35,11 +40,11 @@ Route::resource('envios', EnvioController::class)
 // Rutas adicionales para envíos
 
 
-// ruta para visualizar la encuesta en web
-Route::get('encuesta/{idenvio}', [App\Http\Controllers\EncuestaController::class, 'mostrar'])
+// ruta para visualizar la encuesta en web (con idencriptado para seguridad)
+Route::get('encuesta/{idencrypted}', [App\Http\Controllers\EncuestaController::class, 'mostrar'])
     ->name('encuesta.mostrar');
 
-Route::post('encuesta/{idenvio}/responder', [App\Http\Controllers\EncuestaController::class, 'responder'])
+Route::post('encuesta/{idencrypted}/responder', [App\Http\Controllers\EncuestaController::class, 'responder'])
     ->name('encuesta.responder');
 
 
@@ -53,6 +58,10 @@ Route::post('envios/{idenvio}/marcar-enviado', [EnvioController::class, 'marcarE
 
     Route::post('envios/{idenvio}/marcar-respondido', [EnvioController::class, 'marcarRespondido'])
     ->name('envios.marcar-respondido')
+    ->middleware(['auth']);
+
+Route::get('envios/{idenvio}/url-encriptada', [EnvioController::class, 'generarUrlEncriptada'])
+    ->name('envios.url-encriptada')
     ->middleware(['auth']);
 
 // Ruta para visualización de resultados
@@ -104,11 +113,8 @@ Route::prefix('contenido-aprobado')->middleware(['auth'])->group(function () {
         ->name('contenido-aprobado.estadisticas');
 });
 
-// Rutas para cron interno (sin autenticación para que funcione automáticamente)
+// Rutas para cron interno (solo para verificación y testing - la ejecución automática ahora es via schedule)
 Route::prefix('cron-interno')->group(function () {
-    Route::get('/ejecutar', [App\Http\Controllers\CronInternoController::class, 'ejecutarCronInterno'])
-        ->name('cron-interno.ejecutar');
-    
     Route::get('/estado', [App\Http\Controllers\CronInternoController::class, 'verificarEstadoCron'])
         ->name('cron-interno.estado');
     
@@ -156,9 +162,20 @@ Route::prefix('twilio')->middleware(['auth'])->group(function () {
         ->name('twilio.probar');
 });
 
-// Ruta de prueba para diagnosticar encuestas
-Route::get('/test-encuesta/{idenvio}', function($idenvio) {
+// Ruta de prueba para diagnosticar encuestas (con token corto)
+Route::get('/test-encuesta/{idencrypted}', function($idencrypted) {
     try {
+        // Extraer el ID del token corto
+        $idenvio = \App\Http\Controllers\EncuestaController::extraerIdDelToken($idencrypted);
+        
+        // Verificar que el token es válido
+        if (!\App\Http\Controllers\EncuestaController::verificarToken($idencrypted, $idenvio)) {
+            return response()->json([
+                'success' => false,
+                'error' => 'Token inválido'
+            ]);
+        }
+        
         $envio = \App\Models\Envio::with('cliente')->findOrFail($idenvio);
         return response()->json([
             'success' => true,

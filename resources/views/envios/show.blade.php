@@ -1,30 +1,36 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h2 class="font-semibold text-lg sm:text-xl text-gray-800 leading-tight">
             {{ __('Detalles del Envío') }}
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-medium">Información del Envío</h3>
-                        <div class="flex space-x-2">
-                            <a href="{{ route('envios.edit', $envio->idenvio) }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+    <div class="py-6 sm:py-8 lg:py-12">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
+            <div class="bg-white overflow-hidden shadow-sm rounded-lg sm:rounded-lg">
+                <div class="p-6 sm:p-8 text-gray-900">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6 sm:mb-8">
+                        <h3 class="text-base sm:text-lg font-medium">Información del Envío</h3>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <!--<a href="{{ route('envios.edit', $envio->idenvio) }}" class="inline-flex items-center justify-center bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
+                                <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                </svg>
                                 Editar
-                            </a>
-                            <a href="{{ route('envios.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            </a>-->
+                            <a href="{{ route('envios.index') }}" class="inline-flex items-center justify-center bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
+                                <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
                                 Volver
                             </a>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                         <!-- Información del Cliente -->
-                        <div class="bg-gray-50 p-6 rounded-lg">
-                            <h4 class="text-lg font-medium text-gray-900 mb-4">Información del Cliente</h4>
+                        <div class="bg-gray-50 p-6 sm:p-8 rounded-lg">
+                            <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Información del Cliente</h4>
                             <div class="space-y-3">
                                 <div>
                                     <span class="text-sm font-medium text-gray-500">Nombre Completo:</span>
@@ -54,48 +60,17 @@
                         </div>
 
                         <!-- Estado y Fechas -->
-                        <div class="bg-gray-50 p-6 rounded-lg">
-                            <h4 class="text-lg font-medium text-gray-900 mb-4">Estado y Fechas</h4>
+                        <div class="bg-gray-50 p-6 sm:p-8 rounded-lg">
+                            <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">Estado y Fechas</h4>
                             <div class="space-y-3">
                                 <div>
                                     <span class="text-sm font-medium text-gray-500">Estado:</span>
                                     <div class="mt-1">
-                                        @switch($envio->estado)
-                                            @case('pendiente')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                    Pendiente
-                                                </span>
-                                                @break
-                                            @case('enviado')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                    Enviado
-                                                </span>
-                                                @break
-                                            @case('esperando_respuesta')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
-                                                    Esperando respuesta
-                                                </span>
-                                                @break
-                                            @case('respondido')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Respondido
-                                                </span>
-                                                @break
-                                            @case('cancelado')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                    Cancelado
-                                                </span>
-                                                @break
-                                            @case('completado')
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    Completado
-                                                </span>
-                                                @break
-                                            @default
+                            
                                                 <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    {{ ucfirst($envio->estado) }}
+                                                    {{ ucfirst($envio->estado === 'completado' ? 'Respondido por el usuario' : ($envio->estado === 'en_proceso' ? 'Usuario respondiendo' : ($envio->estado === 'pendiente' ? 'Pendiente de envío' : 'Sin respuesta'))) }}
                                                 </span>
-                                        @endswitch
+                                       
                                     </div>
                                 </div>
                                 <div>
@@ -114,8 +89,8 @@
                         </div>
 
                         <!-- Información de WhatsApp -->
-                        <div class="bg-gray-50 p-6 rounded-lg">
-                            <h4 class="text-lg font-medium text-gray-900 mb-4">📱 Información de WhatsApp</h4>
+                        <div class="bg-gray-50 p-6 sm:p-8 rounded-lg">
+                            <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">📱 Información de WhatsApp</h4>
                             <div class="space-y-3">
                                 @if($envio->whatsapp_number)
                                     <div>
@@ -149,9 +124,9 @@
                     </div>
 
                     <!-- Preguntas y Respuestas -->
-                    <div class="mt-6 bg-gray-50 p-6 rounded-lg">
-                        <h4 class="text-lg font-medium text-gray-900 mb-4">📋 Preguntas del Envío</h4>
-                        <div class="space-y-4 text-sm mb-6">
+                    <div class="mt-6 sm:mt-8 bg-gray-50 p-6 sm:p-8 rounded-lg">
+                        <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">📋 Preguntas del Envío</h4>
+                        <div class="space-y-6 text-sm mb-8">
                             <div class="bg-white p-3 rounded border-l-4 border-blue-500">
                                 <h5 class="font-medium text-gray-900 mb-1">Pregunta 1 (Escala 1-10):</h5>
                                 <p class="text-gray-700">En una escala del 1-10, ¿Cómo calificarías nuestro servicio con base en los siguientes puntos?</p>
@@ -177,13 +152,13 @@
                             </div>
                         </div>
 
-                        <h4 class="text-lg font-medium text-gray-900 mb-4">✍️ Respuestas del Cliente</h4>
-                        <div class="space-y-4">
+                        <h4 class="text-base sm:text-lg font-medium text-gray-900 mb-3 sm:mb-4">✍️ Respuestas del Cliente</h4>
+                        <div class="space-y-6">
                             <!-- Pregunta 1 - Subpreguntas 1.1 a 1.5 -->
                             <div class="bg-white p-4 rounded border-l-4 border-blue-500">
                                 <h5 class="font-medium text-gray-900 mb-3">Pregunta 1 - Calificaciones (Escala 1-10)</h5>
                                 
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                                          <div class="bg-gray-50 p-3 rounded">
                                          <span class="text-sm font-medium text-gray-500">1.1. Calidad del producto:</span>
                                          @if($envio->respuesta_1_1)
@@ -254,7 +229,7 @@
                              </div>
 
                              <!-- Pregunta 3 - Mejoras (solo si respondió "No") -->
-                             @if($envio->respuesta_2 == 'No' && $envio->respuesta_3)
+                             @if($envio->respuesta_2 == 'no' && $envio->respuesta_3)
                              <div class="bg-white p-4 rounded border-l-4 border-orange-500">
                                  <h5 class="font-medium text-gray-900 mb-3">Pregunta 3 - ¿Qué podríamos hacer para mejorar tu experiencia?</h5>
                                  <div class="bg-green-50 p-3 rounded border-l-4 border-green-500">

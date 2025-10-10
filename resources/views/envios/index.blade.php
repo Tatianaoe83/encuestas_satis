@@ -1,36 +1,45 @@
 <x-app-layout>
+    @push('styles')
+        <link rel="stylesheet" href="{{ asset('css/pagination-custom.css') }}">
+    @endpush
+    
+    @push('scripts')
+        <script src="{{ asset('js/pagination-enhancements.js') }}"></script>
+    @endpush
+    
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <div>
-                <h2 class="font-bold text-2xl text-gray-800 leading-tight">
+        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 sm:gap-0">
+            <div class="flex-1">
+                <h2 class="font-bold text-xl sm:text-2xl text-gray-800 leading-tight">
                     {{ __('Gestión de Envíos') }}
                 </h2>
-                <p class="text-gray-600 mt-1">Administra el envío de encuestas a tus clientes</p>
+                <p class="text-gray-600 mt-1 text-sm sm:text-base">Administra el envío de encuestas a tus clientes</p>
             </div>
             <div class="flex items-center space-x-3">
                
-                <a href="{{ route('envios.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('envios.create') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center text-sm sm:text-base">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                     </svg>
-                    Nuevo Envío
+                    <span class="hidden sm:inline">Nuevo Envío</span>
+                    <span class="sm:hidden">Nuevo</span>
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 sm:py-8 lg:py-12">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <!-- Estadísticas rápidas -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div class="bg-blue-600 rounded-xl shadow-lg p-6 text-white">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mb-8 sm:mb-12">
+                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100 text-sm font-medium">Total Envíos</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->count() }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-blue-100 text-xs sm:text-sm font-medium">Total Envíos</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $envios->count() }}</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clip-rule="evenodd"/>
                                 <path fill-rule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clip-rule="evenodd"/>
                               </svg>
@@ -39,14 +48,14 @@
                     </div>
                 </div>
 
-                <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-green-100 text-sm font-medium">Completados</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'completado')->count() }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-green-100 text-xs sm:text-sm font-medium">Respondido por el usuario</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $envios->where('estado', 'completado')->count() }}</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd"/>
                               </svg>
                               
@@ -56,14 +65,14 @@
                     </div>
                 </div>
 
-                <div class="bg-red-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-red-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-red-100 text-sm font-medium">Cancelados</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'cancelado')->count() }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-red-100 text-xs sm:text-sm font-medium">Sin respuesta</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $envios->where('estado', 'cancelado')->count() }}</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
                               </svg>
                               
@@ -72,14 +81,14 @@
                     </div>
                 </div>
 
-                <div class="bg-yellow-600 rounded-xl shadow-lg p-6 text-white">
+                <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-yellow-100 text-sm font-medium">Pendientes</p>
-                            <p class="text-2xl font-bold mt-1">{{ $envios->where('estado', 'pendiente')->count() }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-yellow-100 text-xs sm:text-sm font-medium truncate">Pendiente de envío</p>
+                            <p class="text-xl sm:text-2xl font-bold mt-1">{{ $envios->where('estado', 'pendiente')->count() }}</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
                               </svg>
                               
@@ -89,16 +98,16 @@
             </div>
 
             <!-- Saldo de Twilio -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-                <div class="flex items-center justify-between mb-4">
-                    <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                        <svg class="w-6 h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="bg-white rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 mb-8 sm:mb-12">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
+                    <h2 class="text-lg sm:text-xl font-semibold text-gray-800 flex items-center">
+                        <svg class="w-5 h-5 sm:w-6 sm:h-6 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                         </svg>
                         Saldo de Twilio
                     </h2>
-                    <button onclick="actualizarSaldoTwilio()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center transition-colors">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <button onclick="actualizarSaldoTwilio()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg flex items-center transition-colors text-sm sm:text-base w-full sm:w-auto justify-center">
+                        <svg class="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                         </svg>
                         Actualizar
@@ -106,16 +115,16 @@
                 </div>
 
                 @if($saldoTwilio['success'])
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <!-- Saldo Actual -->
-                        <div class="bg-purple-600 from-purple-600 to-purple-700 rounded-lg p-4 shadow-lg text-purple-800">
+                        <div class="bg-purple-600 from-purple-600 to-purple-700 rounded-lg p-6 shadow-lg text-purple-800">
                             <div class="flex items-center justify-between text-purple-800">
-                                <div>
-                                    <p class="text-purple-100 text-sm font-medium">Saldo Actual</p>
-                                    <p class="text-2xl font-bold mt-1 text-purple-100">{{ $saldoTwilio['balance_formatted'] }}</p>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-purple-100 text-xs sm:text-sm font-medium">Saldo Actual</p>
+                                    <p class="text-xl sm:text-2xl font-bold mt-1 text-purple-100">{{ $saldoTwilio['balance_formatted'] }}</p>
                                 </div>
-                                <div class="bg-white bg-opacity-20 rounded-full p-3">
-                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                                    <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
                                     </svg>
                                 </div>
@@ -123,7 +132,7 @@
                         </div>
 
                         <!-- Información de Cuenta -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
                             <h3 class="text-sm font-medium text-gray-500 mb-2">Información de Cuenta</h3>
                             <div class="space-y-1">
                                
@@ -140,7 +149,7 @@
                         </div>
 
                         <!-- Moneda -->
-                        <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <div class="bg-white border border-gray-200 rounded-lg p-6">
                             <h3 class="text-sm font-medium text-gray-500 mb-2">Moneda</h3>
                             <p class="text-2xl font-bold text-gray-900">{{ $saldoTwilio['currency'] }}</p>
                             <p class="text-xs text-gray-500 mt-1">Código de moneda</p>
@@ -148,7 +157,7 @@
 
                     </div>
                 @else
-                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-6">
                         <div class="flex items-center">
                             <svg class="w-5 h-5 text-red-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
@@ -186,10 +195,10 @@
             @endif
 
             <!-- Tabla de envíos mejorada -->
-            <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+            <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
             
 
-                <div class="p-6">
+                <div class="p-6 sm:p-8 overflow-x-auto">
                     <table class="w-full display responsive nowrap" id="tabla-envios" style="width: 100%;">
                         <thead>
                             <tr>
@@ -222,7 +231,7 @@
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                    Pendiente
+                                                    Pendiente de envío
                                                 </span>
                                                 @break
                                             @case('enviado')
@@ -230,23 +239,16 @@
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                                                     </svg>
-                                                    Enviado
+                                                    Enviado por WhatsApp
                                                 </span>
                                                 @break
-                                            @case('respondido')
-                                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                                    </svg>
-                                                    Respondido
-                                                </span>
-                                                @break
+                                            
                                             @case('cancelado')
                                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                                     </svg>
-                                                    Cancelado
+                                                    Sin respuesta
                                                 </span>
                                                 @break
                                             @case('en_proceso')
@@ -254,7 +256,7 @@
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                    En proceso
+                                                    Usuario respondiendo
                                                 </span>
                                                 @break
                                             @case('completado')
@@ -262,15 +264,15 @@
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
                                                     </svg>
-                                                    Completado
+                                                    Respondido por el usuario
                                                 </span>
                                                 @break
-                                            @case('esperando_respuesta')
+                                            @case('recordatorio_enviado')
                                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
                                                     <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                     </svg>
-                                                    Esperando respuesta
+                                                    Recordatorio enviado
                                                 </span>
                                                 @break
 
@@ -302,12 +304,12 @@
                                                 </svg>
                                                 Ver
                                             </a>
-                                            <a href="{{ route('envios.edit', $envio->idenvio) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 transition-colors duration-200">
+                                            <!--<a href="{{ route('envios.edit', $envio->idenvio) }}" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-indigo-700 bg-indigo-100 hover:bg-indigo-200 transition-colors duration-200">
                                                 <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                 </svg>
                                                 Editar
-                                            </a>
+                                            </a>-->
                                             
                                             <!-- Botón para enlace de encuesta web -->
                                             <button onclick="copiarEnlaceEncuesta({{ $envio->idenvio }})" 
@@ -342,28 +344,14 @@
                                                 @endif
                                             @endif
                                             
-                                            @if($envio->estado === 'enviado')
-                                                <form action="{{ route('envios.marcar-respondido', $envio->idenvio) }}" method="POST" class="inline">
-                                                    @csrf
-                                                    <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-purple-700 bg-purple-100 hover:bg-purple-200 transition-colors duration-200">
-                                                        <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                                                        </svg>
-                                                        Respondido
-                                                    </button>
-                                                </form>
-                                            @endif
+                        
                                             
-                                            <form action="{{ route('envios.destroy', $envio->idenvio) }}" method="POST" class="inline" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este envío?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200">
-                                                    <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                                                    </svg>
-                                                    Eliminar
-                                                </button>
-                                            </form>
+                                            <button onclick="mostrarModalEliminar({{ $envio->idenvio }}, '{{ $envio->cliente->nombre_completo }}')" class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-red-700 bg-red-100 hover:bg-red-200 transition-colors duration-200">
+                                                <svg class="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                                </svg>
+                                                Eliminar
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -408,10 +396,25 @@
                     $('#tabla-envios').DataTable({
                         responsive: true,
                         language: {
-                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json'
+                            url: '//cdn.datatables.net/plug-ins/1.13.7/i18n/es-ES.json',
+                            paginate: {
+                                first: "Primero",
+                                last: "Último",
+                                next: "Siguiente",
+                                previous: "Anterior"
+                            },
+                            info: "Mostrando _START_ a _END_ de _TOTAL_ envíos",
+                            infoEmpty: "No hay envíos disponibles",
+                            infoFiltered: "(filtrado de _MAX_ envíos totales)",
+                            lengthMenu: "Mostrar _MENU_ envíos",
+                            search: "Buscar envíos:",
+                            zeroRecords: "No se encontraron envíos coincidentes",
+                            processing: "Procesando envíos...",
+                            loadingRecords: "Cargando envíos...",
+                            emptyTable: "No hay envíos disponibles en la tabla"
                         },
                         pageLength: 10,
-                        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+                        lengthMenu: [[5, 10, 25, 50, 100, -1], [5, 10, 25, 50, 100, "Todos"]],
                         order: [[0, 'desc']],
                         columnDefs: [
                             {
@@ -428,9 +431,27 @@
                         processing: true,
                         deferRender: true,
                         destroy: true,
+                        stateSave: true,
+                        stateDuration: 60 * 60 * 24, // 24 horas
+                        pagingType: 'full_numbers',
+                        dom: '<"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6"<"flex flex-col sm:flex-row sm:items-center gap-4"l><"flex flex-col sm:flex-row sm:items-center gap-4"f>>rt<"flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-6"<"flex items-center"i><"flex items-center"p>>',
+                        drawCallback: function(settings) {
+                            // Agregar clases personalizadas después de cada redibujado
+                            $('.dataTables_wrapper .dataTables_paginate .paginate_button').addClass('transition-all duration-300');
+                        },
                         initComplete: function() {
                             // Actualizar contador de total de envíos
                             $('#total-envios').text(this.api().data().count());
+                            
+                            // Agregar tooltips a los botones de paginación
+                            $('.dataTables_wrapper .dataTables_paginate .paginate_button').attr('title', function() {
+                                var text = $(this).text();
+                                if (text.includes('Primero')) return 'Ir a la primera página';
+                                if (text.includes('Último')) return 'Ir a la última página';
+                                if (text.includes('Siguiente')) return 'Ir a la siguiente página';
+                                if (text.includes('Anterior')) return 'Ir a la página anterior';
+                                return 'Ir a la página ' + text;
+                            });
                         }
                     });
                 });
@@ -527,8 +548,70 @@
                 #tabla-envios tbody tr:hover {
                     background: #f9fafb !important;
                 }
+
+                /* Estilos para el modal de eliminación */
+                #modalEliminar {
+                    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+                    opacity: 0;
+                    transform: scale(0.95);
+                }
+
+                #modalEliminar.opacity-100 {
+                    opacity: 1;
+                }
+
+                #modalEliminar.scale-100 {
+                    transform: scale(1);
+                }
+
+                #modalEliminar .relative {
+                    transition: transform 0.2s ease-in-out;
+                }
             </style>
 
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de confirmación para eliminar -->
+    <div id="modalEliminar" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-xl bg-white">
+            <div class="mt-3 text-center">
+                <!-- Icono de advertencia -->
+                <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+                    <svg class="h-8 w-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                </div>
+                
+                <!-- Título -->
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Confirmar eliminación</h3>
+                
+                <!-- Mensaje -->
+                <div class="mt-2 px-7 py-3">
+                    <p class="text-sm text-gray-500 mb-3">
+                        ¿Estás seguro de que quieres eliminar el envío del cliente <span id="nombreCliente" class="font-semibold text-gray-900"></span>?
+                    </p>
+                    <p class="text-xs text-red-600 bg-red-50 p-3 rounded-lg">
+                        <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                        </svg>
+                        Esta acción no se puede deshacer.
+                    </p>
+                </div>
+                
+                <!-- Botones -->
+                <div class="flex items-center justify-center gap-3 px-4 py-3">
+                    <button id="cancelarEliminar" class="px-4 py-2 bg-gray-300 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-300 transition-colors duration-200">
+                        Cancelar
+                    </button>
+                    <button id="confirmarEliminar" class="px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 transition-colors duration-200 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                        </svg>
+                        Eliminar
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -580,33 +663,131 @@
             });
         }
 
+        // Variables globales para el modal de eliminación
+        let envioIdParaEliminar = null;
+
+        // Función para mostrar el modal de eliminación
+        function mostrarModalEliminar(envioId, nombreCliente) {
+            envioIdParaEliminar = envioId;
+            document.getElementById('nombreCliente').textContent = nombreCliente;
+            document.getElementById('modalEliminar').classList.remove('hidden');
+            
+            // Agregar animación de entrada
+            setTimeout(() => {
+                const modal = document.getElementById('modalEliminar');
+                modal.classList.add('opacity-100', 'scale-100');
+                modal.classList.remove('opacity-0', 'scale-95');
+            }, 10);
+        }
+
+        // Función para ocultar el modal
+        function ocultarModalEliminar() {
+            const modal = document.getElementById('modalEliminar');
+            modal.classList.add('opacity-0', 'scale-95');
+            modal.classList.remove('opacity-100', 'scale-100');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modal.classList.remove('opacity-0', 'scale-95');
+            }, 200);
+        }
+
+        // Función para confirmar eliminación
+        function confirmarEliminacion() {
+            if (envioIdParaEliminar) {
+                // Crear y enviar formulario
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/envios/${envioIdParaEliminar}`;
+                
+                const csrfToken = document.createElement('input');
+                csrfToken.type = 'hidden';
+                csrfToken.name = '_token';
+                csrfToken.value = '{{ csrf_token() }}';
+                
+                const methodField = document.createElement('input');
+                methodField.type = 'hidden';
+                methodField.name = '_method';
+                methodField.value = 'DELETE';
+                
+                form.appendChild(csrfToken);
+                form.appendChild(methodField);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+
+        // Event listeners para el modal
+        document.addEventListener('DOMContentLoaded', function() {
+            const modal = document.getElementById('modalEliminar');
+            const cancelarBtn = document.getElementById('cancelarEliminar');
+            const confirmarBtn = document.getElementById('confirmarEliminar');
+            
+            // Cerrar modal al hacer clic en cancelar
+            cancelarBtn.addEventListener('click', ocultarModalEliminar);
+            
+            // Cerrar modal al hacer clic en confirmar
+            confirmarBtn.addEventListener('click', function() {
+                ocultarModalEliminar();
+                confirmarEliminacion();
+            });
+            
+            // Cerrar modal al hacer clic fuera de él
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    ocultarModalEliminar();
+                }
+            });
+            
+            // Cerrar modal con tecla Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+                    ocultarModalEliminar();
+                }
+            });
+        });
+
         // Función para copiar enlace de encuesta
         function copiarEnlaceEncuesta(envioId) {
-            const enlace = `${window.location.origin}/encuesta/${envioId}`;
-            
-            // Crear un elemento temporal para copiar
-            const textArea = document.createElement('textarea');
-            textArea.value = enlace;
-            document.body.appendChild(textArea);
-            textArea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            // Mostrar notificación
-            const notification = document.createElement('div');
-            notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
-            notification.innerHTML = `
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
-                Enlace copiado al portapapeles
-            `;
-            document.body.appendChild(notification);
-            
-            // Remover notificación después de 3 segundos
-            setTimeout(() => {
-                document.body.removeChild(notification);
-            }, 3000);
+            // Obtener URL encriptada del backend
+            fetch(`/envios/${envioId}/url-encriptada`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const enlace = data.url;
+                        
+                        // Crear un elemento temporal para copiar
+                        const textArea = document.createElement('textarea');
+                        textArea.value = enlace;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        
+                        // Mostrar notificación
+                        const notification = document.createElement('div');
+                        notification.className = 'fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 flex items-center';
+                        notification.innerHTML = `
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                            Enlace copiado al portapapeles
+                        `;
+                        document.body.appendChild(notification);
+                        
+                        // Remover notificación después de 3 segundos
+                        setTimeout(() => {
+                            document.body.removeChild(notification);
+                        }, 3000);
+                    } else {
+                        // Mostrar error
+                        alert('Error al generar el enlace: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error al generar el enlace de la encuesta');
+                });
         }
     </script>
 </x-app-layout> 

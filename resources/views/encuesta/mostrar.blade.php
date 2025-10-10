@@ -168,79 +168,346 @@
         }
 
         /* Responsive para móvil */
-        @media (max-width: 640px) {
-            .star {
-                font-size: 1.5rem;
-            }
-
-            .star-rating {
-                gap: 2px;
-                margin: 15px 0;
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
             .question-card {
                 padding: 1.5rem;
+                margin: 0.5rem;
             }
 
-            .text-2xl {
-                font-size: 1.5rem;
+            .text-3xl {
+                font-size: 1.75rem;
+            }
+
+            .text-xl {
+                font-size: 1.125rem;
             }
 
             .text-lg {
                 font-size: 1rem;
             }
 
+            .star-rating {
+                gap: 6px;
+                margin: 20px 0;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .star {
+                font-size: 2rem;
+                padding: 8px;
+                min-width: 44px;
+                min-height: 44px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
             .btn-primary,
             .btn-success {
-                padding: 10px 24px;
+                padding: 12px 28px;
                 font-size: 1rem;
+                min-height: 48px;
+                width: 100%;
+                max-width: 300px;
+                margin: 0 auto;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
 
             .rating-button {
-                width: 24px;
-                height: 24px;
+                width: 80px;
+                height: 80px;
+                font-size: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+            }
+
+            #btn-si, #btn-no {
+                width: 100px;
+                height: 100px;
+                font-size: 1.8rem;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.9rem;
+                margin-top: 4px;
+            }
+
+            /* Asegurar que los iconos se muestren correctamente */
+            .fas, .far, .fab {
+                display: inline-block;
+                font-style: normal;
+                font-variant: normal;
+                text-rendering: auto;
+                line-height: 1;
             }
         }
 
-        @media (max-width: 480px) {
-            .star {
-                font-size: 1.2rem;
-            }
-
-            .star-rating {
-                gap: 1px;
-                margin: 10px 0;
+        @media (max-width: 640px) {
+            .container {
+                padding-left: 0.75rem;
+                padding-right: 0.75rem;
             }
 
             .question-card {
-                padding: 1rem;
+                padding: 1.25rem;
+                margin: 0.25rem;
             }
 
-            .text-2xl {
-                font-size: 1.25rem;
+            .text-3xl {
+                font-size: 1.5rem;
+            }
+
+            .text-xl {
+                font-size: 1rem;
             }
 
             .text-lg {
                 font-size: 0.9rem;
             }
 
+            .star-rating {
+                gap: 4px;
+                margin: 15px 0;
+            }
+
+            .star {
+                font-size: 1.8rem;
+                padding: 6px;
+                min-width: 40px;
+                min-height: 40px;
+            }
+
+            .btn-primary,
+            .btn-success {
+                padding: 10px 24px;
+                font-size: 0.9rem;
+                min-height: 44px;
+                max-width: 280px;
+            }
+
+            .rating-button {
+                width: 70px;
+                height: 70px;
+                font-size: 1.3rem;
+            }
+
+            #btn-si, #btn-no {
+                width: 90px;
+                height: 90px;
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding-left: 0.5rem;
+                padding-right: 0.5rem;
+            }
+
+            .question-card {
+                padding: 1rem;
+                margin: 0.25rem;
+            }
+
+            .text-3xl {
+                font-size: 1.25rem;
+            }
+
+            .text-xl {
+                font-size: 0.9rem;
+            }
+
+            .text-lg {
+                font-size: 0.85rem;
+            }
+
             .text-sm {
                 font-size: 0.75rem;
             }
 
-            .container {
-                padding-left: 0.75rem;
-                padding-right: 0.75rem;
+            .star-rating {
+                gap: 3px;
+                margin: 12px 0;
+            }
+
+            .star {
+                font-size: 1.6rem;
+                padding: 4px;
+                min-width: 36px;
+                min-height: 36px;
+            }
+
+            .btn-primary,
+            .btn-success {
+                padding: 8px 20px;
+                font-size: 0.85rem;
+                min-height: 40px;
+                max-width: 260px;
+            }
+
+            .rating-button {
+                width: 60px;
+                height: 60px;
+                font-size: 1.1rem;
+            }
+
+            #btn-si, #btn-no {
+                width: 80px;
+                height: 80px;
+                font-size: 1.4rem;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.8rem;
+                margin-top: 2px;
             }
         }
 
         @media (max-width: 360px) {
-            .star {
-                font-size: 1rem;
+            .container {
+                padding-left: 0.25rem;
+                padding-right: 0.25rem;
+            }
+
+            .question-card {
+                padding: 0.75rem;
+                margin: 0.125rem;
+            }
+
+            .text-3xl {
+                font-size: 1.1rem;
+            }
+
+            .text-xl {
+                font-size: 0.85rem;
+            }
+
+            .text-lg {
+                font-size: 0.8rem;
             }
 
             .star-rating {
-                gap: 0.5px;
+                gap: 2px;
+                margin: 10px 0;
+            }
+
+            .star {
+                font-size: 1.4rem;
+                padding: 3px;
+                min-width: 32px;
+                min-height: 32px;
+            }
+
+            .rating-button {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+
+            #btn-si, #btn-no {
+                width: 70px;
+                height: 70px;
+                font-size: 1.2rem;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.7rem;
+                margin-top: 1px;
+            }
+
+            .btn-primary,
+            .btn-success {
+                padding: 6px 16px;
+                font-size: 0.8rem;
+                min-height: 36px;
+                max-width: 240px;
+            }
+        }
+
+        /* Estilos para dispositivos con pantalla muy pequeña */
+        @media (max-width: 320px) {
+            .container {
+                padding-left: 0.125rem;
+                padding-right: 0.125rem;
+            }
+
+            .question-card {
+                padding: 0.5rem;
+                margin: 0.125rem;
+            }
+
+            .text-3xl {
+                font-size: 1rem;
+            }
+
+            .text-xl {
+                font-size: 0.8rem;
+            }
+
+            .text-lg {
+                font-size: 0.75rem;
+            }
+
+            .star-rating {
+                gap: 1px;
+                margin: 8px 0;
+            }
+
+            .star {
+                font-size: 1.2rem;
+                min-width: 28px;
+                min-height: 28px;
+                padding: 2px;
+            }
+
+            .rating-button {
+                width: 45px;
+                height: 45px;
+                font-size: 0.9rem;
+            }
+
+            #btn-si, #btn-no {
+                width: 65px;
+                height: 65px;
+                font-size: 1.1rem;
+            }
+
+            #btn-si div, #btn-no div {
+                font-size: 0.65rem;
+                margin-top: 1px;
+            }
+
+            .btn-primary, .btn-success {
+                padding: 5px 12px;
+                font-size: 0.75rem;
+                min-height: 32px;
+                max-width: 220px;
+            }
+        }
+
+        /* Mejorar la experiencia táctil para todos los dispositivos móviles */
+        @media (max-width: 768px) {
+            .star, .rating-button, .btn-primary, .btn-success {
+                touch-action: manipulation;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            .star:hover {
+                transform: scale(1.1);
+            }
+
+            .rating-button:hover {
+                transform: scale(1.05);
             }
         }
     </style>
@@ -303,7 +570,8 @@
     </div>
 
     <script>
-        const envioId = {{$envio->idenvio}};
+        const envioId = '{{$idencrypted}}';
+       
         const preguntaActual = '{{ $preguntaActual }}';
         let progresoActual = 0;
 
@@ -421,10 +689,12 @@
                                 <span id="rating-text"></span>
                             </div>
                             
-                            <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                                <i class="fas fa-arrow-right mr-2"></i>
-                                Continuar
-                            </button>
+                            <div class="flex justify-center">
+                                <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
+                                    <i class="fas fa-arrow-right mr-2 text-lg"></i>
+                                    Continuar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -439,6 +709,7 @@
             stars.forEach(star => {
                 star.addEventListener('click', () => {
                     selectedRating = parseInt(star.dataset.rating);
+                    console.log('Clic en estrella:', selectedRating); // Debug
                     seleccionarRating(selectedRating);
                     submitBtn.disabled = false;
                 });
@@ -462,13 +733,21 @@
             const description = document.getElementById('rating-description');
             const ratingText = document.getElementById('rating-text');
 
+            console.log('Seleccionando rating:', rating); // Debug
+
+            // Primero limpiar todas las estrellas
+            stars.forEach(star => {
+                star.classList.remove('selected', 'hovered');
+            });
+
+            // Luego seleccionar solo las estrellas hasta el rating seleccionado
             stars.forEach((star, index) => {
                 if (index < rating) {
                     star.classList.add('selected');
-                } else {
-                    star.classList.remove('selected');
                 }
             });
+
+            console.log('Estrellas con clase selected:', document.querySelectorAll('.star.selected').length); // Debug
 
             const descriptions = {
                 1: 'Muy malo',
@@ -520,20 +799,22 @@
                     <div class="max-w-2xl mx-auto mb-8">
                         <div class="bg-white rounded-xl p-8 border-2 border-gray-200 shadow-lg">
                             <div class="flex justify-center gap-8 mb-8">
-                                <button id="btn-si" class="rating-button w-24 h-24 bg-green-500 text-white text-2xl font-bold rounded-full transition-all duration-300">
-                                    <i class="fas fa-thumbs-up"></i>
-                                    <div class="text-sm mt-1">Sí</div>
+                                <button id="btn-si" class="rating-button w-24 h-24 bg-green-500 text-white text-2xl font-bold rounded-full transition-all duration-300 flex flex-col items-center justify-center">
+                                    <i class="fas fa-thumbs-up text-2xl mb-1"></i>
+                                    <div class="text-sm font-medium">Sí</div>
                                 </button>
-                                <button id="btn-no" class="rating-button w-24 h-24 bg-red-500 text-white text-2xl font-bold rounded-full transition-all duration-300">
-                                    <i class="fas fa-thumbs-down"></i>
-                                    <div class="text-sm mt-1">No</div>
+                                <button id="btn-no" class="rating-button w-24 h-24 bg-red-500 text-white text-2xl font-bold rounded-full transition-all duration-300 flex flex-col items-center justify-center">
+                                    <i class="fas fa-thumbs-down text-2xl mb-1"></i>
+                                    <div class="text-sm font-medium">No</div>
                                 </button>
                             </div>
                             
-                            <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                                <i class="fas fa-arrow-right mr-2"></i>
-                                Continuar
-                            </button>
+                            <div class="flex justify-center">
+                                <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
+                                    <i class="fas fa-arrow-right mr-2 text-lg"></i>
+                                    Continuar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -555,9 +836,9 @@
                                       class="w-full h-40 p-6 border-2 border-gray-300 rounded-xl focus:ring-4 focus:ring-indigo-500 focus:border-indigo-500 resize-none transition-all duration-300 shadow-sm focus:shadow-lg"
                                       placeholder="Escribe tu sugerencia o comentario aquí..."></textarea>
                             
-                            <div class="mt-6">
-                                <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed" disabled>
-                                    <i class="fas fa-arrow-right mr-2"></i>
+                            <div class="mt-6 flex justify-center">
+                                <button id="submit-btn" onclick="enviarRespuesta()" class="btn-primary px-8 py-4 text-lg font-semibold rounded-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center" disabled>
+                                    <i class="fas fa-arrow-right mr-2 text-lg"></i>
                                     Finalizar Encuesta
                                 </button>
                             </div>
@@ -631,12 +912,14 @@
                         </p>
                     </div>
 
-                    <button onclick="enviarRespuesta()" 
-                            class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed"
-                            id="submit-btn" disabled>
-                        <i class="fas fa-paper-plane mr-2"></i>
-                        Enviar Respuesta
-                    </button>
+                    <div class="flex justify-center">
+                        <button onclick="enviarRespuesta()" 
+                                class="btn-primary disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                                id="submit-btn" disabled>
+                            <i class="fas fa-paper-plane mr-2 text-lg"></i>
+                            Enviar Respuesta
+                        </button>
+                    </div>
                 </div>
             `;
         }
@@ -658,11 +941,13 @@
                         </p>
                     </div>
 
-                     <button onclick="window.location.href='/'"
-                        class="bg-red-600 hover:bg-red-700 hover:scale-105 text-white font-bold py-3 px-8 rounded-lg transition duration-200 mr-4">
-                        <i class="fas fa-times mr-2"></i>
-                        Cerrar Ventana
-                    </button>
+                    <div class="flex justify-center">
+                        <button onclick="window.close()"
+                            class="bg-red-600 hover:bg-red-700 hover:scale-105 text-white font-bold py-3 px-8 rounded-lg transition duration-200 flex items-center justify-center">
+                            <i class="fas fa-times mr-2 text-lg"></i>
+                            Cerrar Ventana
+                        </button>
+                    </div>
                 </div>
             `;
             actualizarProgreso('completado');
@@ -687,9 +972,12 @@
             let respuesta = '';
 
             // Si hay estrellas seleccionadas, usar esa respuesta
-            const selectedStar = document.querySelector('.star.selected');
-            if (selectedStar) {
-                respuesta = selectedStar.dataset.rating;
+            const selectedStars = document.querySelectorAll('.star.selected');
+            if (selectedStars.length > 0) {
+                // Contar cuántas estrellas están seleccionadas para obtener el rating correcto
+                respuesta = selectedStars.length.toString();
+                console.log('Estrellas seleccionadas:', selectedStars.length); // Debug
+                console.log('Respuesta a enviar:', respuesta); // Debug
             }
             // Si hay botones Sí/No seleccionados
             else if (document.getElementById('btn-si') && document.getElementById('btn-si').classList.contains('selected')) {
@@ -704,6 +992,8 @@
                     respuesta = textarea.value.trim();
                 }
             }
+
+            console.log('Respuesta a enviar:', respuesta); // Debug
 
             // Enviar respuesta
             fetch(`/encuesta/${envioId}/responder`, {

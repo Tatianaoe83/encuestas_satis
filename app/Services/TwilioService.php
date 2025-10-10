@@ -5,6 +5,8 @@ namespace App\Services;
 use Twilio\Rest\Client;
 use App\Models\Envio;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
+use Carbon\Carbon;
 
 class TwilioService
 {
@@ -37,7 +39,7 @@ class TwilioService
             // Preparar variables de contenido
             $contentVariables = [
                 'nombre' => $cliente->nombre_completo ?? 'Cliente',
-                'idencuesta' => (string) ($envio->idenvio ?? '0')
+                'idencuesta' => \App\Http\Controllers\EncuestaController::generarTokenCorto($envio->idenvio ?? '0')
             ];
 
             $message = $this->client->messages->create(
@@ -49,8 +51,8 @@ class TwilioService
                 ]
             );
 
-            $tiempoExpiracion = now()->addMinutes(30);
-            $tiempoRecordatorio = now()->addMinutes(15);
+            $tiempoExpiracion = Carbon::now()->addMinutes(30);
+            $tiempoRecordatorio = Carbon::now()->addMinutes(15);
 
             // Actualizar el envío - solo contenido, sin preguntas
             $envio->update([
@@ -58,15 +60,15 @@ class TwilioService
                 'twilio_message_sid' => $message->sid,
                 'content_sid' => $contentSid,
                 'estado' => 'enviado',
-                'fecha_envio' => now(),
-                'whatsapp_sent_at' => now(),
+                'fecha_envio' => Carbon::now(),
+                'whatsapp_sent_at' => Carbon::now(),
                 'tiempo_espera_minutos' => 30,
                 'tiempo_expiracion' => $tiempoExpiracion,
                 'tiempo_recordatorio' => $tiempoRecordatorio,
                 'timer_activo' => true,
                 'estado_timer' => 'activo',
                 'recordatorio_enviado' => false,
-                'pregunta_actual' => 1.1  // Usar valor numérico para la primera pregunta
+                'pregunta_actual' => null  // Usar valor numérico para la primera pregunta
             ]);
 
             return true;
@@ -90,16 +92,29 @@ class TwilioService
     public function verificarRecordatorios()
     {
         try {
+            $now = Carbon::now();
+            Log::info('Verificando recordatorios', ['timestamp' => $now]);
+            
             $enviosParaRecordatorio = Envio::where('timer_activo', true)
                 ->where('recordatorio_enviado', false)
-                ->where('tiempo_recordatorio', '<=', now())
-                ->where('tiempo_expiracion', '>', now())
+                ->where('tiempo_recordatorio', '<=', $now)
+                ->where('tiempo_expiracion', '>', $now)
                 ->whereIn('estado', ['enviado'])
                 ->get();
+
+            Log::info('Envios para recordatorio encontrados', [
+                'count' => $enviosParaRecordatorio->count(),
+                'envios' => $enviosParaRecordatorio->pluck('idenvio')->toArray()
+            ]);
 
             $recordatoriosEnviados = 0;
 
             foreach ($enviosParaRecordatorio as $envio) {
+                Log::info('Enviando recordatorio', [
+                    'idenvio' => $envio->idenvio,
+                    'tiempo_recordatorio' => $envio->tiempo_recordatorio,
+                    'tiempo_expiracion' => $envio->tiempo_expiracion
+                ]);
                 if ($this->enviarRecordatorio($envio)) {
                     $recordatoriosEnviados++;
                 }
@@ -111,6 +126,7 @@ class TwilioService
             ];
             
         } catch (\Exception $e) {
+            Log::error('Error verificando recordatorios', ['error' => $e->getMessage()]);
             return [
                 'success' => false,
                 'error' => $e->getMessage()
@@ -126,34 +142,59 @@ class TwilioService
         try {
             $cliente = $envio->cliente;
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+            $contentSidRecordatorio = config('services.twilio.content_sid_recordatorio');
 
-            $mensaje = "🔔 *Recordatorio de encuesta*\n\n";
-            $mensaje .= "Hola {$cliente->nombre_completo},\n\n";
-            $mensaje .= "Te recordamos que tienes una encuesta pendiente que solo te tomará 1 minuto completar.\n\n";
-            $mensaje .= "Tu opinión es muy importante para nosotros y nos ayuda a mejorar nuestros servicios.\n\n";
-            $mensaje .= "⏰ *Tiempo restante:* " . $this->calcularTiempoRestante($envio) . "\n\n";
-            $mensaje .= "¡Gracias por tu tiempo! 😊\n\n";
-            $mensaje .= "---\n";
-            $mensaje .= "Atentamente *KONKRET, UNA EMPRESA DE GRUPO PROSER*";
-            
+            if (!$contentSidRecordatorio) {
+                Log::warning('Content SID para recordatorio no configurado', [
+                    'envio_id' => $envio->id,
+                    'cliente_id' => $cliente->id
+                ]);
+                throw new \Exception('Content SID para recordatorio no está configurado');
+            }
+
+            // Preparar variables de contenido para el recordatorio
+            $contentVariables = [
+                'nombre' => $cliente->nombre_completo ?? 'Cliente',
+            ];
+
+            Log::info('Enviando recordatorio', [
+                'envio_id' => $envio->id,
+                'cliente_id' => $cliente->id,
+                'numero_whatsapp' => $numeroWhatsApp,
+                'content_sid' => $contentSidRecordatorio
+            ]);
+
             $message = $this->client->messages->create(
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'body' => $mensaje,
+                    'contentSid' => $contentSidRecordatorio,
+                    'contentVariables' => json_encode($contentVariables)
                 ]
             );
 
             // Marcar recordatorio como enviado
             $envio->update([
                 'recordatorio_enviado' => true,
-                'recordatorio_enviado_at' => now(),
-                'whatsapp_message' => $mensaje
+                'recordatorio_enviado_at' => Carbon::now(),
+                'estado' => 'recordatorio_enviado'
+            ]);
+
+            Log::info('Recordatorio enviado exitosamente', [
+                'envio_id' => $envio->id,
+                'message_sid' => $message->sid,
+                'status' => $message->status
             ]);
 
             return true;
 
         } catch (\Exception $e) {
+            Log::error('Error enviando recordatorio', [
+                'envio_id' => $envio->id,
+                'cliente_id' => $cliente->id ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return false;
         }
     }
@@ -167,7 +208,7 @@ class TwilioService
             return 'No configurado';
         }
 
-        $tiempoRestante = $envio->tiempo_expiracion->diffInMinutes(now());
+        $tiempoRestante = Carbon::parse($envio->tiempo_expiracion)->diffInMinutes(Carbon::now());
         
         if ($tiempoRestante <= 0) {
             return 'Expirado';
@@ -182,22 +223,36 @@ class TwilioService
     public function verificarTimersExpirados()
     {
         try {
+            $now = Carbon::now();
+            Log::info('Verificando timers expirados', ['timestamp' => $now]);
+            
             $enviosExpirados = Envio::where('timer_activo', true)
-                ->where('tiempo_expiracion', '<', now())
-                ->whereIn('estado', ['enviado', 'esperando_respuesta'])
+                ->where('tiempo_expiracion', '<', $now)
+                ->whereIn('estado', ['enviado', 'en_proceso', 'recordatorio_enviado'])
                 ->get();
 
+            Log::info('Envios expirados encontrados', [
+                'count' => $enviosExpirados->count(),
+                'envios' => $enviosExpirados->pluck('idenvio')->toArray()
+            ]);
+
             foreach ($enviosExpirados as $envio) {
+                Log::info('Cancelando timer expirado', [
+                    'idenvio' => $envio->idenvio,
+                    'estado' => $envio->estado,
+                    'tiempo_expiracion' => $envio->tiempo_expiracion
+                ]);
                 $this->cancelarTimerExpirado($envio);
             }
 
-                    return [
+            return [
                 'success' => true,
                 'timers_cancelados' => $enviosExpirados->count()
-                    ];
+            ];
                 
         } catch (\Exception $e) {
-                    return [
+            Log::error('Error verificando timers expirados', ['error' => $e->getMessage()]);
+            return [
                 'success' => false,
                 'error' => $e->getMessage()
             ];
@@ -212,33 +267,28 @@ class TwilioService
         try {
             $cliente = $envio->cliente;
             $numeroWhatsApp = $this->formatearNumeroWhatsApp($cliente->celular);
+            $contentSidVencimiento = config('services.twilio.content_sid_vencimiento');
             
-            $mensaje = "⏰ *Tiempo de espera agotado*\n\n";
-            $mensaje .= "No recibimos tu respuesta a tiempo.\n\n";
-            $mensaje .= "La encuesta ha sido cancelada automáticamente.\n\n";
-            $mensaje .= "Si deseas participar en el futuro, no dudes en contactarnos.\n\n";
-            $mensaje .= "¡Gracias por tu interés! 🏗️";
+            // Si hay content SID configurado para vencimiento, usarlo
             
-            // Enviar mensaje de cancelación
-            $message = $this->client->messages->create(
+        $this->client->messages->create(
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'body' => $mensaje,
-                ]
-            );
-            
+                    'contentSid' => $contentSidVencimiento,
+                ]   
+            );  
+                
             // Actualizar estado del envío
-                $envio->update([
+            $envio->update([
                 'estado' => 'cancelado',
                 'timer_activo' => false,
-                'estado_timer' => 'expirado',
-                'whatsapp_message' => $mensaje
+                'estado_timer' => 'expirado'
             ]);
             
         } catch (\Exception $e) {
             // Al menos actualizar el estado aunque falle el envío
-                $envio->update([
+            $envio->update([
                 'estado' => 'cancelado',
                 'timer_activo' => false,
                 'estado_timer' => 'error'
@@ -277,7 +327,7 @@ class TwilioService
                 "whatsapp:{$numeroWhatsApp}",
                 [
                     'from' => "whatsapp:{$this->fromNumber}",
-                    'body' => "🧪 *Prueba de conexión*\n\nEste es un mensaje de prueba para verificar que la integración con Twilio funciona correctamente.\n\nFecha: " . now()->format('d/m/Y H:i:s') . "\n\n✅ Si recibes este mensaje, la configuración está correcta."
+                    'body' => "🧪 *Prueba de conexión*\n\nEste es un mensaje de prueba para verificar que la integración con Twilio funciona correctamente.\n\nFecha: " . Carbon::now()->format('d/m/Y H:i:s') . "\n\n✅ Si recibes este mensaje, la configuración está correcta."
                 ]
             );
 
@@ -338,7 +388,9 @@ class TwilioService
             'account_sid' => config('services.twilio.account_sid'),
             'auth_token' => config('services.twilio.auth_token'),
             'whatsapp_from' => config('services.twilio.whatsapp_from'),
-            'content_sid' => config('services.twilio.content_sid')
+            'content_sid' => config('services.twilio.content_sid'),
+            'content_sid_recordatorio' => config('services.twilio.content_sid_recordatorio'),
+            'content_sid_vencimiento' => config('services.twilio.content_sid_vencimiento')
         ];
 
         $errores = [];
@@ -357,6 +409,15 @@ class TwilioService
 
         if (empty($config['content_sid'])) {
             $errores[] = 'TWILIO_CONTENT_SID no está configurado';
+        }
+
+        // Los content SIDs opcionales, solo mostrar advertencias
+        if (empty($config['content_sid_recordatorio'])) {
+            $errores[] = 'TWILIO_CONTENT_SID_RECORDATORIO no está configurado (opcional - usará mensaje por defecto)';
+        }
+
+        if (empty($config['content_sid_vencimiento'])) {
+            $errores[] = 'TWILIO_CONTENT_SID_VENCIMIENTO no está configurado (opcional - usará mensaje por defecto)';
         }
 
         return [
@@ -388,7 +449,7 @@ class TwilioService
                 'balance' => $balance->balance,
                 'currency' => $balance->currency,
                 'balance_formatted' => number_format($balance->balance, 2) . ' ' . $balance->currency,
-                'fecha_consulta' => now()->format('d/m/Y H:i:s')
+                'fecha_consulta' => Carbon::now()->format('d/m/Y H:i:s')
             ];
 
         } catch (\Exception $e) {
@@ -400,7 +461,7 @@ class TwilioService
             return [
                 'success' => false,
                 'error' => $e->getMessage(),
-                'fecha_consulta' => now()->format('d/m/Y H:i:s')
+                'fecha_consulta' => Carbon::now()->format('d/m/Y H:i:s')
             ];
         }
     }

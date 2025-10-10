@@ -28,6 +28,9 @@ class InternalCronMiddleware
      */
     protected function runInternalCron(): void
     {
+        // Asegurar que se use la zona horaria correcta
+        date_default_timezone_set(config('app.timezone'));
+        
         $cacheKey = 'internal_cron_last_run';
         $lastRun = Cache::get($cacheKey);
         $now = now();

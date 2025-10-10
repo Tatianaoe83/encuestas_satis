@@ -12,11 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('envios', function (Blueprint $table) {
-            if (!Schema::hasColumn('envios', 'pregunta_actual')) {
-                $table->decimal('pregunta_actual', 3, 1)->default(1.0);
-            } else {
-                $table->decimal('pregunta_actual', 3, 1)->change();
-            }
+            $table->softDeletes();
         });
     }
 
@@ -26,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('envios', function (Blueprint $table) {
-            $table->integer('pregunta_actual')->change();
+            $table->dropSoftDeletes();
         });
     }
 };

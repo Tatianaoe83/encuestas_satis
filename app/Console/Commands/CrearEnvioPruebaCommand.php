@@ -51,8 +51,8 @@ class CrearEnvioPruebaCommand extends Command
                 'pregunta_actual' => 'encuesta',
                 'timer_activo' => true,
                 'estado_timer' => 'activo',
-                'tiempo_expiracion' => now()->addMinutes(30),
-                'tiempo_recordatorio' => now()->addMinutes(15),
+                'tiempo_expiracion' => \Carbon\Carbon::now()->addMinutes(30),
+                'tiempo_recordatorio' => \Carbon\Carbon::now()->addMinutes(15),
                 'recordatorio_enviado' => false
             ]);
             

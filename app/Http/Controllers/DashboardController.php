@@ -13,6 +13,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        // Headers para evitar caché en móviles
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
         // Estadísticas generales de envíos
         $totalEnvios = Envio::count();
         $enviosCompletados = Envio::where('estado', 'completado')->count();
@@ -76,11 +80,7 @@ class DashboardController extends Controller
             ->orderBy('hora')
             ->get();
 
-        // Estadísticas de chat y respuestas
-        $totalRespuestas = ChatRespuesta::count();
-        $respuestasHoy = ChatRespuesta::whereDate('created_at', Carbon::today())->count();
-        $respuestasSemana = ChatRespuesta::where('created_at', '>=', Carbon::now()->subWeek())->count();
-
+      
         // Tasa de respuesta por tipo de envío
         $tasaRespuesta = $totalEnvios > 0 ? round(($enviosCancelados / $totalEnvios) * 100, 2) : 0;
         // Métricas de rendimiento
@@ -119,9 +119,6 @@ class DashboardController extends Controller
             'topAsesoresMes',
             'enviosPorDia',
             'enviosPorHora',
-            'totalRespuestas',
-            'respuestasHoy',
-            'respuestasSemana',
             'promedioRespuesta',
             'datosGraficaMensual',
             'datosGraficaSemanal',
@@ -249,9 +246,11 @@ class DashboardController extends Controller
     {
         $enviosCompletados = Envio::where('estado', 'completado')
             ->whereNotNull('promedio_respuesta_1')
-            ->first();
+            ->get();
 
-        if ($enviosCompletados->count() === 0) {
+   
+
+        if ($enviosCompletados->count() === 0 ) {
             return [
                 'promedio_general' => 0,
                 'mejor_aspecto' => 'N/A',

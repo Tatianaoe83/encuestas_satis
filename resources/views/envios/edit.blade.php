@@ -1,26 +1,29 @@
     <x-app-layout>
         <x-slot name="header">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            <h2 class="font-semibold text-lg sm:text-xl text-gray-800 leading-tight">
                 {{ __('Editar Envío') }}
             </h2>
         </x-slot>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 text-gray-900">
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-lg font-medium">Editar Envío</h3>
-                            <a href="{{ route('envios.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+        <div class="py-6 sm:py-8 lg:py-12">
+            <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
+                <div class="bg-white overflow-hidden shadow-sm rounded-lg sm:rounded-lg">
+                    <div class="p-6 sm:p-8 text-gray-900">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6 sm:mb-8">
+                            <h3 class="text-base sm:text-lg font-medium">Editar Envío</h3>
+                            <a href="{{ route('envios.index') }}" class="inline-flex items-center justify-center bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-3 sm:px-4 rounded text-sm sm:text-base">
+                                <svg class="w-4 h-4 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
                                 Volver
                             </a>
                         </div>
 
-                        <form action="{{ route('envios.update', $envio->idenvio) }}" method="POST" class="space-y-6">
+                        <form action="{{ route('envios.update', $envio->idenvio) }}" method="POST" class="space-y-6 sm:space-y-8">
                             @csrf
                             @method('PUT')
 
-                            <div class="grid grid-cols-1 gap-6">
+                            <div class="grid grid-cols-1 gap-6 sm:gap-8">
                                 <div>
                                     <x-input-label for="cliente_id" :value="__('Cliente')" />
                                     <select id="cliente_id" name="cliente_id" class="select2-cliente block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm" required readonly>
@@ -46,10 +49,10 @@
                                     <x-input-error :messages="$errors->get('estado')" class="mt-2" />
                                 </div>
 
-                                <div class="bg-blue-50 p-4 rounded-lg">
-                                    <h4 class="text-lg font-medium text-blue-900 mb-4">📋 Preguntas del Envío</h4>
+                                <div class="bg-blue-50 p-4 sm:p-6 rounded-lg">
+                                    <h4 class="text-base sm:text-lg font-medium text-blue-900 mb-3 sm:mb-4">📋 Preguntas del Envío</h4>
                                     
-                                    <div class="space-y-4 text-sm">
+                                    <div class="space-y-6 text-sm">
                                         <div class="bg-white p-3 rounded border-l-4 border-blue-500">
                                             <h5 class="font-medium text-gray-900 mb-1">Pregunta 1 (Escala 1-10):</h5>
                                             <p class="text-gray-700">En una escala del 1-10, ¿Cómo calificarías nuestro servicio con base en los siguientes puntos?</p>
@@ -76,15 +79,15 @@
                                     </div>
                                 </div>
 
-                                <div class="bg-green-50 p-4 rounded-lg">
-                                    <h4 class="text-lg font-medium text-green-900 mb-4">✍️ Respuestas del Cliente</h4>
+                                <div class="bg-green-50 p-4 sm:p-6 rounded-lg">
+                                    <h4 class="text-base sm:text-lg font-medium text-green-900 mb-3 sm:mb-4">✍️ Respuestas del Cliente</h4>
                                     
-                                    <div class="space-y-4">
+                                    <div class="space-y-6">
                                         <!-- Pregunta 1 - Subpreguntas 1.1 a 1.5 -->
                                         <div class="bg-white p-4 rounded border-l-4 border-blue-500">
                                             <h5 class="font-medium text-gray-900 mb-3">Pregunta 1 - Calificaciones (Escala 1-10)</h5>
                                             
-                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                 <div>
                                                     <x-input-label for="respuesta_1_1" :value="__('1.1. Calidad del producto')" />
                                                                                                                                                     <x-text-input id="respuesta_1_1" class="block mt-1 w-full" type="number" min="1" max="10" name="respuesta_1_1" :value="old('respuesta_1_1', $envio->respuesta_1_1)" placeholder="1-10" />
@@ -152,8 +155,11 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center justify-end mt-6">
-                                <x-primary-button class="ml-3">
+                            <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3 mt-6 sm:mt-8">
+                                <x-primary-button class="w-full sm:w-auto justify-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                    </svg>
                                     {{ __('Actualizar Envío') }}
                                 </x-primary-button>
                             </div>

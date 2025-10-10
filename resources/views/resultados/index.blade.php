@@ -1,48 +1,50 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <div>
-                <h2 class="font-bold text-2xl text-gray-800 leading-tight">
+        <div class="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
+            <div class="flex-1">
+                <h2 class="font-bold text-xl sm:text-2xl text-gray-800 leading-tight">
                     {{ __('Análisis de Resultados') }}
                 </h2>
-                <p class="text-gray-600 mt-1">Visualiza y analiza los resultados de tus encuestas</p>
+                <p class="text-gray-600 mt-1 text-sm sm:text-base">Visualiza y analiza los resultados de tus encuestas</p>
             </div>
-            <div class="flex items-center space-x-3">
-                <a href="{{ route('resultados.detalle') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:space-x-3 sm:gap-0">
+                <a href="{{ route('resultados.detalle') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center text-sm sm:text-base">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                     </svg>
                     Ver Detalle
                 </a>
-                <a href="{{ route('resultados.exportar') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('resultados.exportar') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center text-sm sm:text-base">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Exportar encuestas
+                    <span class="hidden sm:inline">Exportar encuestas</span>
+                    <span class="sm:hidden">Encuestas</span>
                 </a>
-                <a href="{{ route('resultados.exportar-nps') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('resultados.exportar-nps') }}" class="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-3 sm:px-4 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-200 flex items-center justify-center text-sm sm:text-base">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Exportar NPS
+                    <span class="hidden sm:inline">Exportar NPS</span>
+                    <span class="sm:hidden">NPS</span>
                 </a>
             </div>
         </div>
     </x-slot>
 
-    <div class="py-8">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <div class="py-6 sm:py-8 lg:py-12">
+        <div class="max-w-8xl mx-auto px-6 sm:px-8 lg:px-12">
             <!-- Tarjetas de estadísticas generales mejoradas -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-                <div class="bg-blue-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-8 mb-8 sm:mb-12">
+                <div class="bg-blue-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-blue-100 text-sm font-medium">Total Envíos</p>
-                            <p class="text-3xl font-bold mt-2">{{ $totalEnvios }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-blue-100 text-xs sm:text-sm font-medium">Total Envíos</p>
+                            <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $totalEnvios }}</p>
                         
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clip-rule="evenodd"/>
                                 <path fill-rule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clip-rule="evenodd"/>
                               </svg>
@@ -50,60 +52,60 @@
                     </div>
                 </div>
                 
-                <div class="bg-green-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-green-100 text-sm font-medium">Completados</p>
-                            <p class="text-3xl font-bold mt-2">{{ $enviosCompletados }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-green-100 text-xs sm:text-sm font-medium">Respondido por el usuario</p>
+                            <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosCompletados }}</p>
                          
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd"/>
                               </svg>
                         </div>
                     </div>
                 </div>
                 
-                <div class="bg-red-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-red-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-red-100 text-sm font-medium">Cancelados</p>
-                            <p class="text-3xl font-bold mt-2">{{ $enviosCancelados }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-red-100 text-xs sm:text-sm font-medium">Sin respuesta</p>
+                            <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosCancelados }}</p>
                            
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
                               </svg>
                         </div>
                     </div>
                 </div>
                 
-                <div class="bg-yellow-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-yellow-100 text-sm font-medium">Pendientes</p>
-                            <p class="text-3xl font-bold mt-2">{{ $enviosPendientes }}</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-yellow-100 text-xs sm:text-sm font-medium">Pendiente de envío</p>
+                            <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosPendientes }}</p>
                            
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
                                 <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
                               </svg>
                         </div>
                     </div>
                 </div>
                 
-                <div class="bg-indigo-600 rounded-xl shadow-lg p-6 text-white transform hover:scale-105 transition-all duration-300">
+                <div class="bg-indigo-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-indigo-100 text-sm font-medium">Tasa de Respuesta</p>
-                            <p class="text-3xl font-bold mt-2">{{ $tasaRespuesta }}%</p>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-indigo-100 text-xs sm:text-sm font-medium truncate">Tasa de Respuesta</p>
+                            <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $tasaRespuesta }}%</p>
                            
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-3">
-                            <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
+                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4m6-6v6m6-4v4m6-6v6M3 11l6-5 6 5 5.5-5.5"/>
                               </svg>
                               
@@ -113,20 +115,20 @@
             </div>
 
             <!-- Sección 1: Métricas Clave y NPS -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfica de dona - Envíos por estado -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">📊 Envíos por Estado</h3>
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">📊 Envíos por Estado</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Distribución</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Estado actual de todas las encuestas enviadas</p>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Estado actual de todas las encuestas enviadas</p>
                     </div>
-                    <div class="p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="relative h-64">
                             <canvas id="chartEstados"></canvas>
                         </div>
@@ -134,21 +136,21 @@
                 </div>
 
                 <!-- Gráfica de dona - NPS -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-green-50 to-emerald-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">⭐ Net Promoter Score</h3>
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-green-50 to-emerald-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">⭐ Net Promoter Score</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-green-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Satisfacción</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Medida de lealtad y satisfacción del cliente</p>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Medida de lealtad y satisfacción del cliente</p>
                     </div>
-                    <div class="p-6">
+                    <div class="p-6 sm:p-8">
                         <!-- NPS Score Principal -->
-                        <div class="text-center mb-6">
-                            <div class="text-4xl font-bold text-green-600 mb-2">{{ $npsData['nps_score'] }}</div>
+                        <div class="text-center mb-4 sm:mb-6">
+                            <div class="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{{ $npsData['nps_score'] }}</div>
                             <div class="text-sm text-gray-600">NPS Score</div>
                             <div class="text-xs text-gray-500 mt-1">{{ $npsData['total'] }} respuestas</div>
                         </div>
@@ -162,28 +164,28 @@
                         </div>
 
                         <!-- Distribución de Respuestas -->
-                        <div class="grid grid-cols-3 gap-4 mb-6">
+                        <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
                             <div class="text-center">
-                                <div class="text-2xl font-bold text-green-600">{{ $npsData['promotores'] }}</div>
-                                <div class="text-xs text-gray-600">Promotores (9-10)</div>
+                                <div class="text-xl sm:text-2xl font-bold text-green-600">{{ $npsData['promotores'] }}</div>
+                                <div class="text-xs text-gray-600 leading-tight">Promotores (9-10)</div>
                                 <div class="text-xs text-green-500 font-medium">{{ $npsData['porcentaje_promotores'] }}%</div>
                             </div>
                             <div class="text-center">
-                                <div class="text-2xl font-bold text-yellow-600">{{ $npsData['pasivos'] }}</div>
-                                <div class="text-xs text-gray-600">Pasivos (7-8)</div>
+                                <div class="text-xl sm:text-2xl font-bold text-yellow-600">{{ $npsData['pasivos'] }}</div>
+                                <div class="text-xs text-gray-600 leading-tight">Pasivos (7-8)</div>
                                 <div class="text-xs text-yellow-500 font-medium">{{ $npsData['porcentaje_pasivos'] }}%</div>
                             </div>
                             <div class="text-center">
-                                <div class="text-2xl font-bold text-red-600">{{ $npsData['detractores'] }}</div>
-                                <div class="text-xs text-gray-600">Detractores (0-6)</div>
+                                <div class="text-xl sm:text-2xl font-bold text-red-600">{{ $npsData['detractores'] }}</div>
+                                <div class="text-xs text-gray-600 leading-tight">Detractores (0-6)</div>
                                 <div class="text-xs text-red-500 font-medium">{{ $npsData['porcentaje_detractores'] }}%</div>
                             </div>
                         </div>
 
                         <!-- Gráfico de Barras del NPS -->
-                        <div class="h-32">
+                        <div class="h-24 sm:h-32">
                             @if($npsData['total'] > 0)
-                                <div class="flex items-end justify-between h-full space-x-2">
+                                <div class="flex items-end justify-between h-full space-x-1 sm:space-x-2">
                                     <div class="flex flex-col items-center">
                                         <div class="w-12 bg-green-500 rounded-t" style="height: {{ ($npsData['porcentaje_promotores'] / 100) * 100 }}%"></div>
                                         <span class="text-xs text-gray-600 mt-2">Promotores</span>
@@ -210,18 +212,18 @@
                 </div>
 
                 <!-- Top Asesores -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">👥 Top Asesores</h3>
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">👥 Top Asesores</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Rendimiento</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Asesores con mayor volumen de envíos</p>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Asesores con mayor volumen de envíos</p>
                     </div>
-                    <div class="p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="relative h-64">
                             <canvas id="chartAsesores"></canvas>
                         </div>
@@ -230,32 +232,32 @@
             </div>
 
             <!-- Sección 2: Análisis Temporal -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfica de línea - Envíos por mes -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-indigo-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">📈 Tendencia de Envíos Mensual</h3>
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-indigo-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">📈 Tendencia de Envíos Mensual</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Análisis Temporal</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Evolución de envíos a lo largo del tiempo con métricas detalladas</p>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Evolución de envíos a lo largo del tiempo con métricas detalladas</p>
                     </div>
-                    <div class="p-6">
-                        <div class="mb-4 grid grid-cols-3 gap-3 text-center">
-                            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-3 border border-purple-200">
-                                <div class="text-lg font-bold text-purple-600" id="totalEnviados">--</div>
+                    <div class="p-6 sm:p-8">
+                        <div class="mb-4 grid grid-cols-3 gap-2 sm:gap-3 text-center">
+                            <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg p-2 sm:p-3 border border-purple-200">
+                                <div class="text-base sm:text-lg font-bold text-purple-600" id="totalEnviados">--</div>
                                 <div class="text-xs text-gray-600">Total Enviados</div>
                             </div>
-                            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-3 border border-green-200">
-                                <div class="text-lg font-bold text-green-600" id="promedioMensual">--</div>
+                            <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-2 sm:p-3 border border-green-200">
+                                <div class="text-base sm:text-lg font-bold text-green-600" id="promedioMensual">--</div>
                                 <div class="text-xs text-gray-600">Promedio/Mes</div>
                             </div>
-                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-3 border border-blue-200">
-                                <div class="text-lg font-bold text-blue-600" id="mesMasActivo">--</div>
-                                <div class="text-xs text-gray-600">Mes Más Activo</div>
+                            <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-2 sm:p-3 border border-blue-200">
+                                <div class="text-base sm:text-lg font-bold text-blue-600" id="mesMasActivo">--</div>
+                                <div class="text-xs text-gray-600 truncate">Mes Más Activo</div>
                             </div>
                         </div>
                         <div class="relative h-64">
@@ -265,20 +267,20 @@
                 </div>
 
                 <!-- Gráfica de área - Tasa de Respuesta por Mes -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-teal-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">📊 Tasa de Respuesta por Mes</h3>
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-emerald-50 to-teal-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">📊 Tasa de Respuesta por Mes</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-emerald-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Efectividad</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Porcentaje de encuestas respondidas por mes</p>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Porcentaje de encuestas respondidas por mes</p>
                     </div>
-                    <div class="p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="mb-4 text-center">
-                            <div class="text-3xl font-bold text-emerald-600 mb-2" id="tasaRespuestaPromedio">--</div>
+                            <div class="text-2xl sm:text-3xl font-bold text-emerald-600 mb-2" id="tasaRespuestaPromedio">--</div>
                             <div class="text-sm text-gray-600 font-medium">Tasa de Respuesta Promedio</div>
                             <div class="text-xs text-gray-500 mt-1">Meta: >80%</div>
                         </div>
@@ -290,32 +292,32 @@
             </div>
 
             <!-- Sección 3: Análisis Detallado -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfica de barras apiladas - Envíos por estado por mes -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-blue-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">📋 Envíos por Estado por Mes</h3>
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-indigo-50 to-blue-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">📋 Envíos por Estado por Mes</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-indigo-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Desglose</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Distribución de envíos completados, cancelados y pendientes por mes</p>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Distribución de envíos respondidos por el usuario, sin respuesta y pendiente de envío por mes</p>
                     </div>
-                    <div class="p-6">
-                        <div class="mb-4 flex items-center justify-center space-x-6">
+                    <div class="p-6 sm:p-8">
+                        <div class="mb-4 flex flex-wrap items-center justify-center gap-3 sm:gap-6">
                             <div class="flex items-center space-x-2">
                                 <div class="w-4 h-4 bg-green-500 rounded"></div>
-                                <span class="text-sm text-gray-600 font-medium">Completados</span>
+                                <span class="text-sm text-gray-600 font-medium">Respondido por el usuario</span>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <div class="w-4 h-4 bg-red-500 rounded"></div>
-                                <span class="text-sm text-gray-600 font-medium">Cancelados</span>
+                                <span class="text-sm text-gray-600 font-medium">Sin respuesta</span>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <div class="w-4 h-4 bg-yellow-500 rounded"></div>
-                                <span class="text-sm text-gray-600 font-medium">Pendientes</span>
+                                <span class="text-sm text-gray-600 font-medium">Pendiente de envío</span>
                             </div>
                         </div>
                         <div class="relative h-64">
@@ -325,18 +327,18 @@
                 </div>
 
                 <!-- Gráfica de barras - Envíos por día de la semana -->
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-yellow-50 to-orange-50">
-                        <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-semibold text-gray-900">📅 Envíos por Día de la Semana</h3>
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-yellow-50 to-orange-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">📅 Envíos por Día de la Semana</h3>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-yellow-500 rounded-full"></span>
                                 <span class="text-sm text-gray-600">Patrones</span>
                             </div>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Análisis de patrones semanales en el envío de encuestas</p>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Análisis de patrones semanales en el envío de encuestas</p>
                     </div>
-                    <div class="p-6">
+                    <div class="p-6 sm:p-8">
                         <div class="relative h-64">
                             <canvas id="chartDias"></canvas>
                         </div>
@@ -345,28 +347,28 @@
             </div>
 
             <!-- Sección 5: Análisis de Respuestas por Pregunta -->
-            <div class="mb-8">
-                <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-gray-50">
-                        <div class="flex items-center justify-between">
+            <div class="mb-8 sm:mb-12">
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-gray-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                             <div>
-                                <h3 class="text-xl font-semibold text-gray-900">🔍 Análisis de Respuestas por Pregunta</h3>
-                                <p class="text-gray-600 mt-1">Distribución detallada de respuestas para cada pregunta de la encuesta</p>
+                                <h3 class="text-lg sm:text-xl font-semibold text-gray-900">🔍 Análisis de Respuestas por Pregunta</h3>
+                                <p class="text-gray-600 mt-1 text-sm sm:text-base">Distribución detallada de respuestas para cada pregunta de la encuesta</p>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <span class="w-3 h-3 bg-slate-500 rounded-full"></span>
-                                <span class="text-sm text-gray-600">Insights</span>
+                                <span class="text-xs sm:text-sm text-gray-600">Insights</span>
                             </div>
                         </div>
                     </div>
-                    <div class="p-6">
+                    <div class="p-6 sm:p-8">
                         <!-- Sección: Calidad del Producto (Preguntas 1.1 a 1.5) -->
-                        <div class="mb-8">
-                            <h4 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                        <div class="mb-8 sm:mb-12">
+                            <h4 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
                                 <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">📊</span>
                                 Calidad del Producto - Análisis Detallado
                             </h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                 <!-- Pregunta 1.1 -->
                                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
                                     <div class="flex items-center justify-between mb-3">
@@ -448,11 +450,11 @@
                         </div>
 
                         <!-- Sección: Otras Preguntas -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                             <!-- Pregunta 2: Recomendación -->
-                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border border-green-200">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h4 class="text-lg font-semibold text-green-900 flex items-center">
+                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-green-200">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+                                    <h4 class="text-base sm:text-lg font-semibold text-green-900 flex items-center">
                                         <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 text-green-600 font-bold">2</span>
                                         Recomendación
                                     </h4>
@@ -467,9 +469,9 @@
                             </div>
 
                             <!-- Pregunta 3: Sugerencias -->
-                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-6 border border-purple-200">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h4 class="text-lg font-semibold text-purple-900 flex items-center">
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-purple-200">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+                                    <h4 class="text-base sm:text-lg font-semibold text-purple-900 flex items-center">
                                         <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 text-purple-600 font-bold">3</span>
                                         Sugerencias
                                     </h4>

@@ -6,42 +6,128 @@ use App\Models\Envio;
 use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 
 class EncuestaController extends Controller
 {
     /**
+     * Generar token corto para la encuesta
+     */
+    public static function generarTokenCorto($idenvio)
+    {
+        // Crear un token único de 16 caracteres usando el ID + salt fijo
+        $salt = 'encuestas_satis_2024';
+        $hash = hash('sha256', $idenvio . $salt);
+        $token = substr($hash, 0, 16);
+        
+        return $token . '_' . $idenvio;
+    }
+
+    /**
+     * Extraer ID del token corto
+     */
+    public static function extraerIdDelToken($token)
+    {
+        // El formato es: token_id
+        $partes = explode('_', $token);
+        if (count($partes) === 2) {
+            return $partes[1];
+        }
+        throw new \Exception('Token inválido');
+    }
+
+    /**
+     * Verificar si el token es válido
+     */
+    public static function verificarToken($token, $idenvio)
+    {
+        $tokenGenerado = self::generarTokenCorto($idenvio);
+        return hash_equals($token, $tokenGenerado);
+    }
+
+    /**
+     * Generar URL corta para la encuesta
+     */
+    public static function generarUrlCorta($idenvio)
+    {
+        $token = self::generarTokenCorto($idenvio);
+        return route('encuesta.mostrar', ['idencrypted' => $token]);
+    }
+    /**
      * Mostrar la encuesta en el navegador
      */
-    public function mostrar($idenvio)
+    public function mostrar($idencrypted)
     {
+        //dd(self::extraerIdDelToken($idencrypted));
         try {
+            // Extraer el ID del token corto
+            $idenvio = self::extraerIdDelToken($idencrypted);
+            Log::info('Token recibido: ' . $idencrypted . ' | ID extraído: ' . $idenvio);
+            
             $envio = Envio::with('cliente')->findOrFail($idenvio);
+            Log::info('Envío encontrado - ID: ' . $envio->id . ' | Estado: ' . $envio->estado);
+            
+            // Verificar que el token es válido
+            if (!self::verificarToken($idencrypted, $idenvio)) {
+                Log::error('Token inválido - Token recibido: ' . $idencrypted . ' | Token esperado: ' . self::generarTokenCorto($idenvio));
+                return view('encuesta.error', [
+                    'mensaje' => 'Enlace de encuesta no válido.'
+                ]);
+            }
+            
+            Log::info('Token válido');
             
             // Verificar que el envío existe y tiene un cliente asociado
             if (!$envio->cliente) {
+                Log::error('No se encontró cliente asociado al envío ID: ' . $envio->id);
                 return view('encuesta.error', [
                     'mensaje' => 'No se encontró información del cliente para esta encuesta.'
                 ]);
             }
+            
+            Log::info('Cliente asociado encontrado - ID: ' . $envio->cliente->id);
 
-            // Verificar si la encuesta ya fue completada
-            if ($envio->estado === 'completado') {
-                return view('encuesta.completada', [
-                    'envio' => $envio,
-                    'cliente' => $envio->cliente
-                ]);
+            // Verificar el estado del envío y mostrar la vista correspondiente
+            switch ($envio->estado) {
+                case 'cancelado':
+                    Log::warning('Encuesta cancelada - Envío ID: ' . $envio->id);
+                    return view('encuesta.error', [
+                        'mensaje' => $envio->estado === 'cancelado' 
+                            ? 'Esta encuesta ha sido cancelada.' 
+                            : 'Ha ocurrido un error con esta encuesta.'
+                    ]);
+                case 'error':
+                    Log::error('Encuesta con error - Envío ID: ' . $envio->id);
+                    return view('encuesta.error', [
+                        'mensaje' => $envio->estado === 'error' 
+                            ? 'Ha ocurrido un error con esta encuesta.'
+                            : 'Ha ocurrido un error con esta encuesta.'
+                    ]);
+               
+                case 'completado':
+                    Log::info('Mostrando encuesta completada - Envío ID: ' . $envio->id);
+                    return view('encuesta.completada', [
+                        'envio' => $envio,
+                        'cliente' => $envio->cliente
+                    ]);
+                
+                default:
+                    // Para estados como 'pendiente', 'enviado', 'en_proceso', etc.
+                    // Determinar qué pregunta mostrar
+                    $preguntaActual = $this->determinarPreguntaActual($envio);
+                    Log::info('Mostrando encuesta - Envío ID: ' . $envio->id . ' | Estado: ' . $envio->estado . ' | Pregunta actual: ' . $preguntaActual);
+                    
+                    return view('encuesta.mostrar', [
+                        'envio' => $envio,
+                        'cliente' => $envio->cliente,
+                        'preguntaActual' => $preguntaActual,
+                        'idencrypted' => $idencrypted
+                    ]);
             }
 
-            // Determinar qué pregunta mostrar
-            $preguntaActual = $this->determinarPreguntaActual($envio);
-            
-            return view('encuesta.mostrar', [
-                'envio' => $envio,
-                'cliente' => $envio->cliente,
-                'preguntaActual' => $preguntaActual
-            ]);
-
         } catch (\Exception $e) {
+            Log::error('Excepción al mostrar encuesta: ' . $e->getMessage() . ' | Trace: ' . $e->getTraceAsString());
             return view('encuesta.error', [
                 'mensaje' => 'No se pudo cargar la encuesta. Verifique que el enlace sea correcto.'
             ]);
@@ -51,10 +137,21 @@ class EncuestaController extends Controller
     /**
      * Procesar respuesta de la encuesta
      */
-    public function responder(Request $request, $idenvio)
+    public function responder(Request $request, $idencrypted)
     {
+     
         try {
+            // Extraer el ID del token corto
+            $idenvio = self::extraerIdDelToken($idencrypted);
             $envio = Envio::with('cliente')->findOrFail($idenvio);
+            
+            // Verificar que el token es válido
+            if (!self::verificarToken($idencrypted, $idenvio)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Enlace de encuesta no válido.'
+                ], 400);
+            }
             
             // Verificar que el envío existe y no está completado
             if ($envio->estado === 'completado') {
@@ -205,10 +302,10 @@ class EncuestaController extends Controller
                 ];
             }
 
-            if (strlen(trim($respuesta)) < 10) {
+            if (strlen(trim($respuesta)) < 5) {
                 return [
                     'valida' => false,
-                    'mensaje' => 'Por favor, escriba al menos 10 caracteres.'
+                    'mensaje' => 'Por favor, escriba al menos 5 caracteres.'
                 ];
             }
             return ['valida' => true];
@@ -252,10 +349,24 @@ class EncuestaController extends Controller
         // Actualizar pregunta_actual
         $datosActualizacion['pregunta_actual'] = $pregunta;
 
+        // Si es la primera pregunta (cualquiera de las 1.1 a 1.5), cambiar estado a en_proceso
+        if (in_array($pregunta, ['1.1', '1.2', '1.3', '1.4', '1.5']) && $envio->estado !== 'en_proceso') {
+            $datosActualizacion['estado'] = 'en_proceso';
+        }
+
+        // Si es la pregunta 1.5, calcular el promedio de las respuestas 1_1 a 1_5
+        if ($pregunta === '1.5') {
+            $promedio = $this->calcularPromedioRespuestas1($envio, (int) $respuesta);
+            $datosActualizacion['promedio_respuesta_1'] = $promedio;
+        }
+
         // Si es la última pregunta, marcar como completado
         if ($pregunta === '3' || ($pregunta === '2' && trim(strtolower($respuesta)) === 'si')) {
             $datosActualizacion['estado'] = 'completado';
-            $datosActualizacion['fecha_respuesta'] = now();
+            $datosActualizacion['fecha_respuesta'] = \Carbon\Carbon::now();
+            // Desactivar timer cuando se completa la encuesta
+            $datosActualizacion['timer_activo'] = false;
+            $datosActualizacion['estado_timer'] = 'completado';
         }
 
         try {
@@ -307,5 +418,33 @@ class EncuestaController extends Controller
         if ($siguientePregunta !== 'completado') {
             $envio->update(['pregunta_actual' => $siguientePregunta]);
         }
+    }
+
+    /**
+     * Calcular el promedio de las respuestas 1_1 a 1_5
+     */
+    private function calcularPromedioRespuestas1($envio, $respuesta1_5)
+    {
+        $respuestas = [
+            $envio->respuesta_1_1,
+            $envio->respuesta_1_2,
+            $envio->respuesta_1_3,
+            $envio->respuesta_1_4,
+            $respuesta1_5
+        ];
+
+        // Filtrar valores nulos y calcular promedio
+        $respuestasValidas = array_filter($respuestas, function($valor) {
+            return $valor !== null && $valor !== '';
+        });
+
+        if (empty($respuestasValidas)) {
+            return 0;
+        }
+
+        $suma = array_sum($respuestasValidas);
+        $cantidad = count($respuestasValidas);
+        
+        return round($suma / $cantidad, 2);
     }
 }

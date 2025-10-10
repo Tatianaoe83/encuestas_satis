@@ -4,6 +4,10 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <!-- Meta tags para evitar caché en móviles -->
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="Pragma" content="no-cache">
+        <meta http-equiv="Expires" content="0">
 
         <title>Sistema de Encuestas</title>
         <link rel="icon" href="{{ asset('images/votacion.png') }}" type="image/x-icon">
@@ -36,9 +40,13 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <script type="text/javascript" src="{{ asset('js/select2-init.js') }}"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         
         <!-- Cron Interno Automático -->
         <script type="text/javascript" src="{{ asset('js/cron-interno.js') }}"></script>
+        
+        <!-- Script para solucionar problemas de carga de datos en móviles -->
+        <script type="text/javascript" src="{{ asset('js/mobile-data-reload.js') }}"></script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">

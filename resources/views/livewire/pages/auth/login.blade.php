@@ -72,7 +72,7 @@ new #[Layout('layouts.guest')] class extends Component
                     <div class="absolute inset-0 bg-gradient-to-r from-emerald-400 to-teal-500 rounded-2xl blur-xl opacity-30 animate-pulse"></div>
                 </div>
                 <div>
-                    <h1 class="text-4xl font-bold text-gray-900 bg-gradient-to-r from-gray-900 to-gray-600 bg-clip-text text-transparent">EncuestasPro</h1>
+                    <h1 class="text-4xl font-bold text-gray-600 from-gray-900 to-gray-600 bg-clip-text text-transparent">Encuestas</h1>
                     <p class="text-gray-600 text-sm font-medium">Sistema de Encuestas de Satisfacción</p>
                 </div>
             </div>

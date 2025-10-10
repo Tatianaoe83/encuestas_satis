@@ -24,7 +24,7 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-blue-100 text-xs sm:text-sm font-medium">Total Envíos</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ number_format($totalEnvios) }}</p>
-                            <p class="text-blue-100 text-xs sm:text-sm mt-1 truncate">{{ $crecimientoMensual > 0 ? '+' : '' }}{{ $crecimientoMensual }}% este mes</p>
+                            <p class="text-blue-100 text-xs sm:text-sm mt-1 break-words">{{ $crecimientoMensual > 0 ? '+' : '' }}{{ $crecimientoMensual }}% este mes</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -38,9 +38,9 @@
                 <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
-                            <p class="text-green-100 text-xs sm:text-sm font-medium">Encuestas Completadas</p>
+                            <p class="text-green-100 text-xs sm:text-sm font-medium">Encuestas respondidas por el usuario</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ number_format($enviosCompletados) }}</p>
-                            <p class="text-green-100 text-xs sm:text-sm mt-1 truncate">{{ $tasaRespuesta }}% tasa de respuesta</p>
+                            <p class="text-green-100 text-xs sm:text-sm mt-1 break-words">{{ $tasaRespuesta }}% tasa de respuesta</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -56,7 +56,7 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-yellow-100 text-xs sm:text-sm font-medium">NPS Score</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $npsPromedio['nps_score'] }}</p>
-                            <p class="text-yellow-100 text-xs sm:text-sm mt-1 truncate">{{ $npsPromedio['total'] }} respuestas</p>
+                            <p class="text-yellow-100 text-xs sm:text-sm mt-1 break-words">{{ $npsPromedio['total'] }} respuestas</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -72,7 +72,7 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-purple-100 text-xs sm:text-sm font-medium">Calidad Promedio</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $estadisticasCalidad['promedio_general'] }}/10</p>
-                            <p class="text-purple-100 text-xs sm:text-sm mt-1 truncate">Calidad del producto</p>
+                            <p class="text-purple-100 text-xs sm:text-sm mt-1 break-words">Calidad del producto</p>
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
@@ -143,8 +143,8 @@
                                 @endphp
                                 <div class="flex flex-col items-center flex-1 min-w-0">
                                     <div class="w-full {{ $npsValue >= 7 ? 'bg-green-500' : ($npsValue >= 5 ? 'bg-yellow-500' : 'bg-red-500') }} rounded-t" style="height: {{ $altura }}%"></div>
-                                    <span class="text-xs text-gray-600 mt-1 truncate w-full text-center">{{ $mes }}</span>
-                                    <span class="text-xs text-gray-500 truncate w-full text-center">{{ round($npsValue, 1) }}</span>
+                                    <span class="text-xs text-gray-600 mt-1 w-full text-center">{{ $mes }}</span>
+                                    <span class="text-xs text-gray-500 w-full text-center">{{ round($npsValue, 1) }}</span>
                                 </div>
                                 @endforeach
                             </div>
@@ -161,7 +161,7 @@
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                     <div class="p-6 sm:p-8 border-b border-gray-100">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">Estados de Envíos</h3>
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">Estados de Envíos (Últimos 7 días)</h3>
                             <a href="{{ route('envios.index') }}" class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium">Ver todos</a>
                         </div>
                     </div>
@@ -171,7 +171,7 @@
                                 <tr>
                                   
                                     <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
-                                    <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Porcentaje</th>
+                                    <th class="px-3 sm:px-6 py-2 sm:py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-100">
@@ -193,25 +193,32 @@
                                         @endif
                                     </td>
                                     <td class="px-3 sm:px-6 py-3 sm:py-4">
-                                        <div class="flex items-center">
-                                            <div class="w-12 sm:w-16 bg-gray-200 rounded-full h-2">
-                                                @php
-                                                $porcentaje = $totalEnvios > 0 ? ($estado->total / $totalEnvios) * 100 : 0;
-                                                @endphp
-                                                <div class="bg-blue-600 h-2 rounded-full" style="width: {{ $porcentaje }}%"></div>
-                                            </div>
-                                            <span class="ml-1 sm:ml-2 text-xs sm:text-sm font-medium text-gray-900 whitespace-nowrap">{{ round($porcentaje, 1) }}%</span>
-                                        </div>
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                            {{ number_format($estado->total) }} envíos
+                                        </span>
                                     </td>
                                     
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="3" class="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm text-gray-500">
+                                    <td colspan="2" class="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm text-gray-500">
                                         No hay datos para mostrar
                                     </td>
                                 </tr>
                                 @endforelse
+                                <!-- Fila de Total -->
+                                @if($enviosPorEstado->count() > 0)
+                                <tr class="bg-gray-100 font-semibold">
+                                    <td class="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm text-gray-900">
+                                        <span class="text-gray-900">📊 TOTAL</span>
+                                    </td>
+                                    <td class="px-3 sm:px-6 py-3 sm:py-4">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-gray-200 text-gray-800">
+                                            {{ number_format($totalEnvios7Dias) }} envíos
+                                        </span>
+                                    </td>
+                                </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -237,7 +244,7 @@
                             <div class="flex items-center justify-between gap-2">
                                 <div class="flex items-center min-w-0 flex-1">
                                     <div class="w-2 h-2 sm:w-3 sm:h-3 bg-blue-500 rounded-full mr-2 sm:mr-3 flex-shrink-0"></div>
-                                    <span class="text-xs sm:text-sm text-gray-700 truncate">{{ $aspecto['nombre'] }}</span>
+                                    <span class="text-xs sm:text-sm text-gray-700 break-words">{{ $aspecto['nombre'] }}</span>
                                 </div>
                                 <div class="flex items-center flex-shrink-0">
                                     <div class="w-12 sm:w-16 bg-gray-200 rounded-full h-2 mr-1 sm:mr-2">
@@ -254,11 +261,11 @@
                             <div class="grid grid-cols-2 gap-2 sm:gap-4">
                                 <div class="text-center p-2 sm:p-3 bg-green-50 rounded-lg">
                                     <div class="text-xs sm:text-sm text-green-600 font-medium">Mejor Aspecto</div>
-                                    <div class="text-sm sm:text-lg font-bold text-green-700 truncate">{{ $estadisticasCalidad['mejor_aspecto'] }}</div>
+                                    <div class="text-sm sm:text-lg font-bold text-green-700 break-words">{{ $estadisticasCalidad['mejor_aspecto'] }}</div>
                                 </div>
                                 <div class="text-center p-2 sm:p-3 bg-red-50 rounded-lg">
                                     <div class="text-xs sm:text-sm text-red-600 font-medium">Necesita Mejora</div>
-                                    <div class="text-sm sm:text-lg font-bold text-red-700 truncate">{{ $estadisticasCalidad['peor_aspecto'] }}</div>
+                                    <div class="text-sm sm:text-lg font-bold text-red-700 break-words">{{ $estadisticasCalidad['peor_aspecto'] }}</div>
                                 </div>
                             </div>
                         </div>
@@ -271,7 +278,7 @@
                     <div class="space-y-2 sm:space-y-3">
                         @forelse($topAsesoresMes as $asesor)
                         <div class="flex items-center justify-between gap-2">
-                            <span class="text-xs sm:text-sm text-gray-600 truncate flex-1 min-w-0">{{ $asesor->asesor_comercial ?: 'Sin asesor' }}</span>
+                            <span class="text-xs sm:text-sm text-gray-600 break-words flex-1 min-w-0">{{ $asesor->asesor_comercial ?: 'Sin asesor' }}</span>
                             <span class="text-xs sm:text-sm font-medium text-blue-600 whitespace-nowrap">{{ $asesor->total_envios }} envíos</span>
                         </div>
                         @empty
@@ -323,7 +330,10 @@
                     <div class="p-6 sm:p-8 border-b border-gray-100">
                         <div class="flex items-center justify-between">
                             <h3 class="text-base sm:text-lg font-semibold text-gray-900">Envíos por Estado</h3>
-                            <a href="{{ route('envios.index') }}" class="text-blue-600 hover:text-blue-800 text-xs sm:text-sm font-medium">Ver todos</a>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 bg-blue-500 rounded-full"></span>
+                                <span class="text-xs sm:text-sm text-gray-600">7 días</span>
+                            </div>
                         </div>
                     </div>
                     <div class="p-6 sm:p-8">
@@ -342,7 +352,7 @@
                             @foreach($estados as $estado => $info)
                             @php
                             $total = $enviosPorEstado->where('estado', $estado)->first()->total ?? 0;
-                            $porcentaje = $totalEnvios > 0 ? round(($total / $totalEnvios) * 100, 1) : 0;
+                            $porcentaje = $totalEnvios7Dias > 0 ? round(($total / $totalEnvios7Dias) * 100, 1) : 0;
                             @endphp
                             <div class="flex items-center justify-between gap-2">
                                 <div class="flex items-center min-w-0 flex-1">
@@ -350,7 +360,7 @@
                                         <span class="text-{{ $info['color'] }}-600 font-medium text-xs sm:text-sm">{{ $info['icon'] }}</span>
                                     </div>
                                     <div class="min-w-0">
-                                        <div class="text-xs sm:text-sm font-medium text-gray-900 truncate">{{ $info['nombre'] }}</div>
+                                        <div class="text-xs sm:text-sm font-medium text-gray-900 break-words">{{ $info['nombre'] }}</div>
                                         <div class="text-xs sm:text-sm text-gray-500">{{ $total }} envíos</div>
                                     </div>
                                 </div>
@@ -396,7 +406,7 @@
                                         </svg>
                                     </div>
                                     <div class="min-w-0">
-                                        <div class="text-xs sm:text-sm font-medium text-gray-900 truncate">{{ $envio->cliente->razon_social ?? 'Cliente' }}</div>
+                                        <div class="text-xs sm:text-sm font-medium text-gray-900 break-words">{{ $envio->cliente->razon_social ?? 'Cliente' }}</div>
                                         <div class="text-xs sm:text-sm text-gray-500">{{ $envio->fecha_envio ? $envio->fecha_envio->format('d/m/Y H:i') : 'N/A' }}</div>
                                     </div>
                                 </div>

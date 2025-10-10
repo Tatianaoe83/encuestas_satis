@@ -44,11 +44,15 @@ class DashboardController extends Controller
             $crecimientoMensual = round((($enviosMesActual - $enviosMesAnterior) / $enviosMesAnterior) * 100, 1);
         }
 
-        // Envíos por estado (últimos 30 días)
+        // Envíos por estado (últimos 7 días)
         $enviosPorEstado = Envio::select('estado', DB::raw('count(*) as total'))
-            ->where('fecha_envio', '>=', Carbon::now()->subDays(30))
+            ->where('fecha_envio', '>=', Carbon::now()->subDays(7))
             ->groupBy('estado')
             ->get();
+
+        // Total de envíos de los últimos 7 días
+        $totalEnvios7Dias = Envio::where('fecha_envio', '>=', Carbon::now()->subDays(7))
+            ->count();
 
         // Top 3 asesores comerciales del mes
         $topAsesoresMes = Cliente::select('asesor_comercial', DB::raw('count(envios.idenvio) as total_envios'))
@@ -116,6 +120,7 @@ class DashboardController extends Controller
             'enviosMesActual',
             'crecimientoMensual',
             'enviosPorEstado',
+            'totalEnvios7Dias',
             'topAsesoresMes',
             'enviosPorDia',
             'enviosPorHora',

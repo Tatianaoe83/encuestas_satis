@@ -685,8 +685,20 @@
                                 <i class="fas fa-star star" data-rating="10"></i>
                             </div>
                             
-                            <div id="rating-description" class="text-lg font-semibold text-gray-700 mb-6 hidden">
-                                <span id="rating-text"></span>
+                            <div id="rating-description" class="mb-6">
+                                <div class="bg-gradient-to-r from-red-100 to-green-100 border border-gray-200 rounded-xl px-6 py-4 shadow-sm">
+                                    <div class="flex items-center justify-center gap-4">
+                                        <div class="flex items-center gap-2">
+                                            <span class="bg-red-500 text-white text-sm font-bold px-3 py-1 rounded-full">1</span>
+                                            <span class="text-red-600 font-semibold">malo</span>
+                                        </div>
+                                        <div class="flex-1 h-px bg-gradient-to-r from-red-300 to-green-300"></div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-green-600 font-semibold">excelente</span>
+                                            <span class="bg-green-500 text-white text-sm font-bold px-3 py-1 rounded-full">10</span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             
                             <div class="flex justify-center">
@@ -730,8 +742,6 @@
 
         function seleccionarRating(rating) {
             const stars = document.querySelectorAll('.star');
-            const description = document.getElementById('rating-description');
-            const ratingText = document.getElementById('rating-text');
 
             console.log('Seleccionando rating:', rating); // Debug
 
@@ -748,22 +758,6 @@
             });
 
             console.log('Estrellas con clase selected:', document.querySelectorAll('.star.selected').length); // Debug
-
-            const descriptions = {
-                1: 'Muy malo',
-                2: 'Malo',
-                3: 'Regular',
-                4: 'Bueno',
-                5: 'Muy bueno',
-                6: 'Excelente',
-                7: 'Muy excelente',
-                8: 'Sobresaliente',
-                9: 'Excepcional',
-                10: 'Perfecto'
-            };
-
-            ratingText.textContent = `${rating} - ${descriptions[rating]}`;
-            description.classList.remove('hidden');
         }
 
         function hoverStar(rating) {
@@ -779,21 +773,17 @@
 
         function unselectAllStars() {
             const stars = document.querySelectorAll('.star');
-            const description = document.getElementById('rating-description');
 
             stars.forEach(star => {
                 star.classList.remove('selected', 'hovered');
             });
-
-            description.classList.add('hidden');
         }
 
         function generarPreguntaSiNo() {
             return `
                 <div class="text-center">
                     <div class="mb-8">
-                        <h3 class="text-3xl font-bold text-gray-800 mb-4">¿Recomendarías a Konkret?</h3>
-                        <p class="text-xl text-gray-600 mb-6">¿Recomendarías nuestros servicios a un colega o contacto del sector construcción?</p>
+                        <h3 class="text-3xl font-bold text-gray-800 mb-4">¿Recomendarías a Konkret a un colega o contacto?</h3>
                     </div>
                     
                     <div class="max-w-2xl mx-auto mb-8">

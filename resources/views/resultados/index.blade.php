@@ -41,74 +41,74 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-blue-100 text-xs sm:text-sm font-medium">Total Envíos</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $totalEnvios }}</p>
-                        
+
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clip-rule="evenodd"/>
-                                <path fill-rule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clip-rule="evenodd"/>
-                              </svg>
+                                <path fill-rule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clip-rule="evenodd" />
+                                <path fill-rule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clip-rule="evenodd" />
+                            </svg>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="bg-green-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-green-100 text-xs sm:text-sm font-medium">Respondido por el usuario</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosCompletados }}</p>
-                         
+
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd"/>
-                              </svg>
+                                <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd" />
+                            </svg>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="bg-red-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-red-100 text-xs sm:text-sm font-medium">Sin respuesta</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosCancelados }}</p>
-                           
+
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd"/>
-                              </svg>
+                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd" />
+                            </svg>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
-                            <p class="text-yellow-100 text-xs sm:text-sm font-medium">Pendiente de envío</p>
+                            <p class="text-yellow-100 text-xs sm:text-sm font-medium">Pendientes</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosPendientes }}</p>
-                           
+
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd"/>
-                              </svg>
+                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd" />
+                            </svg>
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="bg-indigo-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             <p class="text-indigo-100 text-xs sm:text-sm font-medium truncate">Tasa de Respuesta</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $tasaRespuesta }}%</p>
-                           
+
                         </div>
                         <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
                             <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4m6-6v6m6-4v4m6-6v6M3 11l6-5 6 5 5.5-5.5"/>
-                              </svg>
-                              
+                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4m6-6v6m6-4v4m6-6v6M3 11l6-5 6 5 5.5-5.5" />
+                            </svg>
+
                         </div>
                     </div>
                 </div>
@@ -185,27 +185,27 @@
                         <!-- Gráfico de Barras del NPS -->
                         <div class="h-24 sm:h-32">
                             @if($npsData['total'] > 0)
-                                <div class="flex items-end justify-between h-full space-x-1 sm:space-x-2">
-                                    <div class="flex flex-col items-center">
-                                        <div class="w-12 bg-green-500 rounded-t" style="height: {{ ($npsData['porcentaje_promotores'] / 100) * 100 }}%"></div>
-                                        <span class="text-xs text-gray-600 mt-2">Promotores</span>
-                                        <span class="text-xs text-gray-500">{{ $npsData['porcentaje_promotores'] }}%</span>
-                                    </div>
-                                    <div class="flex flex-col items-center">
-                                        <div class="w-12 bg-yellow-500 rounded-t" style="height: {{ ($npsData['porcentaje_pasivos'] / 100) * 100 }}%"></div>
-                                        <span class="text-xs text-gray-600 mt-2">Pasivos</span>
-                                        <span class="text-xs text-gray-500">{{ $npsData['porcentaje_pasivos'] }}%</span>
-                                    </div>
-                                    <div class="flex flex-col items-center">
-                                        <div class="w-12 bg-red-500 rounded-t" style="height: {{ ($npsData['porcentaje_detractores'] / 100) * 100 }}%"></div>
-                                        <span class="text-xs text-gray-600 mt-2">Detractores</span>
-                                        <span class="text-xs text-gray-500">{{ $npsData['porcentaje_detractores'] }}%</span>
-                                    </div>
+                            <div class="flex items-end justify-between h-full space-x-1 sm:space-x-2">
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-green-500 rounded-t" style="height: {{ ($npsData['porcentaje_promotores'] / 100) * 100 }}%"></div>
+                                    <span class="text-xs text-gray-600 mt-2">Promotores</span>
+                                    <span class="text-xs text-gray-500">{{ $npsData['porcentaje_promotores'] }}%</span>
                                 </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-yellow-500 rounded-t" style="height: {{ ($npsData['porcentaje_pasivos'] / 100) * 100 }}%"></div>
+                                    <span class="text-xs text-gray-600 mt-2">Pasivos</span>
+                                    <span class="text-xs text-gray-500">{{ $npsData['porcentaje_pasivos'] }}%</span>
+                                </div>
+                                <div class="flex flex-col items-center">
+                                    <div class="w-12 bg-red-500 rounded-t" style="height: {{ ($npsData['porcentaje_detractores'] / 100) * 100 }}%"></div>
+                                    <span class="text-xs text-gray-600 mt-2">Detractores</span>
+                                    <span class="text-xs text-gray-500">{{ $npsData['porcentaje_detractores'] }}%</span>
+                                </div>
+                            </div>
                             @else
-                                <div class="flex items-center justify-center h-full">
-                                    <p class="text-sm text-gray-500">No hay datos de NPS</p>
-                                </div>
+                            <div class="flex items-center justify-center h-full">
+                                <p class="text-sm text-gray-500">No hay datos de NPS</p>
+                            </div>
                             @endif
                         </div>
                     </div>
@@ -415,7 +415,7 @@
                                         <div class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full font-medium">
                                             Escala 1-10
                                         </div>
-                                    </div>  
+                                    </div>
                                     <div class="relative h-32">
                                         <canvas id="chartRespuesta1_4"></canvas>
                                     </div>
@@ -508,7 +508,7 @@
 
             // Configuración común para Chart.js
             Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
-            Chart.defaults.color = '#6B7280';
+            Chart.defaults.color = '#1b222eff';
 
             // Función para verificar si hay datos
             function tieneDatos(data) {
@@ -621,7 +621,7 @@
                 // Calcular métricas adicionales
                 const totalEnviados = mensualData.reduce((sum, item) => sum + item.total, 0);
                 const promedioMensual = Math.round(totalEnviados / mensualData.length);
-                const mesMasActivo = mensualData.reduce((max, item) => 
+                const mesMasActivo = mensualData.reduce((max, item) =>
                     item.total > max.total ? item : max
                 );
                 const mesMasActivoTexto = `${meses[mesMasActivo.mes - 1]} ${mesMasActivo.año}`;
@@ -736,7 +736,7 @@
             if (tieneDatos(mensualData)) {
                 // Crear datos para la gráfica de estados por mes
                 const labelsEstadosPorMes = mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`);
-                
+
                 // Simular datos de estados por mes (en un caso real, esto vendría del backend)
                 const datosCompletados = mensualData.map(item => Math.floor(item.total * 0.7)); // 70% completados
                 const datosCancelados = mensualData.map(item => Math.floor(item.total * 0.2)); // 20% cancelados
@@ -750,8 +750,7 @@
                     type: 'bar',
                     data: {
                         labels: labelsEstadosPorMes,
-                        datasets: [
-                            {
+                        datasets: [{
                                 label: 'Completados',
                                 data: datosCompletados,
                                 backgroundColor: 'rgba(34, 197, 94, 0.8)',
@@ -853,7 +852,7 @@
                 // Simular tasas de respuesta por mes (en un caso real, esto vendría del backend)
                 const tasasRespuesta = mensualData.map(() => Math.floor(Math.random() * 40) + 60); // Entre 60% y 100%
                 const tasaPromedio = Math.round(tasasRespuesta.reduce((sum, tasa) => sum + tasa, 0) / tasasRespuesta.length);
-                
+
                 // Actualizar métrica en el HTML
                 document.getElementById('tasaRespuestaPromedio').textContent = `${tasaPromedio}%`;
 
@@ -963,7 +962,7 @@
             // Gráfica de barras - Envíos por día de la semana
             if (tieneDatos(diasData)) {
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-                
+
                 new Chart(document.getElementById('chartDias'), {
                     type: 'bar',
                     data: {
@@ -1076,11 +1075,11 @@
             crearGraficaRespuesta('chartRespuesta1_3', respuestaDetalle1Data['1_3'], 'Pregunta 1.3');
             crearGraficaRespuesta('chartRespuesta1_4', respuestaDetalle1Data['1_4'], 'Pregunta 1.4');
             crearGraficaRespuesta('chartRespuesta1_5', respuestaDetalle1Data['1_5'], 'Pregunta 1.5');
-            
+
             // Crear gráficas para otras preguntas
             crearGraficaRespuesta('chartRespuesta1', respuesta1Data, 'Promedio NPS');
             crearGraficaRespuesta('chartRespuesta2', respuesta2Data, 'Pregunta 2');
             crearGraficaRespuesta('chartRespuesta3', respuesta3Data, 'Pregunta 3');
         }); // Cerrar el evento DOMContentLoaded
     </script>
-</x-app-layout> 
+</x-app-layout>

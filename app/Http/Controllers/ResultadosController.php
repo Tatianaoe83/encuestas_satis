@@ -24,22 +24,39 @@ class ResultadosController extends Controller
         $totalEnvios = Envio::count();
         $enviosCompletados = Envio::where('estado', 'completado')->count();
         $enviosCancelados = Envio::where('estado', 'cancelado')->count();
-        $enviosPendientes = Envio::where('estado', 'pendiente')->count();
+        $enviosPendientes = Envio::whereIn('estado', ['enviado', 'en_proceso'])->count();
+        //dd($enviosPendientes);
 
         // Tasa de respuesta
         $tasaRespuesta = $totalEnvios > 0 ? round(($enviosCancelados / $totalEnvios) * 100, 2) : 0;
 
         // Envíos por estado (para gráfica de dona)
-        $enviosPorEstado = Envio::select('estado', DB::raw('count(*) as total'))
-            ->groupBy('estado')
+        $enviosPorEstado = Envio::select(
+            DB::raw("
+        CASE 
+            WHEN estado IN ('enviado', 'en_proceso') THEN 'pendiente'
+            WHEN estado = 'completado' THEN 'completado'
+            WHEN estado = 'cancelado' THEN 'cancelado'
+        END AS estado
+    "),
+            DB::raw('COUNT(*) AS total')
+        )
+            ->whereIn('estado', ['enviado', 'en_proceso', 'completado', 'cancelado'])
+            ->groupBy(DB::raw("
+    CASE 
+        WHEN estado IN ('enviado', 'en_proceso') THEN 'pendiente'
+        WHEN estado = 'completado' THEN 'completado'
+        WHEN estado = 'cancelado' THEN 'cancelado'
+    END
+"))
             ->get();
 
         // Envíos por mes (para gráfica de línea)
         $enviosPorMes = Envio::select(
-                DB::raw('MONTH(fecha_envio) as mes'),
-                DB::raw('YEAR(fecha_envio) as año'),
-                DB::raw('count(*) as total')
-            )
+            DB::raw('MONTH(fecha_envio) as mes'),
+            DB::raw('YEAR(fecha_envio) as año'),
+            DB::raw('count(*) as total')
+        )
             ->whereNotNull('fecha_envio')
             ->where('estado', 'completado')
             ->groupBy('mes', 'año')
@@ -58,9 +75,9 @@ class ResultadosController extends Controller
 
         // Envíos por día de la semana
         $enviosPorDia = Envio::select(
-                DB::raw('DAYOFWEEK(fecha_envio) as dia_semana'),
-                DB::raw('count(*) as total')
-            )
+            DB::raw('DAYOFWEEK(fecha_envio) as dia_semana'),
+            DB::raw('count(*) as total')
+        )
             ->whereNotNull('fecha_envio')
             ->groupBy('dia_semana')
             ->orderBy('dia_semana')
@@ -119,7 +136,7 @@ class ResultadosController extends Controller
     {
         $timestamp = now()->format('Y-m-d_H-i-s');
         $filename = "encuestas_satisfaccion_{$timestamp}.xlsx";
-        
+
         return Excel::download(new EncuestasExport(), $filename);
     }
 
@@ -130,7 +147,7 @@ class ResultadosController extends Controller
     {
         $timestamp = now()->format('Y-m-d_H-i-s');
         $filename = "estadisticas_generales_{$timestamp}.xlsx";
-        
+
         return Excel::download(new EstadisticasExport(), $filename);
     }
 
@@ -141,7 +158,7 @@ class ResultadosController extends Controller
     {
         $timestamp = now()->format('Y-m-d_H-i-s');
         $filename = "nps_encuestas_{$timestamp}.xlsx";
-        
+
         return Excel::download(new NPSExport(), $filename);
     }
 
@@ -153,18 +170,18 @@ class ResultadosController extends Controller
         header('Expires: 0');
         // Estadísticas detalladas por asesor
         $estadisticasAsesores = Cliente::select(
-                'asesor_comercial',
-                DB::raw('count(envios.idenvio) as total_envios'),
-                DB::raw('sum(case when envios.estado = "completado" then 1 else 0 end) as completados'),
-                DB::raw('sum(case when envios.estado = "cancelado" then 1 else 0 end) as cancelados'),
-                DB::raw('sum(case when envios.estado = "pendiente" then 1 else 0 end) as pendientes')
-            )
+            'asesor_comercial',
+            DB::raw('count(envios.idenvio) as total_envios'),
+            DB::raw('sum(case when envios.estado = "completado" then 1 else 0 end) as completados'),
+            DB::raw('sum(case when envios.estado = "cancelado" then 1 else 0 end) as cancelados'),
+            DB::raw('sum(case when envios.estado = "pendiente" then 1 else 0 end) as pendientes')
+        )
             ->join('envios', 'clientes.idcliente', '=', 'envios.cliente_id')
             ->groupBy('asesor_comercial')
             ->orderByDesc('total_envios')
             ->get()
             ->map(function ($asesor) {
-                $asesor->tasa_respuesta = $asesor->total_envios > 0 ? 
+                $asesor->tasa_respuesta = $asesor->total_envios > 0 ?
                     round(($asesor->cancelados / $asesor->total_envios) * 100, 2) : 0;
                 return $asesor;
             });
@@ -238,7 +255,7 @@ class ResultadosController extends Controller
             ->groupBy('respuesta_1_1')
             ->orderBy('respuesta_1_1')
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
                     'pregunta' => '1.1 - Calidad del producto',
                     'respuesta' => $item->respuesta_1_1,
@@ -253,7 +270,7 @@ class ResultadosController extends Controller
             ->groupBy('respuesta_1_2')
             ->orderBy('respuesta_1_2')
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
                     'pregunta' => '1.2 - Puntualidad de entrega',
                     'respuesta' => $item->respuesta_1_2,
@@ -268,7 +285,7 @@ class ResultadosController extends Controller
             ->groupBy('respuesta_1_3')
             ->orderBy('respuesta_1_3')
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
                     'pregunta' => '1.3 - Trato del asesor comercial',
                     'respuesta' => $item->respuesta_1_3,
@@ -283,7 +300,7 @@ class ResultadosController extends Controller
             ->groupBy('respuesta_1_4')
             ->orderBy('respuesta_1_4')
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
                     'pregunta' => '1.4 - Precio',
                     'respuesta' => $item->respuesta_1_4,
@@ -298,7 +315,7 @@ class ResultadosController extends Controller
             ->groupBy('respuesta_1_5')
             ->orderBy('respuesta_1_5')
             ->get()
-            ->map(function($item) {
+            ->map(function ($item) {
                 return [
                     'pregunta' => '1.5 - Rapidez en programación',
                     'respuesta' => $item->respuesta_1_5,
@@ -314,4 +331,4 @@ class ResultadosController extends Controller
             '1_5' => $respuestas1_5
         ];
     }
-} 
+}

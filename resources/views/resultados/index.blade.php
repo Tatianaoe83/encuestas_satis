@@ -115,7 +115,7 @@
             </div>
 
             <!-- Sección 1: Métricas Clave y NPS -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
                 <!-- Gráfica de dona - Envíos por estado -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                     <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-indigo-50">
@@ -135,7 +135,7 @@
                     </div>
                 </div>
 
-                <!-- Gráfica de dona - NPS -->
+                <!-- Gráfica de Gauge - NPS -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                     <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-green-50 to-emerald-50">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
@@ -147,89 +147,214 @@
                         </div>
                         <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Medida de lealtad y satisfacción del cliente</p>
                     </div>
-                    <div class="p-6 sm:p-8">
-                        <!-- NPS Score Principal -->
-                        <div class="text-center mb-4 sm:mb-6">
-                            <div class="text-3xl sm:text-4xl font-bold text-green-600 mb-2">{{ $npsData['nps_score'] }}</div>
-                            <div class="text-sm text-gray-600">NPS Score</div>
-                            <div class="text-xs text-gray-500 mt-1">{{ $npsData['total'] }} respuestas</div>
+                    <div class="p-4 sm:p-6 lg:p-8">
+                        <!-- Gauge del NPS -->
+                        <div class="relative h-64 sm:h-72 lg:h-80">
+                            <div id="gaugeNPS"></div>
                         </div>
 
-                        <!-- Fórmula del NPS -->
-                        <div class="text-center mb-6 p-3 bg-gray-50 rounded-lg">
-                            <div class="text-xs text-gray-600 mb-1">Fórmula NPS:</div>
-                            <div class="text-sm font-medium text-gray-800">
-                                {{ $npsData['porcentaje_promotores'] }}% - {{ $npsData['porcentaje_detractores'] }}% = {{ $npsData['nps_score'] }}
-                            </div>
-                        </div>
-
-                        <!-- Distribución de Respuestas -->
-                        <div class="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
+                        <!-- Información adicional del NPS -->
+                        <div class="mt-4 sm:mt-6 grid grid-cols-3 gap-1 sm:gap-2 lg:gap-4">
                             <div class="text-center">
-                                <div class="text-xl sm:text-2xl font-bold text-green-600">{{ $npsData['promotores'] }}</div>
+                                <div class="text-base sm:text-lg lg:text-xl font-bold text-green-600">{{ $npsData['promotores'] }}</div>
                                 <div class="text-xs text-gray-600 leading-tight">Promotores (9-10)</div>
                                 <div class="text-xs text-green-500 font-medium">{{ $npsData['porcentaje_promotores'] }}%</div>
                             </div>
                             <div class="text-center">
-                                <div class="text-xl sm:text-2xl font-bold text-yellow-600">{{ $npsData['pasivos'] }}</div>
+                                <div class="text-base sm:text-lg lg:text-xl font-bold text-yellow-600">{{ $npsData['pasivos'] }}</div>
                                 <div class="text-xs text-gray-600 leading-tight">Pasivos (7-8)</div>
                                 <div class="text-xs text-yellow-500 font-medium">{{ $npsData['porcentaje_pasivos'] }}%</div>
                             </div>
                             <div class="text-center">
-                                <div class="text-xl sm:text-2xl font-bold text-red-600">{{ $npsData['detractores'] }}</div>
+                                <div class="text-base sm:text-lg lg:text-xl font-bold text-red-600">{{ $npsData['detractores'] }}</div>
                                 <div class="text-xs text-gray-600 leading-tight">Detractores (0-6)</div>
                                 <div class="text-xs text-red-500 font-medium">{{ $npsData['porcentaje_detractores'] }}%</div>
                             </div>
                         </div>
 
-                        <!-- Gráfico de Barras del NPS -->
-                        <div class="h-24 sm:h-32">
-                            @if($npsData['total'] > 0)
-                            <div class="flex items-end justify-between h-full space-x-1 sm:space-x-2">
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 bg-green-500 rounded-t" style="height: {{ ($npsData['porcentaje_promotores'] / 100) * 100 }}%"></div>
-                                    <span class="text-xs text-gray-600 mt-2">Promotores</span>
-                                    <span class="text-xs text-gray-500">{{ $npsData['porcentaje_promotores'] }}%</span>
+                        <!-- Fórmula del NPS -->
+                        <div class="mt-3 sm:mt-4 text-center p-2 sm:p-3 bg-gray-50 rounded-lg">
+                            <div class="text-xs text-gray-600 mb-1">Fórmula NPS:</div>
+                            <div class="text-xs sm:text-sm font-medium text-gray-800">
+                                {{ $npsData['porcentaje_promotores'] }}% - {{ $npsData['porcentaje_detractores'] }}% = {{ $npsData['nps_score'] }}
                                 </div>
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 bg-yellow-500 rounded-t" style="height: {{ ($npsData['porcentaje_pasivos'] / 100) * 100 }}%"></div>
-                                    <span class="text-xs text-gray-600 mt-2">Pasivos</span>
-                                    <span class="text-xs text-gray-500">{{ $npsData['porcentaje_pasivos'] }}%</span>
-                                </div>
-                                <div class="flex flex-col items-center">
-                                    <div class="w-12 bg-red-500 rounded-t" style="height: {{ ($npsData['porcentaje_detractores'] / 100) * 100 }}%"></div>
-                                    <span class="text-xs text-gray-600 mt-2">Detractores</span>
-                                    <span class="text-xs text-gray-500">{{ $npsData['porcentaje_detractores'] }}%</span>
-                                </div>
-                            </div>
-                            @else
-                            <div class="flex items-center justify-center h-full">
-                                <p class="text-sm text-gray-500">No hay datos de NPS</p>
-                            </div>
-                            @endif
+                            <div class="text-xs text-gray-500 mt-1">{{ $npsData['total'] }} respuestas</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Top Asesores -->
+            </div>
+
+            
+            <!-- Sección 5: Análisis de Respuestas por Pregunta -->
+            <div class="mb-8 sm:mb-12">
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-gray-50">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">👥 Top Asesores</h3>
+                            <div>
+                                <h3 class="text-lg sm:text-xl font-semibold text-gray-900">🔍 Análisis de Respuestas por Pregunta - Gauge Series</h3>
+                                <p class="text-gray-600 mt-1 text-sm sm:text-base">Visualización tipo velocímetro para cada pregunta de la encuesta</p>
+                            </div>
                             <div class="flex items-center space-x-2">
-                                <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
-                                <span class="text-sm text-gray-600">Rendimiento</span>
+                                <span class="w-3 h-3 bg-slate-500 rounded-full"></span>
+                                <span class="text-xs sm:text-sm text-gray-600">Insights</span>
                             </div>
                         </div>
-                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Asesores con mayor volumen de envíos</p>
                     </div>
                     <div class="p-6 sm:p-8">
-                        <div class="relative h-64">
-                            <canvas id="chartAsesores"></canvas>
+                        <!-- Selector de Asesores -->
+                        <div class="mb-6 sm:mb-8">
+                            <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-lg p-4 border border-indigo-200">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div>
+                                        <h4 class="text-sm font-semibold text-indigo-900 flex items-center">
+                                            <span class="w-5 h-5 bg-indigo-100 rounded-full flex items-center justify-center mr-2 text-indigo-600 text-xs">👤</span>
+                                            Filtrar por Asesor
+                                        </h4>
+                                        <p class="text-xs text-indigo-700 mt-1">Selecciona un asesor para ver sus métricas específicas</p>
+                                    </div>
+                                    <div class="sm:w-64">
+                                        <select id="selectorAsesor" class="w-full px-3 py-2 border border-indigo-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white">
+                                            <option value="">Todos los asesores</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección: Calidad del Producto (Preguntas 1.1 a 1.5) -->
+                        <div class="mb-8 sm:mb-12">
+                            <h4 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
+                                <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">📊</span>
+                                Calidad del Producto - Gauge Analysis
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
+                                <!-- Pregunta 1.1 -->
+                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-blue-900">1.1 - Calidad General</h5>
+                                        <div class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-64">
+                                        <div id="gaugeRespuesta1_1"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Pregunta 1.2 -->
+                                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-indigo-900">1.2 - Puntualidad de entrega</h5>
+                                        <div class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-64">
+                                        <div id="gaugeRespuesta1_2"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Pregunta 1.3 -->
+                                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-purple-900">1.3 - Trato del asesor comercial</h5>
+                                        <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-64">
+                                        <div id="gaugeRespuesta1_3"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Pregunta 1.4 -->
+                                <div class="bg-gradient-to-br from-pink-50 to-red-50 rounded-lg p-4 border border-pink-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-pink-900">1.4 - Precio</h5>
+                                        <div class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-64">
+                                        <div id="gaugeRespuesta1_4"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Pregunta 1.5 -->
+                                <div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 border border-red-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-red-900">1.5 - Rapidez en programación.</h5>
+                                        <div class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">
+                                            Escala 1-10
+                                        </div>
+                                    </div>
+                                    <div class="relative h-64">
+                                        <div id="gaugeRespuesta1_5"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Promedio NPS -->
+                                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
+                                    <div class="flex items-center justify-between mb-3">
+                                        <h5 class="text-sm font-semibold text-green-900">Promedio NPS</h5>
+                                        <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                                            Promedio
+                                        </div>
+                                    </div>
+                                    <div class="relative h-64">
+                                        <div id="gaugeRespuesta1"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sección: Otras Preguntas -->
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+                            <!-- Pregunta 2: Recomendación -->
+                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-green-200">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+                                    <h4 class="text-base sm:text-lg font-semibold text-green-900 flex items-center">
+                                        <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 text-green-600 font-bold">2</span>
+                                        Recomendación
+                                    </h4>
+                                    <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
+                                        Si/No
+                                    </div>
+                                </div>
+                                <p class="text-sm text-green-700 mb-4">¿Recomendarías a Konkret?</p>
+                                <div class="relative h-64">
+                                    <div id="gaugeRespuesta2"></div>
+                                </div>
+                            </div>
+
+                            <!-- Pregunta 3: Sugerencias -->
+                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-purple-200">
+                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+                                    <h4 class="text-base sm:text-lg font-semibold text-purple-900 flex items-center">
+                                        <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 text-purple-600 font-bold">3</span>
+                                        Sugerencias
+                                    </h4>
+                                    <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
+                                        Texto Libre
+                                    </div>
+                                </div>
+                                <p class="text-sm text-purple-700 mb-4">¿Qué podríamos hacer para mejorar tu experiencia?</p>
+                                <div class="max-h-80 overflow-y-auto">
+                                    <div id="listaSugerencias">
+                                        <div class="text-center text-gray-500 py-8">
+                                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
+                                            Cargando sugerencias...
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <!-- fin de la sección 5 -->
+            
 
             <!-- Sección 2: Análisis Temporal -->
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-10 mb-8 sm:mb-12">
@@ -326,6 +451,28 @@
                     </div>
                 </div>
 
+                  <!-- Top Asesores -->
+                  <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">👥 Top Asesores</h3>
+                            <div class="flex items-center space-x-2">
+                                <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
+                                <span class="text-sm text-gray-600">Rendimiento</span>
+                            </div>
+                        </div>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Asesores con mayor volumen de envíos</p>
+                    </div>
+                    <div class="p-6 sm:p-8">
+                        <div id="listaTopAsesores">
+                            <div class="text-center text-gray-500 py-8">
+                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
+                                Cargando asesores...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Gráfica de barras - Envíos por día de la semana -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                     <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-yellow-50 to-orange-50">
@@ -346,152 +493,16 @@
                 </div>
             </div>
 
-            <!-- Sección 5: Análisis de Respuestas por Pregunta -->
-            <div class="mb-8 sm:mb-12">
-                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-slate-50 to-gray-50">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                            <div>
-                                <h3 class="text-lg sm:text-xl font-semibold text-gray-900">🔍 Análisis de Respuestas por Pregunta</h3>
-                                <p class="text-gray-600 mt-1 text-sm sm:text-base">Distribución detallada de respuestas para cada pregunta de la encuesta</p>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="w-3 h-3 bg-slate-500 rounded-full"></span>
-                                <span class="text-xs sm:text-sm text-gray-600">Insights</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="p-6 sm:p-8">
-                        <!-- Sección: Calidad del Producto (Preguntas 1.1 a 1.5) -->
-                        <div class="mb-8 sm:mb-12">
-                            <h4 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
-                                <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">📊</span>
-                                Calidad del Producto - Análisis Detallado
-                            </h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
-                                <!-- Pregunta 1.1 -->
-                                <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-blue-900">1.1 - Calidad General</h5>
-                                        <div class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-medium">
-                                            Escala 1-10
-                                        </div>
-                                    </div>
-                                    <div class="relative h-32">
-                                        <canvas id="chartRespuesta1_1"></canvas>
-                                    </div>
-                                </div>
-
-                                <!-- Pregunta 1.2 -->
-                                <div class="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-lg p-4 border border-indigo-200">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-indigo-900">1.2 - Puntualidad de entrega</h5>
-                                        <div class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full font-medium">
-                                            Escala 1-10
-                                        </div>
-                                    </div>
-                                    <div class="relative h-32">
-                                        <canvas id="chartRespuesta1_2"></canvas>
-                                    </div>
-                                </div>
-
-                                <!-- Pregunta 1.3 -->
-                                <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg p-4 border border-purple-200">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-purple-900">1.3 - Trato del asesor comercial</h5>
-                                        <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
-                                            Escala 1-10
-                                        </div>
-                                    </div>
-                                    <div class="relative h-32">
-                                        <canvas id="chartRespuesta1_3"></canvas>
-                                    </div>
-                                </div>
-
-                                <!-- Pregunta 1.4 -->
-                                <div class="bg-gradient-to-br from-pink-50 to-red-50 rounded-lg p-4 border border-pink-200">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-pink-900">1.4 - Precio</h5>
-                                        <div class="text-xs bg-pink-100 text-pink-700 px-2 py-1 rounded-full font-medium">
-                                            Escala 1-10
-                                        </div>
-                                    </div>
-                                    <div class="relative h-32">
-                                        <canvas id="chartRespuesta1_4"></canvas>
-                                    </div>
-                                </div>
-
-                                <!-- Pregunta 1.5 -->
-                                <div class="bg-gradient-to-br from-red-50 to-orange-50 rounded-lg p-4 border border-red-200">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-red-900">1.5 - Rapidez en programación.</h5>
-                                        <div class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium">
-                                            Escala 1-10
-                                        </div>
-                                    </div>
-                                    <div class="relative h-32">
-                                        <canvas id="chartRespuesta1_5"></canvas>
-                                    </div>
-                                </div>
-
-                                <!-- Promedio NPS -->
-                                <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
-                                    <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-green-900">Promedio NPS</h5>
-                                        <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
-                                            Promedio
-                                        </div>
-                                    </div>
-                                    <div class="relative h-32">
-                                        <canvas id="chartRespuesta1"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Sección: Otras Preguntas -->
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-                            <!-- Pregunta 2: Recomendación -->
-                            <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-green-200">
-                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
-                                    <h4 class="text-base sm:text-lg font-semibold text-green-900 flex items-center">
-                                        <span class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 text-green-600 font-bold">2</span>
-                                        Recomendación
-                                    </h4>
-                                    <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
-                                        Si/No
-                                    </div>
-                                </div>
-                                <p class="text-sm text-green-700 mb-4">¿Recomendarías a Konkret?</p>
-                                <div class="relative h-48">
-                                    <canvas id="chartRespuesta2"></canvas>
-                                </div>
-                            </div>
-
-                            <!-- Pregunta 3: Sugerencias -->
-                            <div class="bg-gradient-to-br from-purple-50 to-pink-50 rounded-lg sm:rounded-xl p-4 sm:p-6 border border-purple-200">
-                                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
-                                    <h4 class="text-base sm:text-lg font-semibold text-purple-900 flex items-center">
-                                        <span class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mr-3 text-purple-600 font-bold">3</span>
-                                        Sugerencias
-                                    </h4>
-                                    <div class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-medium">
-                                        Texto Libre
-                                    </div>
-                                </div>
-                                <p class="text-sm text-purple-700 mb-4">¿Qué podríamos hacer para mejorar tu experiencia?</p>
-                                <div class="relative h-48">
-                                    <canvas id="chartRespuesta3"></canvas>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- Scripts para Chart.js -->
+    <!-- Scripts para Highcharts y Chart.js -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/themes/adaptive.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         // Esperar a que el DOM esté completamente cargado
@@ -506,6 +517,191 @@
             const respuesta3Data = @json($respuestasPregunta3);
             const respuestaDetalle1Data = @json($respuestasDetalle1);
 
+            // Función para poblar el selector de asesores
+            function poblarSelectorAsesores() {
+                const selector = document.getElementById('selectorAsesor');
+                const asesoresUnicos = new Set();
+                
+                // Extraer asesores únicos de múltiples fuentes de datos
+                const fuentesDatos = [
+                    asesoresData,
+                    respuesta1Data,
+                    respuesta2Data,
+                    respuesta3Data,
+                    respuestaDetalle1Data['1_1'],
+                    respuestaDetalle1Data['1_2'],
+                    respuestaDetalle1Data['1_3'],
+                    respuestaDetalle1Data['1_4'],
+                    respuestaDetalle1Data['1_5']
+                ];
+                
+                fuentesDatos.forEach(datos => {
+                    if (datos && Array.isArray(datos) && datos.length > 0) {
+                        datos.forEach(item => {
+                            // Buscar asesor en diferentes campos posibles
+                            const asesor = item.asesor_comercial || 
+                                         item.asesor || 
+                                         item.comercial ||
+                                         item.asesor_nombre;
+                            if (asesor && asesor.trim() !== '') {
+                                asesoresUnicos.add(asesor.trim());
+                            }
+                        });
+                    }
+                });
+                
+                // Limpiar opciones existentes (excepto "Todos los asesores")
+                selector.innerHTML = '<option value="">Todos los asesores</option>';
+                
+                // Agregar asesores únicos
+                const asesoresArray = Array.from(asesoresUnicos).sort();
+                console.log('Asesores encontrados:', asesoresArray); // Debug
+                
+                asesoresArray.forEach(asesor => {
+                    const option = document.createElement('option');
+                    option.value = asesor;
+                    option.textContent = asesor;
+                    selector.appendChild(option);
+                });
+                
+                console.log('Selector poblado con', asesoresArray.length, 'asesores');
+            }
+
+            // Función para filtrar datos por asesor
+            function filtrarDatosPorAsesor(datos, asesor) {
+                if (!asesor || asesor === '') {
+                    console.log('Sin asesor seleccionado, devolviendo todos los datos');
+                    return datos || [];
+                }
+                
+                if (!datos || !Array.isArray(datos)) {
+                    console.log('Datos no válidos para filtrar:', datos);
+                    return [];
+                }
+                
+                console.log(`Filtrando ${datos.length} registros por asesor: "${asesor}"`);
+                
+                // Mostrar algunos ejemplos de los datos para debugging
+                if (datos.length > 0) {
+                    console.log('Ejemplo de estructura de datos:', datos[0]);
+                    console.log('Campos disponibles en el primer elemento:', Object.keys(datos[0]));
+                }
+                
+                const datosFiltrados = datos.filter(item => {
+                    if (!item || typeof item !== 'object') {
+                        return false;
+                    }
+                    
+                    // Buscar asesor en diferentes campos posibles
+                    const asesorItem = item.asesor_comercial || 
+                                     item.asesor || 
+                                     item.comercial ||
+                                     item.asesor_nombre ||
+                                     item.nombre_asesor ||
+                                     item.asesor_comercial_nombre;
+                    
+                    if (asesorItem) {
+                        console.log(`Comparando: "${asesorItem}" === "${asesor}"`);
+                    }
+                    
+                    const coincide = asesorItem && asesorItem.toString().trim() === asesor.trim();
+                    
+                    if (coincide) {
+                        console.log('Registro encontrado:', item);
+                    }
+                    
+                    return coincide;
+                });
+                
+                console.log(`Resultado del filtrado: ${datosFiltrados.length} registros encontrados para "${asesor}"`);
+                
+                // Si no se encontraron registros, mostrar todos los asesores disponibles
+                if (datosFiltrados.length === 0 && datos.length > 0) {
+                    const asesoresDisponibles = [...new Set(datos.map(item => {
+                        const asesor = item.asesor_comercial || item.asesor || item.comercial || 
+                                     item.asesor_nombre || item.nombre_asesor || item.asesor_comercial_nombre;
+                        return asesor;
+                    }).filter(asesor => asesor))];
+                    console.log('Asesores disponibles en los datos:', asesoresDisponibles);
+                }
+                
+                return datosFiltrados;
+            }
+
+            // Función para actualizar todos los gauges y sugerencias
+            function actualizarVisualizaciones(asesorSeleccionado) {
+                console.log('Actualizando visualizaciones para asesor:', asesorSeleccionado);
+                
+                // Filtrar datos
+                const respuesta1Filtrada = filtrarDatosPorAsesor(respuesta1Data, asesorSeleccionado);
+                const respuesta2Filtrada = filtrarDatosPorAsesor(respuesta2Data, asesorSeleccionado);
+                const respuesta3Filtrada = filtrarDatosPorAsesor(respuesta3Data, asesorSeleccionado);
+                const respuestaDetalle1Filtrada = {};
+                
+                // Filtrar datos detallados
+                Object.keys(respuestaDetalle1Data).forEach(key => {
+                    respuestaDetalle1Filtrada[key] = filtrarDatosPorAsesor(respuestaDetalle1Data[key], asesorSeleccionado);
+                });
+
+                // Debug: mostrar conteos
+                console.log('Datos filtrados:', {
+                    respuesta1: respuesta1Filtrada.length,
+                    respuesta2: respuesta2Filtrada.length,
+                    respuesta3: respuesta3Filtrada.length,
+                    detalle1_1: respuestaDetalle1Filtrada['1_1']?.length || 0,
+                    detalle1_2: respuestaDetalle1Filtrada['1_2']?.length || 0,
+                    detalle1_3: respuestaDetalle1Filtrada['1_3']?.length || 0,
+                    detalle1_4: respuestaDetalle1Filtrada['1_4']?.length || 0,
+                    detalle1_5: respuestaDetalle1Filtrada['1_5']?.length || 0
+                });
+
+                // Verificar si hay datos para el asesor seleccionado
+                const totalDatosFiltrados = respuesta1Filtrada.length + respuesta2Filtrada.length + respuesta3Filtrada.length +
+                    (respuestaDetalle1Filtrada['1_1']?.length || 0) + (respuestaDetalle1Filtrada['1_2']?.length || 0) +
+                    (respuestaDetalle1Filtrada['1_3']?.length || 0) + (respuestaDetalle1Filtrada['1_4']?.length || 0) +
+                    (respuestaDetalle1Filtrada['1_5']?.length || 0);
+
+                if (asesorSeleccionado && totalDatosFiltrados === 0) {
+                    console.warn(`No se encontraron datos para el asesor: "${asesorSeleccionado}"`);
+                    // Mostrar mensaje de no datos en todos los gauges
+                    const gaugeIds = ['gaugeRespuesta1_1', 'gaugeRespuesta1_2', 'gaugeRespuesta1_3', 'gaugeRespuesta1_4', 'gaugeRespuesta1_5', 'gaugeRespuesta1', 'gaugeRespuesta2'];
+                    gaugeIds.forEach(gaugeId => {
+                        const element = document.getElementById(gaugeId);
+                        if (element) {
+                            limpiarGrafica(gaugeId);
+                            mostrarMensajeNoDatos(gaugeId, `No hay datos disponibles para el asesor "${asesorSeleccionado}"`);
+                        }
+                    });
+                    return;
+                }
+
+                // Actualizar gauges solo si los elementos existen
+                const gaugeElements = [
+                    { id: 'gaugeRespuesta1_1', data: respuestaDetalle1Filtrada['1_1'], title: 'Calidad General' },
+                    { id: 'gaugeRespuesta1_2', data: respuestaDetalle1Filtrada['1_2'], title: 'Puntualidad' },
+                    { id: 'gaugeRespuesta1_3', data: respuestaDetalle1Filtrada['1_3'], title: 'Trato Asesor' },
+                    { id: 'gaugeRespuesta1_4', data: respuestaDetalle1Filtrada['1_4'], title: 'Precio' },
+                    { id: 'gaugeRespuesta1_5', data: respuestaDetalle1Filtrada['1_5'], title: 'Rapidez' },
+                    { id: 'gaugeRespuesta1', data: respuesta1Filtrada, title: 'Promedio NPS' },
+                    { id: 'gaugeRespuesta2', data: respuesta2Filtrada, title: 'Recomendación' }
+                ];
+
+                gaugeElements.forEach(gauge => {
+                    const element = document.getElementById(gauge.id);
+                    if (element) {
+                        // Limpiar gráfica existente
+                        limpiarGrafica(gauge.id);
+                        // Crear nueva gráfica
+                        crearGaugeRespuesta(gauge.id, gauge.data, gauge.title);
+                    } else {
+                        console.warn(`Elemento no encontrado: ${gauge.id}`);
+                    }
+                });
+                
+                // Actualizar lista de sugerencias
+                crearListaSugerencias(respuesta3Filtrada);
+            }
+
             // Configuración común para Chart.js
             Chart.defaults.font.family = 'Inter, system-ui, sans-serif';
             Chart.defaults.color = '#1b222eff';
@@ -515,11 +711,38 @@
                 return data && data.length > 0;
             }
 
+            // Función para limpiar gráficas existentes
+            function limpiarGrafica(elementId) {
+                const elemento = document.getElementById(elementId);
+                if (!elemento) {
+                    console.warn(`Elemento no encontrado para limpiar: ${elementId}`);
+                    return;
+                }
+                
+                // Limpiar el contenido del elemento
+                elemento.innerHTML = '';
+                
+                // Si existe una instancia de Highcharts, destruirla
+                if (elementId && window.Highcharts && window.Highcharts.charts) {
+                    const chartIndex = window.Highcharts.charts.findIndex(chart => 
+                        chart && chart.renderTo && chart.renderTo.id === elementId
+                    );
+                    if (chartIndex !== -1 && window.Highcharts.charts[chartIndex]) {
+                        window.Highcharts.charts[chartIndex].destroy();
+                    }
+                }
+            }
+
             // Función para mostrar mensaje de no datos
             function mostrarMensajeNoDatos(elementId, mensaje) {
-                const canvas = document.getElementById(elementId);
-                const container = canvas.parentElement;
-                container.innerHTML = `
+                const elemento = document.getElementById(elementId);
+                if (!elemento) {
+                    console.error('Elemento no encontrado:', elementId);
+                    return;
+                }
+                
+                // Limpiar el contenido del elemento
+                elemento.innerHTML = `
                     <div class="flex flex-col items-center justify-center h-64">
                         <div class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mb-4">
                             <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -568,50 +791,68 @@
                 mostrarMensajeNoDatos('chartEstados', 'Aún no hay envíos registrados');
             }
 
-            // Gráfica de barras - Top asesores
-            if (tieneDatos(asesoresData)) {
-                new Chart(document.getElementById('chartAsesores'), {
-                    type: 'bar',
-                    data: {
-                        labels: asesoresData.map(item => item.asesor_comercial),
-                        datasets: [{
-                            label: 'Total Envíos',
-                            data: asesoresData.map(item => item.total_envios),
-                            backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                            borderColor: '#3B82F6',
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            borderSkipped: false
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.1)'
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
-                        },
-                        animation: {
-                            duration: 2000
-                        }
+            // Función para crear lista de Top Asesores
+            function crearListaTopAsesores() {
+                const contenedor = document.getElementById('listaTopAsesores');
+                
+                if (!tieneDatos(asesoresData)) {
+                    contenedor.innerHTML = `
+                        <div class="text-center text-gray-500 py-8">
+                            <div class="text-4xl mb-2">👥</div>
+                            <p>Aún no hay asesores con envíos registrados</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                let html = '<div class="space-y-3">';
+                
+                asesoresData.forEach((asesor, index) => {
+                    const posicion = index + 1;
+                    const nombre = asesor.asesor_comercial || 'Asesor sin nombre';
+                    const totalEnvios = asesor.total_envios || 0;
+                    
+                    // Determinar el color del badge según la posición
+                    let badgeColor = 'bg-gray-100 text-gray-800';
+                    let icono = '👤';
+                    
+                    if (posicion === 1) {
+                        badgeColor = 'bg-yellow-100 text-yellow-800';
+                        icono = '🥇';
+                    } else if (posicion === 2) {
+                        badgeColor = 'bg-gray-100 text-gray-800';
+                        icono = '🥈';
+                    } else if (posicion === 3) {
+                        badgeColor = 'bg-orange-100 text-orange-800';
+                        icono = '🥉';
                     }
+                    
+                    html += `
+                        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200 hover:shadow-md transition-all duration-200">
+                            <div class="flex items-center space-x-4">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 ${badgeColor} rounded-full flex items-center justify-center font-bold text-lg">
+                                        ${posicion}
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-lg">${icono}</span>
+                                        <h4 class="text-sm sm:text-base font-semibold text-gray-900 truncate">${nombre}</h4>
+                                    </div>
+                                    <p class="text-xs text-gray-600 mt-1">Asesor comercial</p>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0 text-right">
+                                <div class="text-lg sm:text-xl font-bold text-purple-600">${totalEnvios}</div>
+                                <div class="text-xs text-gray-500">envíos</div>
+                            </div>
+                        </div>
+                    `;
                 });
-            } else {
-                mostrarMensajeNoDatos('chartAsesores', 'Aún no hay asesores con envíos');
+                
+                html += '</div>';
+                contenedor.innerHTML = html;
             }
 
             // Gráfica de línea - Envíos por mes
@@ -1007,8 +1248,138 @@
                 mostrarMensajeNoDatos('chartDias', 'Aún no hay envíos con fechas registradas');
             }
 
+            // Función para crear el gauge del NPS
+            function crearGaugeNPS() {
+                const npsScore = {{ $npsData['nps_score'] }};
+                const totalRespuestas = {{ $npsData['total'] }};
+                
+                // Determinar el color basado en el score NPS
+                let colorGauge;
+                let colorBandas;
+                
+                if (npsScore >= 50) {
+                    colorGauge = '#55BF3B'; // Verde - Excelente
+                    colorBandas = [
+                        { from: -100, to: 0, color: '#DF5353' },    // Rojo - Detractores
+                        { from: 0, to: 30, color: '#DDDF0D' },     // Amarillo - Neutro
+                        { from: 30, to: 50, color: '#55BF3B' },    // Verde - Bueno
+                        { from: 50, to: 100, color: '#55BF3B' }    // Verde - Excelente
+                    ];
+                } else if (npsScore >= 0) {
+                    colorGauge = '#DDDF0D'; // Amarillo - Bueno
+                    colorBandas = [
+                        { from: -100, to: 0, color: '#DF5353' },    // Rojo - Detractores
+                        { from: 0, to: 30, color: '#DDDF0D' },     // Amarillo - Neutro
+                        { from: 30, to: 50, color: '#55BF3B' },    // Verde - Bueno
+                        { from: 50, to: 100, color: '#55BF3B' }    // Verde - Excelente
+                    ];
+                } else {
+                    colorGauge = '#DF5353'; // Rojo - Necesita mejora
+                    colorBandas = [
+                        { from: -100, to: 0, color: '#DF5353' },    // Rojo - Detractores
+                        { from: 0, to: 30, color: '#DDDF0D' },     // Amarillo - Neutro
+                        { from: 30, to: 50, color: '#55BF3B' },    // Verde - Bueno
+                        { from: 50, to: 100, color: '#55BF3B' }    // Verde - Excelente
+                    ];
+                }
+                
+                Highcharts.chart('gaugeNPS', {
+                    chart: {
+                        type: 'gauge',
+                        plotBackgroundColor: null,
+                        plotBackgroundImage: null,
+                        plotBorderWidth: 0,
+                        plotShadow: false,
+                        height: window.innerWidth < 640 ? 250 : window.innerWidth < 1024 ? 280 : 300,
+                        backgroundColor: 'transparent'
+                    },
+                    title: {
+                        text: 'NPS Score',
+                        style: {
+                            fontSize: window.innerWidth < 640 ? '14px' : window.innerWidth < 1024 ? '16px' : '18px',
+                            fontWeight: 'bold',
+                            color: '#333'
+                        },
+                        y: 20
+                    },
+                    pane: {
+                        startAngle: -90,
+                        endAngle: 90,
+                        background: null,
+                        center: ['50%', '75%'],
+                        size: '120%'
+                    },
+                    yAxis: {
+                        min: -100,
+                        max: 100,
+                        stops: [
+                            [0.0, '#DF5353'], // Rojo
+                            [0.3, '#DDDF0D'], // Amarillo
+                            [0.5, '#55BF3B'], // Verde
+                            [1.0, '#55BF3B']  // Verde
+                        ],
+                        lineWidth: 0,
+                        tickWidth: 0,
+                        minorTickInterval: null,
+                        tickAmount: 5,
+                        title: {
+                            y: -70,
+                            text: 'NPS Score'
+                        },
+                        labels: {
+                            y: 16,
+                            distance: -20,
+                            formatter: function() {
+                                return this.value;
+                            }
+                        },
+                        plotBands: colorBandas
+                    },
+                    series: [{
+                        name: 'NPS Score',
+                        data: [npsScore],
+                        dataLabels: {
+                            format: '{y}',
+                            borderWidth: 0,
+                            color: '#333333',
+                            style: {
+                                fontSize: window.innerWidth < 640 ? '18px' : window.innerWidth < 1024 ? '20px' : '24px',
+                                fontWeight: 'bold',
+                                textOutline: 'none'
+                            },
+                            y: 10
+                        },
+                        tooltip: {
+                            valueSuffix: ' puntos'
+                        },
+                        dial: {
+                            radius: '85%',
+                            backgroundColor: colorGauge,
+                            baseWidth: 15,
+                            baseLength: '10%',
+                            rearLength: '10%',
+                            borderWidth: 0
+                        },
+                        pivot: {
+                            backgroundColor: colorGauge,
+                            radius: 8,
+                            borderWidth: 0
+                        }
+                    }],
+                    credits: {
+                        enabled: false
+                    }
+                });
+            }
+
             // Gráficas de respuestas por pregunta
-            function crearGraficaRespuesta(elementId, data, titulo) {
+            function crearGaugeRespuesta(elementId, data, titulo) {
+                const elemento = document.getElementById(elementId);
+                if (!elemento) {
+                    console.error(`Elemento no encontrado: ${elementId}`);
+                    return;
+                }
+
                 if (!tieneDatos(data)) {
                     mostrarMensajeNoDatos(elementId, 'Aún no hay respuestas para esta pregunta');
                     return;
@@ -1016,70 +1387,319 @@
 
                 // Determinar qué campo usar basado en el elemento
                 let campoRespuesta;
-                if (elementId === 'chartRespuesta1') {
+                if (elementId === 'gaugeRespuesta1') {
                     campoRespuesta = 'promedio_respuesta_1';
-                } else if (elementId === 'chartRespuesta2') {
+                } else if (elementId === 'gaugeRespuesta2') {
                     campoRespuesta = 'respuesta_2';
-                } else if (elementId === 'chartRespuesta3') {
+                } else if (elementId === 'gaugeRespuesta3') {
                     campoRespuesta = 'respuesta_3';
-                } else if (elementId.startsWith('chartRespuesta1_')) {
+                } else if (elementId.startsWith('gaugeRespuesta1_')) {
                     // Para preguntas 1.1 a 1.5, usar el campo 'respuesta'
                     campoRespuesta = 'respuesta';
                 }
 
-                new Chart(document.getElementById(elementId), {
-                    type: 'bar',
-                    data: {
-                        labels: data.map(item => item[campoRespuesta] || item.respuesta_2 || item.respuesta_3),
-                        datasets: [{
-                            label: 'Respuestas',
-                            data: data.map(item => item.total),
-                            backgroundColor: 'rgba(139, 92, 246, 0.8)',
-                            borderColor: '#8B5CF6',
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            borderSkipped: false
+                // Calcular el valor promedio o el valor más alto para el gauge
+                let valorGauge;
+                let maxValor = 10; // Valor máximo por defecto para escala 1-10
+                let colores = ['#FF5F57', '#FFBD2E', '#28CA42']; // Rojo, Amarillo, Verde
+
+                if (elementId === 'gaugeRespuesta2') {
+                    // Para pregunta de Recomendación (Si/No), usar escala 0-100
+                    const totalRespuestas = data.reduce((sum, item) => sum + item.total, 0);
+                    const respuestasPositivas = data.find(item => 
+                        item[campoRespuesta] === 'Sí' || 
+                        item[campoRespuesta] === 'Si' || 
+                        item[campoRespuesta] === '1' ||
+                        item[campoRespuesta] === 'true'
+                    );
+                    valorGauge = respuestasPositivas ? (respuestasPositivas.total / totalRespuestas) * 100 : 0;
+                    maxValor = 100;
+                } else if (elementId === 'gaugeRespuesta3') {
+                    // Para pregunta de Mejoras (texto libre), usar porcentaje
+                    const totalRespuestas = data.reduce((sum, item) => sum + item.total, 0);
+                    const respuestasPositivas = data.find(item => 
+                        item[campoRespuesta] === 'Sí' || 
+                        item[campoRespuesta] === 'Si' || 
+                        item[campoRespuesta] === '1' ||
+                        item[campoRespuesta] === 'true'
+                    );
+                    valorGauge = respuestasPositivas ? (respuestasPositivas.total / totalRespuestas) * 100 : 0;
+                    maxValor = 100;
+                } else {
+                    // Para preguntas 1-10, calcular promedio ponderado
+                    const totalRespuestas = data.reduce((sum, item) => sum + item.total, 0);
+                    let sumaPonderada = 0;
+                    data.forEach(item => {
+                        const valor = parseFloat(item[campoRespuesta]) || 0;
+                        sumaPonderada += valor * item.total;
+                    });
+                    valorGauge = totalRespuestas > 0 ? sumaPonderada / totalRespuestas : 0;
+                }
+
+                Highcharts.chart(elementId, {
+                    chart: {
+                        type: 'gauge',
+                        plotBackgroundColor: null,
+                        plotBackgroundImage: null,
+                        plotBorderWidth: 0,
+                        plotShadow: false,
+                        height: 300,
+                        backgroundColor: 'transparent'
+                    },
+                    title: {
+                        text: titulo,
+                        style: {
+                            fontSize: '16px',
+                            fontWeight: 'bold',
+                            color: '#333'
+                        },
+                        y: 20
+                    },
+                    pane: {
+                        startAngle: -90,
+                        endAngle: 90,
+                        background: null,
+                        center: ['50%', '75%'],
+                        size: '110%'
+                    },
+                    yAxis: {
+                        min: 0,
+                        max: maxValor,
+                        stops: elementId === 'gaugeRespuesta2' ? [
+                            [0.5, '#DF5353'], // rojo (No)
+                            [0.5, '#55BF3B']  // verde (Sí)
+                        ] : [
+                            [0.1, '#55BF3B'], // verde
+                            [0.5, '#DDDF0D'], // amarillo
+                            [0.9, '#DF5353']  // rojo
+                        ],
+                        lineWidth: 0,
+                        tickWidth: 0,
+                        minorTickInterval: null,
+                        tickAmount: 2,
+                        title: {
+                            y: -70,
+                            text: maxValor === 100 ? (elementId === 'gaugeRespuesta2' ? 'Recomendación' : 'Porcentaje') : 'Puntuación'
+                        },
+                        labels: {
+                            y: 16,
+                            distance: -20,
+                            formatter: function() {
+                                if (elementId === 'gaugeRespuesta2') {
+                                    return this.value === 0 ? 'No' : this.value === 100 ? 'Sí' : this.value + '%';
+                                }
+                                return this.value + (maxValor === 100 ? '%' : '');
+                            }
+                        },
+                        plotBands: elementId === 'gaugeRespuesta2' ? [{
+                            from: 0,
+                            to: maxValor * 0.5,
+                            color: '#DF5353', // rojo (No)
+                            thickness: '20%',
+                            outerRadius: '105%'
+                        }, {
+                            from: maxValor * 0.5,
+                            to: maxValor,
+                            color: '#55BF3B', // verde (Sí)
+                            thickness: '20%',
+                            outerRadius: '105%'
+                        }] : [{
+                            from: 0,
+                            to: maxValor * 0.6,
+                            color: '#55BF3B', // verde
+                            thickness: '20%',
+                            outerRadius: '105%'
+                        }, {
+                            from: maxValor * 0.6,
+                            to: maxValor * 0.8,
+                            color: '#DDDF0D', // amarillo
+                            thickness: '20%',
+                            outerRadius: '105%'
+                        }, {
+                            from: maxValor * 0.8,
+                            to: maxValor,
+                            color: '#DF5353', // rojo
+                            thickness: '20%',
+                            outerRadius: '105%'
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: {
-                                    color: 'rgba(0, 0, 0, 0.1)'
-                                }
+                    series: [{
+                        name: titulo,
+                        data: [valorGauge],
+                        dataLabels: {
+                            format: elementId === 'gaugeRespuesta2' ? 
+                                (valorGauge >= 50 ? 'Sí' : 'No') : 
+                                '{y}' + (maxValor === 100 ? '%' : ''),
+                            borderWidth: 0,
+                            color: '#333333',
+                            style: {
+                                fontSize: '20px',
+                                fontWeight: 'bold',
+                                textOutline: 'none'
                             },
-                            x: {
-                                grid: {
-                                    display: false
-                                }
-                            }
+                            y: 10
                         },
-                        plugins: {
-                            legend: {
-                                display: false
-                            }
+                        tooltip: {
+                            valueSuffix: maxValor === 100 ? '%' : ''
                         },
-                        animation: {
-                            duration: 2000
+                        dial: {
+                            radius: '80%',
+                            backgroundColor: '#333',
+                            baseWidth: 15,
+                            baseLength: '10%',
+                            rearLength: '10%',
+                            borderWidth: 0
+                        },
+                        pivot: {
+                            backgroundColor: '#333',
+                            radius: 8,
+                            borderWidth: 0
                         }
+                    }],
+                    credits: {
+                        enabled: false
                     }
                 });
             }
 
-            // Crear gráficas para preguntas 1.1 a 1.5
-            crearGraficaRespuesta('chartRespuesta1_1', respuestaDetalle1Data['1_1'], 'Pregunta 1.1');
-            crearGraficaRespuesta('chartRespuesta1_2', respuestaDetalle1Data['1_2'], 'Pregunta 1.2');
-            crearGraficaRespuesta('chartRespuesta1_3', respuestaDetalle1Data['1_3'], 'Pregunta 1.3');
-            crearGraficaRespuesta('chartRespuesta1_4', respuestaDetalle1Data['1_4'], 'Pregunta 1.4');
-            crearGraficaRespuesta('chartRespuesta1_5', respuestaDetalle1Data['1_5'], 'Pregunta 1.5');
+            // Función para crear lista de sugerencias
+            function crearListaSugerencias(data) {
+                const contenedor = document.getElementById('listaSugerencias');
+                
+                if (!tieneDatos(data)) {
+                    contenedor.innerHTML = `
+                        <div class="text-center text-gray-500 py-8">
+                            <div class="text-4xl mb-2">💭</div>
+                            <p>Aún no hay sugerencias registradas</p>
+                        </div>
+                    `;
+                    return;
+                }
 
-            // Crear gráficas para otras preguntas
-            crearGraficaRespuesta('chartRespuesta1', respuesta1Data, 'Promedio NPS');
-            crearGraficaRespuesta('chartRespuesta2', respuesta2Data, 'Pregunta 2');
-            crearGraficaRespuesta('chartRespuesta3', respuesta3Data, 'Pregunta 3');
+                let html = '<div class="space-y-3">';
+                
+                data.forEach((item, index) => {
+                    const sugerencia = item.respuesta_3 || item.sugerencia || 'Sin sugerencia específica';
+                    const nombreCliente = item.nombre_cliente || item.cliente_nombre || 'Cliente anónimo';
+                    
+                    html += `
+                        <div class="bg-white rounded-lg p-4 border border-purple-200 shadow-sm hover:shadow-md transition-shadow">
+                            <div class="flex items-start space-x-3">
+                                <div class="flex-shrink-0">
+                                    <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                        <span class="text-purple-600 font-bold text-sm">${index + 1}</span>
+                                    </div>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-gray-900 text-sm leading-relaxed">${sugerencia}</p>
+                                    <div class="mt-2 flex items-center space-x-2">
+                                        <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                            👤 ${nombreCliente}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                contenedor.innerHTML = html;
+            }
+
+            // Debug: mostrar estructura de datos
+            console.log('Datos recibidos:', {
+                asesoresData: asesoresData,
+                respuesta1Data: respuesta1Data,
+                respuesta2Data: respuesta2Data,
+                respuesta3Data: respuesta3Data,
+                respuestaDetalle1Data: respuestaDetalle1Data
+            });
+            
+            // Debug: mostrar estructura de un elemento de ejemplo
+            if (respuesta1Data && respuesta1Data.length > 0) {
+                console.log('Ejemplo de respuesta1Data:', respuesta1Data[0]);
+                console.log('Campos disponibles en respuesta1Data:', Object.keys(respuesta1Data[0]));
+                console.log('Primeros 3 registros de respuesta1Data:', respuesta1Data.slice(0, 3));
+            }
+            if (respuestaDetalle1Data && respuestaDetalle1Data['1_1'] && respuestaDetalle1Data['1_1'].length > 0) {
+                console.log('Ejemplo de respuestaDetalle1Data[1_1]:', respuestaDetalle1Data['1_1'][0]);
+                console.log('Campos disponibles en respuestaDetalle1Data[1_1]:', Object.keys(respuestaDetalle1Data['1_1'][0]));
+                console.log('Primeros 3 registros de respuestaDetalle1Data[1_1]:', respuestaDetalle1Data['1_1'].slice(0, 3));
+            }
+            
+            // Debug: buscar registros que contengan "PROSER"
+            console.log('=== BÚSQUEDA DE REGISTROS CON "PROSER" ===');
+            const fuentesDatos = [
+                {nombre: 'respuesta1Data', datos: respuesta1Data},
+                {nombre: 'respuesta2Data', datos: respuesta2Data},
+                {nombre: 'respuesta3Data', datos: respuesta3Data},
+                {nombre: 'respuestaDetalle1Data[1_1]', datos: respuestaDetalle1Data['1_1']},
+                {nombre: 'respuestaDetalle1Data[1_2]', datos: respuestaDetalle1Data['1_2']},
+                {nombre: 'respuestaDetalle1Data[1_3]', datos: respuestaDetalle1Data['1_3']},
+                {nombre: 'respuestaDetalle1Data[1_4]', datos: respuestaDetalle1Data['1_4']},
+                {nombre: 'respuestaDetalle1Data[1_5]', datos: respuestaDetalle1Data['1_5']}
+            ];
+            
+            fuentesDatos.forEach(fuente => {
+                if (fuente.datos && Array.isArray(fuente.datos)) {
+                    console.log(`\n--- ${fuente.nombre} (${fuente.datos.length} registros) ---`);
+                    fuente.datos.forEach((item, index) => {
+                        const camposAsesor = [
+                            item.asesor_comercial,
+                            item.asesor,
+                            item.comercial,
+                            item.asesor_nombre,
+                            item.nombre_asesor,
+                            item.asesor_comercial_nombre
+                        ].filter(Boolean);
+                        
+                        if (camposAsesor.length > 0) {
+                            console.log(`Registro ${index}:`, {
+                                asesor_campos: camposAsesor,
+                                registro_completo: item
+                            });
+                        }
+                    });
+                }
+            });
+            
+            // Debug: búsqueda específica de PROSER
+            console.log('=== BÚSQUEDA ESPECÍFICA DE "PROSER" ===');
+            const buscarAsesor = (datos, nombreAsesor) => {
+                if (!datos || !Array.isArray(datos)) return [];
+                
+                return datos.filter(item => {
+                    const todosLosValores = Object.values(item).map(val => 
+                        typeof val === 'string' ? val.toLowerCase() : String(val).toLowerCase()
+                    );
+                    return todosLosValores.some(val => val.includes(nombreAsesor.toLowerCase()));
+                });
+            };
+            
+            console.log('Registros que contienen "PROSER" en respuesta1Data:', buscarAsesor(respuesta1Data, 'PROSER'));
+            console.log('Registros que contienen "PROSER" en respuestaDetalle1Data[1_1]:', buscarAsesor(respuestaDetalle1Data['1_1'], 'PROSER'));
+            
+            // Poblar selector de asesores
+            poblarSelectorAsesores();
+            
+            // Crear gauge del NPS
+            crearGaugeNPS();
+            
+            // Crear lista de Top Asesores
+            crearListaTopAsesores();
+            
+            // Crear visualizaciones iniciales (todos los asesores) con un pequeño delay
+            setTimeout(() => {
+                actualizarVisualizaciones('');
+            }, 100);
+            
+            // Event listener para el selector de asesores
+            document.getElementById('selectorAsesor').addEventListener('change', function() {
+                const asesorSeleccionado = this.value;
+                console.log('Asesor seleccionado:', asesorSeleccionado);
+                actualizarVisualizaciones(asesorSeleccionado);
+            });
         }); // Cerrar el evento DOMContentLoaded
     </script>
 </x-app-layout>

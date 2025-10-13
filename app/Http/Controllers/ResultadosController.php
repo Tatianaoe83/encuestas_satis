@@ -85,27 +85,30 @@ class ResultadosController extends Controller
 
         // Respuestas por pregunta usando los campos correctos
         // Pregunta 1: Calidad del producto (promedio de 1.1 a 1.5)
-        $respuestasPregunta1 = Envio::select('promedio_respuesta_1', DB::raw('count(*) as total'))
+        $respuestasPregunta1 = Envio::select('promedio_respuesta_1', 'clientes.asesor_comercial', DB::raw('count(*) as total'))
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('promedio_respuesta_1')
-            ->where('estado', 'completado')
-            ->groupBy('promedio_respuesta_1')
+            ->where('envios.estado', 'completado')
+            ->groupBy('promedio_respuesta_1', 'clientes.asesor_comercial')
             ->orderBy('promedio_respuesta_1')
             ->get();
 
         // Pregunta 2: ¿Recomendarías a Konkret?
-        $respuestasPregunta2 = Envio::select('respuesta_2', DB::raw('count(*) as total'))
+        $respuestasPregunta2 = Envio::select('respuesta_2', 'clientes.asesor_comercial', DB::raw('count(*) as total'))
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('respuesta_2')
             ->where('respuesta_2', '!=', '')
-            ->where('estado', 'completado')
-            ->groupBy('respuesta_2')
+            ->where('envios.estado', 'completado')
+            ->groupBy('respuesta_2', 'clientes.asesor_comercial')
             ->get();
 
         // Pregunta 3: ¿Qué podríamos hacer para mejorar tu experiencia?
-        $respuestasPregunta3 = Envio::select('respuesta_3', DB::raw('count(*) as total'))
+        $respuestasPregunta3 = Envio::select('respuesta_3', 'clientes.asesor_comercial', DB::raw('count(*) as total'))
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('respuesta_3')
             ->where('respuesta_3', '!=', '')
-            ->where('estado', 'completado')
-            ->groupBy('respuesta_3')
+            ->where('envios.estado', 'completado')
+            ->groupBy('respuesta_3', 'clientes.asesor_comercial')
             ->get();
 
         // Detalle de respuestas 1.1 a 1.5 para análisis individual
@@ -249,76 +252,86 @@ class ResultadosController extends Controller
         $detalle = [];
 
         // Respuestas 1.1
-        $respuestas1_1 = Envio::select('respuesta_1_1', DB::raw('count(*) as total'))
+        $respuestas1_1 = Envio::select('respuesta_1_1', 'clientes.asesor_comercial', DB::raw('count(*) as total'))
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('respuesta_1_1')
-            ->where('estado', 'completado')
-            ->groupBy('respuesta_1_1')
+            ->where('envios.estado', 'completado')
+            ->groupBy('respuesta_1_1', 'clientes.asesor_comercial')
             ->orderBy('respuesta_1_1')
             ->get()
             ->map(function ($item) {
                 return [
                     'pregunta' => '1.1 - Calidad del producto',
                     'respuesta' => $item->respuesta_1_1,
+                    'asesor_comercial' => $item->asesor_comercial,
                     'total' => $item->total
                 ];
             });
 
         // Respuestas 1.2
-        $respuestas1_2 = Envio::select('respuesta_1_2', DB::raw('count(*) as total'))
+        $respuestas1_2 = Envio::select('respuesta_1_2', 'clientes.asesor_comercial', DB::raw('count(*) as total'))
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('respuesta_1_2')
-            ->where('estado', 'completado')
-            ->groupBy('respuesta_1_2')
+            ->where('envios.estado', 'completado')
+            ->groupBy('respuesta_1_2', 'clientes.asesor_comercial')
             ->orderBy('respuesta_1_2')
             ->get()
             ->map(function ($item) {
                 return [
                     'pregunta' => '1.2 - Puntualidad de entrega',
                     'respuesta' => $item->respuesta_1_2,
+                    'asesor_comercial' => $item->asesor_comercial,
                     'total' => $item->total
                 ];
             });
 
         // Respuestas 1.3
-        $respuestas1_3 = Envio::select('respuesta_1_3', DB::raw('count(*) as total'))
+        $respuestas1_3 = Envio::select('respuesta_1_3', 'clientes.asesor_comercial', DB::raw('count(*) as total'))
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('respuesta_1_3')
-            ->where('estado', 'completado')
-            ->groupBy('respuesta_1_3')
+            ->where('envios.estado', 'completado')
+            ->groupBy('respuesta_1_3', 'clientes.asesor_comercial')
             ->orderBy('respuesta_1_3')
             ->get()
             ->map(function ($item) {
                 return [
                     'pregunta' => '1.3 - Trato del asesor comercial',
                     'respuesta' => $item->respuesta_1_3,
+                    'asesor_comercial' => $item->asesor_comercial,
                     'total' => $item->total
                 ];
             });
 
         // Respuestas 1.4
-        $respuestas1_4 = Envio::select('respuesta_1_4', DB::raw('count(*) as total'))
+        $respuestas1_4 = Envio::select('respuesta_1_4', 'clientes.asesor_comercial', DB::raw('count(*) as total'))
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('respuesta_1_4')
-            ->where('estado', 'completado')
-            ->groupBy('respuesta_1_4')
+            ->where('envios.estado', 'completado')
+            ->groupBy('respuesta_1_4', 'clientes.asesor_comercial')
             ->orderBy('respuesta_1_4')
             ->get()
             ->map(function ($item) {
                 return [
                     'pregunta' => '1.4 - Precio',
                     'respuesta' => $item->respuesta_1_4,
+                    'asesor_comercial' => $item->asesor_comercial,
                     'total' => $item->total
                 ];
             });
 
         // Respuestas 1.5
-        $respuestas1_5 = Envio::select('respuesta_1_5', DB::raw('count(*) as total'))
+        $respuestas1_5 = Envio::select('respuesta_1_5', 'clientes.asesor_comercial', DB::raw('count(*) as total'))
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('respuesta_1_5')
-            ->where('estado', 'completado')
-            ->groupBy('respuesta_1_5')
+            ->where('envios.estado', 'completado')
+            ->groupBy('respuesta_1_5', 'clientes.asesor_comercial')
             ->orderBy('respuesta_1_5')
             ->get()
             ->map(function ($item) {
                 return [
                     'pregunta' => '1.5 - Rapidez en programación',
                     'respuesta' => $item->respuesta_1_5,
+                    'asesor_comercial' => $item->asesor_comercial,
                     'total' => $item->total
                 ];
             });

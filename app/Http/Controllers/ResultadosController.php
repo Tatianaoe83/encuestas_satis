@@ -398,4 +398,52 @@ class ResultadosController extends Controller
             '1_5' => $respuestas1_5
         ];
     }
+
+    /**
+     * Obtiene los últimos envíos de calificaciones de calidad del producto organizados por asesor
+     */
+    public function obtenerUltimosEnviosCalidad(Request $request)
+    {
+        $asesor = $request->get('asesor', '');
+        
+        $query = Envio::select(
+                'envios.idenvio',
+                'envios.fecha_envio',
+                'envios.fecha_respuesta',
+                'envios.respuesta_1_1',
+                'envios.respuesta_1_2',
+                'envios.respuesta_1_3',
+                'envios.respuesta_1_4',
+                'envios.respuesta_1_5',
+                'envios.promedio_respuesta_1',
+                'clientes.asesor_comercial',
+                'clientes.razon_social',
+                'clientes.nombre_completo',
+                'clientes.puesto'
+            )
+            ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
+            ->where('envios.estado', 'completado')
+            ->whereNotNull('envios.promedio_respuesta_1');
+
+        // Si se especifica un asesor, filtrar por ese asesor
+        if (!empty($asesor)) {
+            $query->where('clientes.asesor_comercial', $asesor);
+        }
+
+        $ultimosEnvios = $query->orderBy('envios.fecha_respuesta', 'desc')
+            ->limit(50)
+            ->get();
+
+        // Si hay un asesor específico, devolver directamente los envíos
+        if (!empty($asesor)) {
+            return response()->json([
+                'asesor' => $asesor,
+                'envios' => $ultimosEnvios,
+                'total' => $ultimosEnvios->count()
+            ]);
+        }
+
+        // Si no hay asesor específico, agrupar por asesor
+        return response()->json($ultimosEnvios->groupBy('asesor_comercial'));
+    }
 }

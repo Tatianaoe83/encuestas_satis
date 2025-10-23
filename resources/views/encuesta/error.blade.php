@@ -598,7 +598,7 @@
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen">
-    <div class="bg-[#0E1D49] min-h-screen py-8">
+        <div class="min-h-screen py-8" style="background-image: url('{{ asset('images/konkret_mosaico-01.png') }}'); background-size: cover; background-position: center; background-attachment: fixed;">
         <div class="container mx-auto px-4 max-w-2xl">
             <!-- Header -->
             <div class="text-center mb-8">
@@ -647,6 +647,7 @@
                 <p class="text-white text-sm">
                     Si el problema persiste, contacta a soporte técnico
                 </p>
+                </div>
             </div>
         </div>
     </div>

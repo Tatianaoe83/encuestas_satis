@@ -226,10 +226,24 @@
 
                         <!-- Sección: Calidad del Producto (Preguntas 1.1 a 1.5) -->
                         <div class="mb-8 sm:mb-12">
-                            <h4 class="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 flex items-center">
-                                <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">📊</span>
-                                Calidad del Producto - Gauge Analysis
-                            </h4>
+                            <div class="flex items-center justify-between mb-3 sm:mb-4">
+                                <h4 class="text-base sm:text-lg font-semibold text-gray-900 flex items-center">
+                                    <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">📊</span>
+                                    Calidad del Producto - Gauge Analysis
+                                </h4>
+                                <button 
+                                    id="btnVerUltimosEnvios"
+                                    onclick="abrirPopupUltimosEnvios()" 
+                                    class="bg-gray-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2 cursor-not-allowed"
+                                    disabled
+                                    title="Selecciona un asesor para ver sus envíos"
+                                >
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                                    </svg>
+                                    Ver Últimos Envíos
+                                </button>
+                            </div>
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                                 <!-- Pregunta 1.1 -->
                                 <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
@@ -1763,7 +1777,171 @@
             document.getElementById('selectorAsesor').addEventListener('change', function() {
                 const asesorSeleccionado = this.value;
                 actualizarVisualizaciones(asesorSeleccionado);
+                actualizarEstadoBotonVerEnvios(asesorSeleccionado);
             });
         }); // Cerrar el evento DOMContentLoaded
+
+        // Función para actualizar el estado del botón "Ver Últimos Envíos"
+        function actualizarEstadoBotonVerEnvios(asesorSeleccionado) {
+            const boton = document.getElementById('btnVerUltimosEnvios');
+            
+            if (asesorSeleccionado && asesorSeleccionado !== '') {
+                // Habilitar el botón
+                boton.disabled = false;
+                boton.className = 'bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2';
+                boton.title = `Ver últimos envíos de ${asesorSeleccionado}`;
+            } else {
+                // Deshabilitar el botón
+                boton.disabled = true;
+                boton.className = 'bg-gray-400 text-white px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200 flex items-center gap-2 cursor-not-allowed';
+                boton.title = 'Selecciona un asesor para ver sus envíos';
+            }
+        }
+
+        // Función para abrir el popup de últimos envíos
+        function abrirPopupUltimosEnvios() {
+            const asesorSeleccionado = document.getElementById('selectorAsesor').value;
+            
+            if (!asesorSeleccionado || asesorSeleccionado === '') {
+                alert('Por favor selecciona un asesor primero');
+                return;
+            }
+            
+            // Mostrar el modal
+            document.getElementById('modalUltimosEnvios').classList.remove('hidden');
+            
+            // Cargar los datos
+            cargarUltimosEnvios(asesorSeleccionado);
+        }
+
+        // Función para cerrar el popup
+        function cerrarPopupUltimosEnvios() {
+            document.getElementById('modalUltimosEnvios').classList.add('hidden');
+        }
+
+        // Función para cargar los últimos envíos
+        async function cargarUltimosEnvios(asesorSeleccionado) {
+            const contenedor = document.getElementById('contenidoUltimosEnvios');
+            contenedor.innerHTML = '<div class="flex justify-center items-center py-8"><div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div></div>';
+
+            try {
+                const url = `{{ route("resultados.ultimos-envios-calidad") }}?asesor=${encodeURIComponent(asesorSeleccionado)}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.total === 0) {
+                    contenedor.innerHTML = `<div class="text-center py-8 text-gray-500">No hay envíos completados para el asesor "${asesorSeleccionado}".</div>`;
+                    return;
+                }
+
+                let html = `
+                    <div class="mb-4">
+                        <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                            <span class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">👤</span>
+                            ${asesorSeleccionado}
+                            <span class="ml-2 text-sm text-gray-500">(${data.total} envíos)</span>
+                        </h3>
+                    </div>
+                    <div class="space-y-3">
+                `;
+                
+                data.envios.forEach(envio => {
+                    const fechaRespuesta = new Date(envio.fecha_respuesta).toLocaleDateString('es-ES', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
+                    
+                    html += `
+                        <div class="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">${envio.razon_social}</h4>
+                                    <p class="text-sm text-gray-600">${envio.nombre_completo} - ${envio.puesto}</p>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-lg font-bold text-blue-600">${envio.promedio_respuesta_1}</div>
+                                    <div class="text-xs text-gray-500">Promedio</div>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-5 gap-2 text-sm">
+                                <div class="text-center">
+                                    <div class="font-medium">${envio.respuesta_1_1 || '-'}</div>
+                                    <div class="text-xs text-gray-500">Calidad</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="font-medium">${envio.respuesta_1_2 || '-'}</div>
+                                    <div class="text-xs text-gray-500">Puntualidad</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="font-medium">${envio.respuesta_1_3 || '-'}</div>
+                                    <div class="text-xs text-gray-500">Trato</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="font-medium">${envio.respuesta_1_4 || '-'}</div>
+                                    <div class="text-xs text-gray-500">Precio</div>
+                                </div>
+                                <div class="text-center">
+                                    <div class="font-medium">${envio.respuesta_1_5 || '-'}</div>
+                                    <div class="text-xs text-gray-500">Rapidez</div>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-xs text-gray-500">
+                                Respondido: ${fechaRespuesta}
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                contenedor.innerHTML = html;
+                
+            } catch (error) {
+                console.error('Error al cargar los últimos envíos:', error);
+                contenedor.innerHTML = '<div class="text-center py-8 text-red-500">Error al cargar los datos. Inténtalo de nuevo.</div>';
+            }
+        }
     </script>
+
+    <!-- Modal para mostrar los últimos envíos -->
+    <div id="modalUltimosEnvios" class="hidden fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 max-w-6xl shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <!-- Header del modal -->
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                        <span class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 text-blue-600 font-bold text-sm">📊</span>
+                        Últimos Envíos - Calidad del Producto
+                    </h3>
+                    <button 
+                        onclick="cerrarPopupUltimosEnvios()" 
+                        class="text-gray-400 hover:text-gray-600 transition-colors"
+                    >
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Contenido del modal -->
+                <div class="max-h-96 overflow-y-auto">
+                    <div id="contenidoUltimosEnvios">
+                        <!-- El contenido se carga dinámicamente aquí -->
+                    </div>
+                </div>
+                
+                <!-- Footer del modal -->
+                <div class="mt-4 flex justify-end">
+                    <button 
+                        onclick="cerrarPopupUltimosEnvios()" 
+                        class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200"
+                    >
+                        Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </x-app-layout>

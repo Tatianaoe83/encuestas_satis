@@ -722,7 +722,7 @@
             stars.forEach(star => {
                 star.addEventListener('click', () => {
                     selectedRating = parseInt(star.dataset.rating);
-                    console.log('Clic en estrella:', selectedRating); // Debug
+                 
                     seleccionarRating(selectedRating);
                     submitBtn.disabled = false;
                 });
@@ -744,7 +744,7 @@
         function seleccionarRating(rating) {
             const stars = document.querySelectorAll('.star');
 
-            console.log('Seleccionando rating:', rating); // Debug
+           
 
             // Primero limpiar todas las estrellas
             stars.forEach(star => {
@@ -758,7 +758,7 @@
                 }
             });
 
-            console.log('Estrellas con clase selected:', document.querySelectorAll('.star.selected').length); // Debug
+           
         }
 
         function hoverStar(rating) {
@@ -967,8 +967,7 @@
             if (selectedStars.length > 0) {
                 // Contar cuántas estrellas están seleccionadas para obtener el rating correcto
                 respuesta = selectedStars.length.toString();
-                console.log('Estrellas seleccionadas:', selectedStars.length); // Debug
-                console.log('Respuesta a enviar:', respuesta); // Debug
+              
             }
             // Si hay botones Sí/No seleccionados
             else if (document.getElementById('btn-si') && document.getElementById('btn-si').classList.contains('selected')) {
@@ -984,7 +983,7 @@
                 }
             }
 
-            console.log('Respuesta a enviar:', respuesta); // Debug
+           
 
             // Enviar respuesta
             fetch(`/encuesta/${envioId}/responder`, {

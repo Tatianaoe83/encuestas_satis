@@ -385,8 +385,7 @@
                     var headerCount = table.find('thead th').length;
                     var firstRowCount = table.find('tbody tr:first td').length;
                     
-                    console.log('Columnas en encabezado:', headerCount);
-                    console.log('Columnas en primera fila:', firstRowCount);
+                  
                     
                     if (headerCount !== firstRowCount) {
                         console.error('Error: Número de columnas no coincide');

@@ -64,6 +64,34 @@ class ResultadosController extends Controller
             ->orderBy('mes')
             ->get();
 
+        // Envíos por estado por mes (para gráfica de barras apiladas)
+        $enviosPorEstadoPorMes = Envio::select(
+            DB::raw('MONTH(fecha_envio) as mes'),
+            DB::raw('YEAR(fecha_envio) as año'),
+            DB::raw("
+                CASE 
+                    WHEN estado = 'completado' THEN 'completado'
+                    WHEN estado IN ('enviado', 'en_proceso') THEN 'pendiente'
+                    WHEN estado = 'cancelado' THEN 'sin_respuesta'
+                END AS estado_grupo
+            "),
+            DB::raw('count(*) as total')
+        )
+            ->whereNotNull('fecha_envio')
+            ->whereIn('estado', ['completado', 'enviado', 'en_proceso', 'cancelado'])
+            ->groupBy('mes', 'año', DB::raw("
+                CASE 
+                    WHEN estado = 'completado' THEN 'completado'
+                    WHEN estado IN ('enviado', 'en_proceso') THEN 'pendiente'
+                    WHEN estado = 'cancelado' THEN 'sin_respuesta'
+                END
+            "))
+            ->orderBy('año')
+            ->orderBy('mes')
+            ->get();
+
+          
+
 
         // Top 5 asesores comerciales por envíos
         $topAsesores = Cliente::select('asesor_comercial', DB::raw('count(envios.idenvio) as total_envios'))
@@ -80,6 +108,30 @@ class ResultadosController extends Controller
         )
             ->whereNotNull('fecha_envio')
             ->groupBy('dia_semana')
+            ->orderBy('dia_semana')
+            ->get();
+
+        // Envíos por estado por día de la semana (para gráfica de barras apiladas)
+        $enviosPorEstadoPorDia = Envio::select(
+            DB::raw('DAYOFWEEK(fecha_envio) as dia_semana'),
+            DB::raw("
+                CASE 
+                    WHEN estado = 'completado' THEN 'completado'
+                    WHEN estado IN ('enviado', 'en_proceso') THEN 'pendiente'
+                    WHEN estado = 'cancelado' THEN 'sin_respuesta'
+                END AS estado_grupo
+            "),
+            DB::raw('count(*) as total')
+        )
+            ->whereNotNull('fecha_envio')
+            ->whereIn('estado', ['completado', 'enviado', 'en_proceso', 'cancelado'])
+            ->groupBy('dia_semana', DB::raw("
+                CASE 
+                    WHEN estado = 'completado' THEN 'completado'
+                    WHEN estado IN ('enviado', 'en_proceso') THEN 'pendiente'
+                    WHEN estado = 'cancelado' THEN 'sin_respuesta'
+                END
+            "))
             ->orderBy('dia_semana')
             ->get();
 
@@ -125,8 +177,10 @@ class ResultadosController extends Controller
             'tasaRespuesta',
             'enviosPorEstado',
             'enviosPorMes',
+            'enviosPorEstadoPorMes',
             'topAsesores',
             'enviosPorDia',
+            'enviosPorEstadoPorDia',
             'respuestasPregunta1',
             'respuestasPregunta2',
             'respuestasPregunta3',

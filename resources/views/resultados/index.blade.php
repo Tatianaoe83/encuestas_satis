@@ -85,7 +85,9 @@
                 <div class="bg-yellow-600 rounded-lg sm:rounded-xl shadow-lg p-4 sm:p-6 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
-                            <p class="text-yellow-100 text-xs sm:text-sm font-medium">Pendientes</p>
+                            
+                            <li class="text-yellow-100 text-xs sm:text-sm font-medium">Usuario respondiendo</li>
+                            <li class="text-yellow-100 text-xs sm:text-sm font-medium">Enviado por Whatsapp</li>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosPendientes }}</p>
 
                         </div>
@@ -428,21 +430,21 @@
                                 <span class="text-sm text-gray-600">Desglose</span>
                             </div>
                         </div>
-                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Distribución de envíos respondidos por el usuario, sin respuesta y pendiente de envío por mes</p>
+                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Distribución de envíos completados, pendientes y sin respuesta por mes</p>
                     </div>
                     <div class="p-6 sm:p-8">
                         <div class="mb-4 flex flex-wrap items-center justify-center gap-3 sm:gap-6">
                             <div class="flex items-center space-x-2">
                                 <div class="w-4 h-4 bg-green-500 rounded"></div>
-                                <span class="text-sm text-gray-600 font-medium">Respondido por el usuario</span>
+                                <span class="text-sm text-gray-600 font-medium">Completados</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-4 h-4 bg-yellow-500 rounded"></div>
+                                <span class="text-sm text-gray-600 font-medium">Pendientes</span>
                             </div>
                             <div class="flex items-center space-x-2">
                                 <div class="w-4 h-4 bg-red-500 rounded"></div>
                                 <span class="text-sm text-gray-600 font-medium">Sin respuesta</span>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <div class="w-4 h-4 bg-yellow-500 rounded"></div>
-                                <span class="text-sm text-gray-600 font-medium">Pendiente de envío</span>
                             </div>
                         </div>
                         <div class="relative h-64">
@@ -511,7 +513,9 @@
             const estadosData = @json($enviosPorEstado);
             const asesoresData = @json($topAsesores);
             const mensualData = @json($enviosPorMes);
+            const estadosPorMesData = @json($enviosPorEstadoPorMes);
             const diasData = @json($enviosPorDia);
+            const estadosPorDiaData = @json($enviosPorEstadoPorDia);
             const respuesta1Data = @json($respuestasPregunta1);
             const respuesta2Data = @json($respuestasPregunta2);
             const respuesta3Data = @json($respuestasPregunta3);
@@ -555,7 +559,7 @@
                 
                 // Agregar asesores únicos
                 const asesoresArray = Array.from(asesoresUnicos).sort();
-                console.log('Asesores encontrados:', asesoresArray); // Debug
+              
                 
                 asesoresArray.forEach(asesor => {
                     const option = document.createElement('option');
@@ -564,28 +568,24 @@
                     selector.appendChild(option);
                 });
                 
-                console.log('Selector poblado con', asesoresArray.length, 'asesores');
+            
             }
 
             // Función para filtrar datos por asesor
             function filtrarDatosPorAsesor(datos, asesor) {
                 if (!asesor || asesor === '') {
-                    console.log('Sin asesor seleccionado, devolviendo todos los datos');
+                  
                     return datos || [];
                 }
                 
                 if (!datos || !Array.isArray(datos)) {
-                    console.log('Datos no válidos para filtrar:', datos);
+                
                     return [];
                 }
                 
-                console.log(`Filtrando ${datos.length} registros por asesor: "${asesor}"`);
+             
                 
-                // Mostrar algunos ejemplos de los datos para debugging
-                if (datos.length > 0) {
-                    console.log('Ejemplo de estructura de datos:', datos[0]);
-                    console.log('Campos disponibles en el primer elemento:', Object.keys(datos[0]));
-                }
+            
                 
                 const datosFiltrados = datos.filter(item => {
                     if (!item || typeof item !== 'object') {
@@ -601,19 +601,19 @@
                                      item.asesor_comercial_nombre;
                     
                     if (asesorItem) {
-                        console.log(`Comparando: "${asesorItem}" === "${asesor}"`);
+                     
                     }
                     
                     const coincide = asesorItem && asesorItem.toString().trim() === asesor.trim();
                     
                     if (coincide) {
-                        console.log('Registro encontrado:', item);
+                     
                     }
                     
                     return coincide;
                 });
                 
-                console.log(`Resultado del filtrado: ${datosFiltrados.length} registros encontrados para "${asesor}"`);
+             
                 
                 // Si no se encontraron registros, mostrar todos los asesores disponibles
                 if (datosFiltrados.length === 0 && datos.length > 0) {
@@ -622,7 +622,7 @@
                                      item.asesor_nombre || item.nombre_asesor || item.asesor_comercial_nombre;
                         return asesor;
                     }).filter(asesor => asesor))];
-                    console.log('Asesores disponibles en los datos:', asesoresDisponibles);
+                 
                 }
                 
                 return datosFiltrados;
@@ -630,7 +630,7 @@
 
             // Función para actualizar todos los gauges y sugerencias
             function actualizarVisualizaciones(asesorSeleccionado) {
-                console.log('Actualizando visualizaciones para asesor:', asesorSeleccionado);
+             
                 
                 // Filtrar datos
                 const respuesta1Filtrada = filtrarDatosPorAsesor(respuesta1Data, asesorSeleccionado);
@@ -643,17 +643,7 @@
                     respuestaDetalle1Filtrada[key] = filtrarDatosPorAsesor(respuestaDetalle1Data[key], asesorSeleccionado);
                 });
 
-                // Debug: mostrar conteos
-                console.log('Datos filtrados:', {
-                    respuesta1: respuesta1Filtrada.length,
-                    respuesta2: respuesta2Filtrada.length,
-                    respuesta3: respuesta3Filtrada.length,
-                    detalle1_1: respuestaDetalle1Filtrada['1_1']?.length || 0,
-                    detalle1_2: respuestaDetalle1Filtrada['1_2']?.length || 0,
-                    detalle1_3: respuestaDetalle1Filtrada['1_3']?.length || 0,
-                    detalle1_4: respuestaDetalle1Filtrada['1_4']?.length || 0,
-                    detalle1_5: respuestaDetalle1Filtrada['1_5']?.length || 0
-                });
+             
 
                 // Verificar si hay datos para el asesor seleccionado
                 const totalDatosFiltrados = respuesta1Filtrada.length + respuesta2Filtrada.length + respuesta3Filtrada.length +
@@ -662,7 +652,7 @@
                     (respuestaDetalle1Filtrada['1_5']?.length || 0);
 
                 if (asesorSeleccionado && totalDatosFiltrados === 0) {
-                    console.warn(`No se encontraron datos para el asesor: "${asesorSeleccionado}"`);
+                 
                     // Mostrar mensaje de no datos en todos los gauges
                     const gaugeIds = ['gaugeRespuesta1_1', 'gaugeRespuesta1_2', 'gaugeRespuesta1_3', 'gaugeRespuesta1_4', 'gaugeRespuesta1_5', 'gaugeRespuesta1', 'gaugeRespuesta2'];
                     gaugeIds.forEach(gaugeId => {
@@ -694,7 +684,7 @@
                         // Crear nueva gráfica
                         crearGaugeRespuesta(gauge.id, gauge.data, gauge.title);
                     } else {
-                        console.warn(`Elemento no encontrado: ${gauge.id}`);
+                     
                     }
                 });
                 
@@ -715,7 +705,7 @@
             function limpiarGrafica(elementId) {
                 const elemento = document.getElementById(elementId);
                 if (!elemento) {
-                    console.warn(`Elemento no encontrado para limpiar: ${elementId}`);
+                 
                     return;
                 }
                 
@@ -737,7 +727,7 @@
             function mostrarMensajeNoDatos(elementId, mensaje) {
                 const elemento = document.getElementById(elementId);
                 if (!elemento) {
-                    console.error('Elemento no encontrado:', elementId);
+                 
                     return;
                 }
                 
@@ -825,26 +815,32 @@
                     } else if (posicion === 3) {
                         badgeColor = 'bg-orange-100 text-orange-800';
                         icono = '🥉';
+                    } else if (posicion === 4) {
+                        badgeColor = 'bg-blue-100 text-blue-800';
+                        icono = '🏅';
+                    } else if (posicion === 5) {
+                        badgeColor = 'bg-green-100 text-green-800';
+                        icono = '🏅';
                     }
                     
                     html += `
-                        <div class="flex items-center justify-between p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200 hover:shadow-md transition-all duration-200">
-                            <div class="flex items-center space-x-4">
+                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200 hover:shadow-md transition-all duration-200">
+                            <div class="flex items-center space-x-3">
                                 <div class="flex-shrink-0">
-                                    <div class="w-10 h-10 ${badgeColor} rounded-full flex items-center justify-center font-bold text-lg">
+                                    <div class="w-8 h-8 ${badgeColor} rounded-full flex items-center justify-center font-bold text-sm">
                                         ${posicion}
                                     </div>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center space-x-2">
-                                        <span class="text-lg">${icono}</span>
-                                        <h4 class="text-sm sm:text-base font-semibold text-gray-900 truncate">${nombre}</h4>
+                                        <span class="text-sm">${icono}</span>
+                                        <h4 class="text-xs sm:text-sm font-semibold text-gray-900 truncate">${nombre}</h4>
                                     </div>
-                                    <p class="text-xs text-gray-600 mt-1">Asesor comercial</p>
+                                    <p class="text-xs text-gray-600 mt-0.5">Asesor comercial</p>
                                 </div>
                             </div>
                             <div class="flex-shrink-0 text-right">
-                                <div class="text-lg sm:text-xl font-bold text-purple-600">${totalEnvios}</div>
+                                <div class="text-sm sm:text-base font-bold text-purple-600">${totalEnvios}</div>
                                 <div class="text-xs text-gray-500">envíos</div>
                             </div>
                         </div>
@@ -974,17 +970,48 @@
             }
 
             // Gráfica de barras apiladas - Envíos por estado por mes
-            if (tieneDatos(mensualData)) {
-                // Crear datos para la gráfica de estados por mes
-                const labelsEstadosPorMes = mensualData.map(item => `${meses[item.mes - 1]} ${item.año}`);
+            if (tieneDatos(estadosPorMesData)) {
+                // Crear datos para la gráfica de estados por mes usando datos reales
+                const mesesUnicos = [...new Set(estadosPorMesData.map(item => `${meses[item.mes - 1]} ${item.año}`))];
+                const labelsEstadosPorMes = mesesUnicos.sort();
 
-                // Simular datos de estados por mes (en un caso real, esto vendría del backend)
-                const datosCompletados = mensualData.map(item => Math.floor(item.total * 0.7)); // 70% completados
-                const datosCancelados = mensualData.map(item => Math.floor(item.total * 0.2)); // 20% cancelados
-                const datosPendientes = mensualData.map((item, index) => {
-                    const completados = datosCompletados[index] || 0;
-                    const cancelados = datosCancelados[index] || 0;
-                    return Math.max(0, item.total - completados - cancelados);
+                // Procesar datos reales por estado
+                const datosCompletados = [];
+                const datosPendientes = [];
+                const datosSinRespuesta = [];
+
+                mesesUnicos.forEach(mesLabel => {
+                    const [mesNombre, año] = mesLabel.split(' ');
+                    const mesNumero = meses.indexOf(mesNombre) + 1;
+                    
+                    // Buscar datos para este mes específico
+                    const datosMes = estadosPorMesData.filter(item => 
+                        item.mes === mesNumero && item.año == año
+                    );
+
+                    // Inicializar contadores
+                    let completados = 0;
+                    let pendientes = 0;
+                    let sinRespuesta = 0;
+
+                    // Sumar por estado
+                    datosMes.forEach(item => {
+                        switch(item.estado_grupo) {
+                            case 'completado':
+                                completados += item.total;
+                                break;
+                            case 'pendiente':
+                                pendientes += item.total;
+                                break;
+                            case 'sin_respuesta':
+                                sinRespuesta += item.total;
+                                break;
+                        }
+                    });
+
+                    datosCompletados.push(completados);
+                    datosPendientes.push(pendientes);
+                    datosSinRespuesta.push(sinRespuesta);
                 });
 
                 new Chart(document.getElementById('chartEstadosPorMes'), {
@@ -1001,19 +1028,19 @@
                                 borderSkipped: false
                             },
                             {
-                                label: 'Cancelados',
-                                data: datosCancelados,
-                                backgroundColor: 'rgba(239, 68, 68, 0.8)',
-                                borderColor: '#EF4444',
+                                label: 'Pendientes',
+                                data: datosPendientes,
+                                backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                                borderColor: '#F59E0B',
                                 borderWidth: 2,
                                 borderRadius: 4,
                                 borderSkipped: false
                             },
                             {
-                                label: 'Pendientes',
-                                data: datosPendientes,
-                                backgroundColor: 'rgba(245, 158, 11, 0.8)',
-                                borderColor: '#F59E0B',
+                                label: 'Sin respuesta',
+                                data: datosSinRespuesta,
+                                backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                                borderColor: '#EF4444',
                                 borderWidth: 2,
                                 borderRadius: 4,
                                 borderSkipped: false
@@ -1200,43 +1227,106 @@
                 document.getElementById('tasaRespuestaPromedio').textContent = '--';
             }
 
-            // Gráfica de barras - Envíos por día de la semana
-            if (tieneDatos(diasData)) {
+            // Gráfica de barras apiladas - Envíos por día de la semana
+            if (tieneDatos(estadosPorDiaData)) {
                 const diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+
+                // Procesar datos reales por estado
+                const datosCompletados = [];
+                const datosPendientes = [];
+                const datosSinRespuesta = [];
+
+                // Inicializar arrays para los 7 días de la semana
+                for (let i = 1; i <= 7; i++) {
+                    datosCompletados.push(0);
+                    datosPendientes.push(0);
+                    datosSinRespuesta.push(0);
+                }
+
+                // Procesar datos por día y estado
+                estadosPorDiaData.forEach(item => {
+                    const indiceDia = item.dia_semana - 1; // Convertir a índice 0-based
+                    
+                    switch(item.estado_grupo) {
+                        case 'completado':
+                            datosCompletados[indiceDia] += item.total;
+                            break;
+                        case 'pendiente':
+                            datosPendientes[indiceDia] += item.total;
+                            break;
+                        case 'sin_respuesta':
+                            datosSinRespuesta[indiceDia] += item.total;
+                            break;
+                    }
+                });
 
                 new Chart(document.getElementById('chartDias'), {
                     type: 'bar',
                     data: {
-                        labels: diasData.map(item => diasSemana[item.dia_semana - 1]),
+                        labels: diasSemana,
                         datasets: [{
-                            label: 'Envíos',
-                            data: diasData.map(item => item.total),
-                            backgroundColor: 'rgba(245, 158, 11, 0.8)',
-                            borderColor: '#F59E0B',
-                            borderWidth: 2,
-                            borderRadius: 8,
-                            borderSkipped: false
-                        }]
+                                label: 'Completados',
+                                data: datosCompletados,
+                                backgroundColor: 'rgba(34, 197, 94, 0.8)',
+                                borderColor: '#22C55E',
+                                borderWidth: 2,
+                                borderRadius: 4,
+                                borderSkipped: false
+                            },
+                            {
+                                label: 'Pendientes',
+                                data: datosPendientes,
+                                backgroundColor: 'rgba(245, 158, 11, 0.8)',
+                                borderColor: '#F59E0B',
+                                borderWidth: 2,
+                                borderRadius: 4,
+                                borderSkipped: false
+                            },
+                            {
+                                label: 'Sin respuesta',
+                                data: datosSinRespuesta,
+                                backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                                borderColor: '#EF4444',
+                                borderWidth: 2,
+                                borderRadius: 4,
+                                borderSkipped: false
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        },
                         scales: {
+                            x: {
+                                stacked: true,
+                                grid: {
+                                    display: false
+                                }
+                            },
                             y: {
+                                stacked: true,
                                 beginAtZero: true,
                                 grid: {
                                     color: 'rgba(0, 0, 0, 0.1)'
-                                }
-                            },
-                            x: {
-                                grid: {
-                                    display: false
                                 }
                             }
                         },
                         plugins: {
                             legend: {
-                                display: false
+                                display: true,
+                                position: 'top',
+                                labels: {
+                                    usePointStyle: true,
+                                    padding: 20
+                                }
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false
                             }
                         },
                         animation: {
@@ -1258,28 +1348,28 @@
                 let colorBandas;
                 
                 if (npsScore >= 50) {
-                    colorGauge = '#55BF3B'; // Verde - Excelente
+                    colorGauge = '#28CA42'; // Verde - Excelente
                     colorBandas = [
-                        { from: -100, to: 0, color: '#DF5353' },    // Rojo - Detractores
-                        { from: 0, to: 30, color: '#DDDF0D' },     // Amarillo - Neutro
-                        { from: 30, to: 50, color: '#55BF3B' },    // Verde - Bueno
-                        { from: 50, to: 100, color: '#55BF3B' }    // Verde - Excelente
+                        { from: -100, to: 0, color: '#FF5F57' },    // Rojo - Detractores
+                        { from: 0, to: 30, color: '#FFBD2E' },     // Amarillo - Neutro
+                        { from: 30, to: 50, color: '#28CA42' },    // Verde - Bueno
+                        { from: 50, to: 100, color: '#28CA42' }    // Verde - Excelente
                     ];
                 } else if (npsScore >= 0) {
-                    colorGauge = '#DDDF0D'; // Amarillo - Bueno
+                    colorGauge = '#FFBD2E'; // Amarillo - Bueno
                     colorBandas = [
-                        { from: -100, to: 0, color: '#DF5353' },    // Rojo - Detractores
-                        { from: 0, to: 30, color: '#DDDF0D' },     // Amarillo - Neutro
-                        { from: 30, to: 50, color: '#55BF3B' },    // Verde - Bueno
-                        { from: 50, to: 100, color: '#55BF3B' }    // Verde - Excelente
+                        { from: -100, to: 0, color: '#FF5F57' },    // Rojo - Detractores
+                        { from: 0, to: 30, color: '#FFBD2E' },     // Amarillo - Neutro
+                        { from: 30, to: 50, color: '#28CA42' },    // Verde - Bueno
+                        { from: 50, to: 100, color: '#28CA42' }    // Verde - Excelente
                     ];
                 } else {
-                    colorGauge = '#DF5353'; // Rojo - Necesita mejora
+                    colorGauge = '#FF5F57'; // Rojo - Necesita mejora
                     colorBandas = [
-                        { from: -100, to: 0, color: '#DF5353' },    // Rojo - Detractores
-                        { from: 0, to: 30, color: '#DDDF0D' },     // Amarillo - Neutro
-                        { from: 30, to: 50, color: '#55BF3B' },    // Verde - Bueno
-                        { from: 50, to: 100, color: '#55BF3B' }    // Verde - Excelente
+                        { from: -100, to: 0, color: '#FF5F57' },    // Rojo - Detractores
+                        { from: 0, to: 30, color: '#FFBD2E' },     // Amarillo - Neutro
+                        { from: 30, to: 50, color: '#28CA42' },    // Verde - Bueno
+                        { from: 50, to: 100, color: '#28CA42' }    // Verde - Excelente
                     ];
                 }
                 
@@ -1313,10 +1403,10 @@
                         min: -100,
                         max: 100,
                         stops: [
-                            [0.0, '#DF5353'], // Rojo
-                            [0.3, '#DDDF0D'], // Amarillo
-                            [0.5, '#55BF3B'], // Verde
-                            [1.0, '#55BF3B']  // Verde
+                            [0.0, '#FF5F57'], // Rojo
+                            [0.3, '#FFBD2E'], // Amarillo
+                            [0.5, '#28CA42'], // Verde
+                            [1.0, '#28CA42']  // Verde
                         ],
                         lineWidth: 0,
                         tickWidth: 0,
@@ -1466,12 +1556,12 @@
                         min: 0,
                         max: maxValor,
                         stops: elementId === 'gaugeRespuesta2' ? [
-                            [0.5, '#DF5353'], // rojo (No)
-                            [0.5, '#55BF3B']  // verde (Sí)
+                            [0.5, '#FF5F57'], // rojo (No)
+                            [0.5, '#28CA42']  // verde (Sí)
                         ] : [
-                            [0.1, '#55BF3B'], // verde
-                            [0.5, '#DDDF0D'], // amarillo
-                            [0.9, '#DF5353']  // rojo
+                            [0.1, '#FF5F57'], // rojo (0-2)
+                            [0.5, '#FFBD2E'], // amarillo (2-6)
+                            [0.9, '#28CA42']  // verde (6-10)
                         ],
                         lineWidth: 0,
                         tickWidth: 0,
@@ -1494,31 +1584,31 @@
                         plotBands: elementId === 'gaugeRespuesta2' ? [{
                             from: 0,
                             to: maxValor * 0.5,
-                            color: '#DF5353', // rojo (No)
+                            color: '#FF5F57', // rojo (No)
                             thickness: '20%',
                             outerRadius: '105%'
                         }, {
                             from: maxValor * 0.5,
                             to: maxValor,
-                            color: '#55BF3B', // verde (Sí)
+                            color: '#28CA42', // verde (Sí)
                             thickness: '20%',
                             outerRadius: '105%'
                         }] : [{
                             from: 0,
+                            to: maxValor * 0.2,
+                            color: '#FF5F57', // rojo (0-2)
+                            thickness: '20%',
+                            outerRadius: '105%'
+                        }, {
+                            from: maxValor * 0.2,
                             to: maxValor * 0.6,
-                            color: '#55BF3B', // verde
+                            color: '#FFBD2E', // amarillo (2-6)
                             thickness: '20%',
                             outerRadius: '105%'
                         }, {
                             from: maxValor * 0.6,
-                            to: maxValor * 0.8,
-                            color: '#DDDF0D', // amarillo
-                            thickness: '20%',
-                            outerRadius: '105%'
-                        }, {
-                            from: maxValor * 0.8,
                             to: maxValor,
-                            color: '#DF5353', // rojo
+                            color: '#28CA42', // verde (6-10)
                             thickness: '20%',
                             outerRadius: '105%'
                         }]
@@ -1607,29 +1697,11 @@
                 contenedor.innerHTML = html;
             }
 
-            // Debug: mostrar estructura de datos
-            console.log('Datos recibidos:', {
-                asesoresData: asesoresData,
-                respuesta1Data: respuesta1Data,
-                respuesta2Data: respuesta2Data,
-                respuesta3Data: respuesta3Data,
-                respuestaDetalle1Data: respuestaDetalle1Data
-            });
+          
             
-            // Debug: mostrar estructura de un elemento de ejemplo
-            if (respuesta1Data && respuesta1Data.length > 0) {
-                console.log('Ejemplo de respuesta1Data:', respuesta1Data[0]);
-                console.log('Campos disponibles en respuesta1Data:', Object.keys(respuesta1Data[0]));
-                console.log('Primeros 3 registros de respuesta1Data:', respuesta1Data.slice(0, 3));
-            }
-            if (respuestaDetalle1Data && respuestaDetalle1Data['1_1'] && respuestaDetalle1Data['1_1'].length > 0) {
-                console.log('Ejemplo de respuestaDetalle1Data[1_1]:', respuestaDetalle1Data['1_1'][0]);
-                console.log('Campos disponibles en respuestaDetalle1Data[1_1]:', Object.keys(respuestaDetalle1Data['1_1'][0]));
-                console.log('Primeros 3 registros de respuestaDetalle1Data[1_1]:', respuestaDetalle1Data['1_1'].slice(0, 3));
-            }
+          
             
             // Debug: buscar registros que contengan "PROSER"
-            console.log('=== BÚSQUEDA DE REGISTROS CON "PROSER" ===');
             const fuentesDatos = [
                 {nombre: 'respuesta1Data', datos: respuesta1Data},
                 {nombre: 'respuesta2Data', datos: respuesta2Data},
@@ -1643,7 +1715,7 @@
             
             fuentesDatos.forEach(fuente => {
                 if (fuente.datos && Array.isArray(fuente.datos)) {
-                    console.log(`\n--- ${fuente.nombre} (${fuente.datos.length} registros) ---`);
+                  
                     fuente.datos.forEach((item, index) => {
                         const camposAsesor = [
                             item.asesor_comercial,
@@ -1655,17 +1727,13 @@
                         ].filter(Boolean);
                         
                         if (camposAsesor.length > 0) {
-                            console.log(`Registro ${index}:`, {
-                                asesor_campos: camposAsesor,
-                                registro_completo: item
-                            });
+                            
                         }
                     });
                 }
             });
             
             // Debug: búsqueda específica de PROSER
-            console.log('=== BÚSQUEDA ESPECÍFICA DE "PROSER" ===');
             const buscarAsesor = (datos, nombreAsesor) => {
                 if (!datos || !Array.isArray(datos)) return [];
                 
@@ -1676,9 +1744,6 @@
                     return todosLosValores.some(val => val.includes(nombreAsesor.toLowerCase()));
                 });
             };
-            
-            console.log('Registros que contienen "PROSER" en respuesta1Data:', buscarAsesor(respuesta1Data, 'PROSER'));
-            console.log('Registros que contienen "PROSER" en respuestaDetalle1Data[1_1]:', buscarAsesor(respuestaDetalle1Data['1_1'], 'PROSER'));
             
             // Poblar selector de asesores
             poblarSelectorAsesores();
@@ -1697,7 +1762,6 @@
             // Event listener para el selector de asesores
             document.getElementById('selectorAsesor').addEventListener('change', function() {
                 const asesorSeleccionado = this.value;
-                console.log('Asesor seleccionado:', asesorSeleccionado);
                 actualizarVisualizaciones(asesorSeleccionado);
             });
         }); // Cerrar el evento DOMContentLoaded

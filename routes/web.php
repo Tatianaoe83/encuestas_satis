@@ -85,6 +85,10 @@ Route::get('resultados/detalle', [ResultadosController::class, 'detalle'])
     ->name('resultados.detalle')
     ->middleware(['auth']);
 
+Route::get('resultados/ultimos-envios-calidad', [ResultadosController::class, 'obtenerUltimosEnviosCalidad'])
+    ->name('resultados.ultimos-envios-calidad')
+    ->middleware(['auth']);
+
     
 require __DIR__.'/auth.php';
 

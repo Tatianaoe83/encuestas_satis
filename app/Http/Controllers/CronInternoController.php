@@ -59,11 +59,11 @@ class CronInternoController extends Controller
             // Asegurar que se use la zona horaria correcta
             date_default_timezone_set(config('app.timezone'));
             
-            Log::info('Forzando ejecución del cron interno', [
+            /* Log::info('Forzando ejecución del cron interno', [
                 'timestamp' => \Carbon\Carbon::now(),
                 'ip' => $request->ip(),
                 'user_agent' => $request->userAgent()
-            ]);
+            ]); */
             
             // Ejecutar verificación de timers y recordatorios
             $resultadoTimers = $this->twilioService->verificarTimersExpirados();
@@ -85,10 +85,10 @@ class CronInternoController extends Controller
             ]);
             
         } catch (\Exception $e) {
-            Log::error('Error forzando ejecución del cron', [
+            /* Log::error('Error forzando ejecución del cron', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
-            ]);
+            ]); */
             
             return response()->json([
                 'success' => false,

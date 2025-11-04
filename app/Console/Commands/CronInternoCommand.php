@@ -38,14 +38,14 @@ class CronInternoCommand extends Command
         
         // Verificar si han pasado al menos 5 minutos desde la última ejecución (a menos que se fuerce)
         if (!$this->option('force') && $lastRun && $now->diffInMinutes($lastRun) < 1) {
-            $this->info('Cron ya ejecutado recientemente. Última ejecución: ' . $lastRun->format('Y-m-d H:i:s'));
+            /* $this->info('Cron ya ejecutado recientemente. Última ejecución: ' . $lastRun->format('Y-m-d H:i:s'));
             $this->info('Próxima ejecución: ' . $lastRun->addMinutes(1)->format('Y-m-d H:i:s'));
-            $this->info('Usa --force para ejecutar de todas formas');
+            $this->info('Usa --force para ejecutar de todas formas'); */
             return 0;
         }
         
         try {
-            $this->info('Ejecutando cron interno automáticamente...');
+            /* $this->info('Ejecutando cron interno automáticamente...'); */
             
             // Ejecutar verificación de timers y recordatorios
             $resultadoTimers = $twilioService->verificarTimersExpirados();
@@ -59,15 +59,12 @@ class CronInternoCommand extends Command
             // Actualizar timestamp de última ejecución
             Cache::put($cacheKey, $now, \Carbon\Carbon::now()->addHours(1));
             
-            Log::info('Cron interno ejecutado exitosamente via schedule', [
-                'timestamp' => $now,
-                'resultado' => $resultado
-            ]);
+           
             
-            $this->info('✅ Cron interno ejecutado exitosamente');
-            $this->info('🕐 Timers cancelados: ' . $resultado['timers_cancelados']);
-            $this->info('📨 Recordatorios enviados: ' . $resultado['recordatorios_enviados']);
-            $this->info('⏰ Timestamp: ' . $now->format('Y-m-d H:i:s'));
+            /*  $this->info('✅ Cron interno ejecutado exitosamente');
+                $this->info('🕐 Timers cancelados: ' . $resultado['timers_cancelados']);
+                $this->info('📨 Recordatorios enviados: ' . $resultado['recordatorios_enviados']);
+                $this->info('⏰ Timestamp: ' . $now->format('Y-m-d H:i:s')); */
             
             return 0;
             
@@ -78,7 +75,7 @@ class CronInternoCommand extends Command
                 'timestamp' => $now
             ]);
             
-            $this->error('❌ Error ejecutando cron interno: ' . $e->getMessage());
+           /*$this->error('❌ Error ejecutando cron interno: ' . $e->getMessage()); */
             return 1;
         }
     }

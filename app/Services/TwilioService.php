@@ -51,8 +51,8 @@ class TwilioService
                 ]
             );
 
-            $tiempoExpiracion = Carbon::now()->addMinutes(30);
-            $tiempoRecordatorio = Carbon::now()->addMinutes(15);
+            $tiempoExpiracion = Carbon::now()->addDays(2);
+            $tiempoRecordatorio = Carbon::now()->addDay();
 
             // Actualizar el envío - solo contenido, sin preguntas
             $envio->update([
@@ -62,7 +62,7 @@ class TwilioService
                 'estado' => 'enviado',
                 'fecha_envio' => Carbon::now(),
                 'whatsapp_sent_at' => Carbon::now(),
-                'tiempo_espera_minutos' => 30,
+                'tiempo_espera_minutos' => 1440, // 1 día en minutos
                 'tiempo_expiracion' => $tiempoExpiracion,
                 'tiempo_recordatorio' => $tiempoRecordatorio,
                 'timer_activo' => true,

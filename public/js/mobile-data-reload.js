@@ -49,7 +49,7 @@
     function forzarRecarga() {
         if (retryCount < MAX_RETRIES) {
             retryCount++;
-            console.log(`🔄 Forzando recarga de datos (intento ${retryCount}/${MAX_RETRIES})`);
+      
             
             // Agregar parámetro de timestamp para evitar caché
             const url = new URL(window.location);
@@ -91,10 +91,10 @@
         // Esperar un poco para que se carguen los datos
         setTimeout(() => {
             if (!verificarDatosCargados()) {
-                console.log('📱 Datos no cargados correctamente en móvil, forzando recarga...');
+             
                 forzarRecarga();
             } else {
-                console.log('✅ Datos cargados correctamente');
+            
                 ocultarIndicadorCarga();
             }
         }, DATA_CHECK_DELAY);
@@ -117,7 +117,7 @@
             return;
         }
         
-        console.log('📱 Inicializando verificación de datos para móvil');
+     
         
         // Verificar cuando el DOM esté listo
         if (document.readyState === 'loading') {

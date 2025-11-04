@@ -213,7 +213,7 @@ function enhanceDataTablePagination(tableId) {
         improvePaginationAccessibility(table);
         addAdvancedStats(table);
         
-        console.log('Mejoras de paginado aplicadas a la tabla:', tableId);
+      
     }
 }
 

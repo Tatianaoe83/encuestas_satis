@@ -90,15 +90,30 @@ class ResultadosController extends Controller
             ->orderBy('mes')
             ->get();
 
-          
 
+        // Detalles de asesores con NPS y promedio de servicio
+        $topAsesores = Cliente::select(
+            'clientes.asesor_comercial',
+            DB::raw('COUNT(envios.idenvio) AS total_envios'),
 
-        // Top 5 asesores comerciales por envíos
-        $topAsesores = Cliente::select('asesor_comercial', DB::raw('count(envios.idenvio) as total_envios'))
+            DB::raw('ROUND(AVG(envios.respuesta_1_3), 2) AS promedio_servicio'),
+
+            DB::raw('
+            ROUND(
+                (
+                    (SUM(CASE WHEN envios.promedio_respuesta_1 >= 9 THEN 1 ELSE 0 END) * 100.0 / COUNT(envios.idenvio))
+                    -
+                    (SUM(CASE WHEN envios.promedio_respuesta_1 <= 6 THEN 1 ELSE 0 END) * 100.0 / COUNT(envios.idenvio))
+                ), 1
+            ) AS nps_score
+            ')
+        )
             ->join('envios', 'clientes.idcliente', '=', 'envios.cliente_id')
-            ->groupBy('asesor_comercial')
-            ->orderByDesc('total_envios')
-            ->limit(5)
+            ->whereNull('clientes.deleted_at')
+            ->whereNull('envios.deleted_at')
+            ->where('envios.estado', 'completado')
+            ->groupBy('clientes.asesor_comercial')
+            ->orderByDesc('nps_score')
             ->get();
 
         // Envíos por día de la semana
@@ -150,7 +165,8 @@ class ResultadosController extends Controller
             ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->whereNotNull('respuesta_2')
             ->where('respuesta_2', '!=', '')
-            ->where('envios.estado', 'completado')
+            ->where('envios.estado', 'Completado')
+            ->whereNull('envios.deleted_at')
             ->groupBy('respuesta_2', 'clientes.asesor_comercial')
             ->get();
 
@@ -165,6 +181,21 @@ class ResultadosController extends Controller
 
         // Detalle de respuestas 1.1 a 1.5 para análisis individual
         $respuestasDetalle1 = $this->obtenerRespuestasDetalle1();
+
+        //Calculo de recomendaciones
+        $recomendacion = DB::selectOne("
+            SELECT 
+                SUM(CASE WHEN LOWER(TRIM(envios.respuesta_2)) = 'si' THEN 1 ELSE 0 END) AS positivos,
+                SUM(CASE WHEN LOWER(TRIM(envios.respuesta_2)) = 'no' THEN 1 ELSE 0 END) AS negativos,
+                COUNT(envios.respuesta_2) AS total,
+                ROUND(
+                    (SUM(CASE WHEN LOWER(TRIM(envios.respuesta_2)) = 'si' THEN 1 ELSE 0 END) / 
+                    NULLIF(COUNT(envios.respuesta_2), 0)) * 100, 1
+                ) AS porcentaje_recomendacion
+            FROM envios
+            WHERE TRIM(LOWER(envios.estado)) = 'completado'
+            AND envios.respuesta_2 IS NOT NULL
+        ");
 
         // Calcular NPS (Net Promoter Score) basado en promedio_respuesta_1
         $npsData = $this->calcularNPS();
@@ -185,7 +216,7 @@ class ResultadosController extends Controller
             'respuestasPregunta2',
             'respuestasPregunta3',
             'respuestasDetalle1',
-            'npsData'
+            'npsData',
         ));
     }
 
@@ -219,7 +250,46 @@ class ResultadosController extends Controller
         return Excel::download(new NPSExport(), $filename);
     }
 
-    public function detalle()
+    public function detalle(Request $request)
+    {
+        header('Cache-Control: no-cache, no-store, must-revalidate');
+        header('Pragma: no-cache');
+        header('Expires: 0');
+
+        $estadisticasAsesores = Cliente::select(
+            'asesor_comercial',
+            DB::raw('count(envios.idenvio) as total_envios'),
+            DB::raw('sum(case when envios.estado = "completado" then 1 else 0 end) as completados'),
+            DB::raw('sum(case when envios.estado = "cancelado" then 1 else 0 end) as cancelados'),
+            DB::raw('sum(case when envios.estado = "pendiente" then 1 else 0 end) as pendientes')
+        )
+            ->join('envios', 'clientes.idcliente', '=', 'envios.cliente_id')
+            ->groupBy('asesor_comercial')
+            ->orderByDesc('total_envios')
+            ->get()
+            ->map(function ($asesor) {
+                $asesor->tasa_respuesta = $asesor->total_envios > 0 ?
+                    round(($asesor->cancelados / $asesor->total_envios) * 100, 2) : 0;
+                return $asesor;
+            });
+
+        $enviosRecientes = Envio::with('cliente')
+            ->whereNull('deleted_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $estadosDisponibles = [
+            'todos' => 'Todos',
+            'pendiente' => 'Pendientes',
+            'completado' => 'Completados',
+            'cancelado' => 'Sin Respuesta'
+        ];
+
+        return view('resultados.detalle', compact('estadisticasAsesores', 'enviosRecientes', 'estadosDisponibles'));
+    }
+
+
+    /* public function detalle(Request $request)
     {
         // Headers para evitar caché en móviles
         header('Cache-Control: no-cache, no-store, must-revalidate');
@@ -243,14 +313,22 @@ class ResultadosController extends Controller
                 return $asesor;
             });
 
-        // Envíos recientes
-        $enviosRecientes = Envio::with('cliente')
-            ->orderBy('created_at', 'desc')
-            ->limit(20)
-            ->get();
+        // Filtrados de envios
+        $estado = $request->input('estado');
+        dd($estado);
+
+        $query = Envio::with('cliente')
+            ->whereNull('deleted_at')
+            ->orderBy('created_at', 'desc');
+
+        if (!empty($estado) && $estado !== 'todos') {
+            $query->where('estado', $estado);
+        }
+
+        $enviosRecientes = $query->paginate(10)->withQueryString();
 
         return view('resultados.detalle', compact('estadisticasAsesores', 'enviosRecientes'));
-    }
+    } */
 
     /**
      * Calcula el NPS (Net Promoter Score) basado en promedio_respuesta_1
@@ -405,22 +483,22 @@ class ResultadosController extends Controller
     public function obtenerUltimosEnviosCalidad(Request $request)
     {
         $asesor = $request->get('asesor', '');
-        
+
         $query = Envio::select(
-                'envios.idenvio',
-                'envios.fecha_envio',
-                'envios.fecha_respuesta',
-                'envios.respuesta_1_1',
-                'envios.respuesta_1_2',
-                'envios.respuesta_1_3',
-                'envios.respuesta_1_4',
-                'envios.respuesta_1_5',
-                'envios.promedio_respuesta_1',
-                'clientes.asesor_comercial',
-                'clientes.razon_social',
-                'clientes.nombre_completo',
-                'clientes.puesto'
-            )
+            'envios.idenvio',
+            'envios.fecha_envio',
+            'envios.fecha_respuesta',
+            'envios.respuesta_1_1',
+            'envios.respuesta_1_2',
+            'envios.respuesta_1_3',
+            'envios.respuesta_1_4',
+            'envios.respuesta_1_5',
+            'envios.promedio_respuesta_1',
+            'clientes.asesor_comercial',
+            'clientes.razon_social',
+            'clientes.nombre_completo',
+            'clientes.puesto'
+        )
             ->join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
             ->where('envios.estado', 'completado')
             ->whereNotNull('envios.promedio_respuesta_1');

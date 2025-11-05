@@ -26,11 +26,6 @@
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ number_format($totalEnvios) }}</p>
                             <p class="text-blue-100 text-xs sm:text-sm mt-1 break-words">{{ $crecimientoMensual > 0 ? '+' : '' }}{{ $crecimientoMensual }}% este mes</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M12 2a1 1 0 0 1 .932.638l7 18a1 1 0 0 1-1.326 1.281L13 19.517V13a1 1 0 1 0-2 0v6.517l-5.606 2.402a1 1 0 0 1-1.326-1.281l7-18A1 1 0 0 1 12 2Z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
                     </div>
                 </div>
 
@@ -41,11 +36,6 @@
                             <p class="text-green-100 text-xs sm:text-sm font-medium">Encuestas respondidas por el usuario</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ number_format($enviosCompletados) }}</p>
                             <p class="text-green-100 text-xs sm:text-sm mt-1 break-words">{{ $tasaRespuesta }}% tasa de respuesta</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd" />
-                            </svg>
                         </div>
                     </div>
                 </div>
@@ -58,11 +48,6 @@
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $npsPromedio['nps_score'] }}</p>
                             <p class="text-yellow-100 text-xs sm:text-sm mt-1 break-words">{{ $npsPromedio['total'] }} respuestas</p>
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                            </svg>
-                        </div>
                     </div>
                 </div>
 
@@ -73,11 +58,6 @@
                             <p class="text-purple-100 text-xs sm:text-sm font-medium">Calidad Promedio</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $estadisticasCalidad['promedio_general'] }}/10</p>
                             <p class="text-purple-100 text-xs sm:text-sm mt-1 break-words">Calidad del producto</p>
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M13.849 4.22c-.684-1.626-3.014-1.626-3.698 0L8.397 8.387l-4.552.361c-1.775.14-2.495 2.331-1.142 3.477l3.468 2.937-1.06 4.392c-.413 1.713 1.472 3.067 2.992 2.149L12 19.35l3.897 2.354c1.52.918 3.405-.436 2.992-2.15l-1.06-4.39 3.468-2.938c1.353-1.146.633-3.336-1.142-3.477l-4.552-.36-1.754-4.17Z" />
-                            </svg>
                         </div>
                     </div>
                 </div>

@@ -43,12 +43,6 @@
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $totalEnvios }}</p>
 
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M4 3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h1v2a1 1 0 0 0 1.707.707L9.414 13H15a1 1 0 0 0 1-1V4a1 1 0 0 0-1-1H4Z" clip-rule="evenodd" />
-                                <path fill-rule="evenodd" d="M8.023 17.215c.033-.03.066-.062.098-.094L10.243 15H15a3 3 0 0 0 3-3V8h2a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1h-1v2a1 1 0 0 1-1.707.707L14.586 18H9a1 1 0 0 1-.977-.785Z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
                     </div>
                 </div>
 
@@ -58,11 +52,6 @@
                             <p class="text-green-100 text-xs sm:text-sm font-medium">Respondido por el usuario</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosCompletados }}</p>
 
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M3 5.983C3 4.888 3.895 4 5 4h14c1.105 0 2 .888 2 1.983v8.923a1.992 1.992 0 0 1-2 1.983h-6.6l-2.867 2.7c-.955.899-2.533.228-2.533-1.08v-1.62H5c-1.105 0-2-.888-2-1.983V5.983Zm5.706 3.809a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Zm2.585.002a1 1 0 1 1 .003 1.414 1 1 0 0 1-.003-1.414Zm5.415-.002a1 1 0 1 0-1.412 1.417 1 1 0 1 0 1.412-1.417Z" clip-rule="evenodd" />
-                            </svg>
                         </div>
                     </div>
                 </div>
@@ -74,11 +63,6 @@
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosCancelados }}</p>
 
                         </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm13.707-1.293a1 1 0 0 0-1.414-1.414L11 12.586l-1.793-1.793a1 1 0 0 0-1.414 1.414l2.5 2.5a1 1 0 0 0 1.414 0l4-4Z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
                     </div>
                 </div>
 
@@ -86,15 +70,9 @@
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
                             
-                            <li class="text-yellow-100 text-xs sm:text-sm font-medium">Usuario respondiendo</li>
-                            <li class="text-yellow-100 text-xs sm:text-sm font-medium">Enviado por Whatsapp</li>
+                            <p class="text-yellow-100 text-xs sm:text-sm font-medium">Usuario respondiendo</p>
+                            <p class="text-yellow-100 text-xs sm:text-sm font-medium">Enviado por Whatsapp</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $enviosPendientes }}</p>
-
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
-                                <path fill-rule="evenodd" d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12Zm11-4a1 1 0 1 0-2 0v4a1 1 0 0 0 .293.707l3 3a1 1 0 0 0 1.414-1.414L13 11.586V8Z" clip-rule="evenodd" />
-                            </svg>
                         </div>
                     </div>
                 </div>
@@ -104,12 +82,6 @@
                         <div class="flex-1 min-w-0">
                             <p class="text-indigo-100 text-xs sm:text-sm font-medium truncate">Tasa de Respuesta</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $tasaRespuesta }}%</p>
-
-                        </div>
-                        <div class="bg-white bg-opacity-20 rounded-full p-2 sm:p-3 flex-shrink-0 ml-2">
-                            <svg class="w-5 h-5 sm:w-6 sm:h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15v4m6-6v6m6-4v4m6-6v6M3 11l6-5 6 5 5.5-5.5" />
-                            </svg>
 
                         </div>
                     </div>
@@ -184,10 +156,61 @@
                         </div>
                     </div>
                 </div>
-
             </div>
 
-            
+            <!-- Top Asesores -->
+            <div class="mb-8 sm:mb-12">
+                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                        <h3 class="text-base sm:text-lg font-semibold text-gray-900">👥 Detalles de los Asesores</h3>
+                        <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
+                        <span class="text-sm text-gray-600">NPS y Promedio de Servicio</span>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="p-6 sm:p-8 overflow-x-auto">
+                    <table class="min-w-full text-sm text-left text-gray-700">
+                        <thead class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500">
+                        <tr>
+                            <th scope="col" class="px-4 py-3">Asesor Comercial</th>
+                            <th scope="col" class="px-4 py-3 text-center">Total Envíos</th>
+                            <th scope="col" class="px-4 py-3 text-center">Promedio Servicio</th>
+                            <th scope="col" class="px-4 py-3 text-center">NPS</th>
+                        </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                        @forelse($topAsesores as $asesor)
+                            <tr class="hover:bg-purple-50 transition">
+                            <td class="px-4 py-3 font-medium text-gray-900">
+                                {{ $asesor->asesor_comercial ?? 'Sin asignar' }}
+                            </td>
+                            <td class="px-4 py-3 text-center">
+                                {{ $asesor->total_envios }}
+                            </td>
+                            <td class="px-4 py-3 text-center text-purple-700 font-semibold">
+                                {{ number_format($asesor->promedio_servicio, 2) }}
+                            </td>
+                            <td class="px-4 py-3 text-center font-bold 
+                                {{ $asesor->nps_score >= 50 ? 'text-green-600' : ($asesor->nps_score >= 0 ? 'text-yellow-500' : 'text-red-600') }}">
+                                {{ $asesor->nps_score }}%
+                            </td>
+                            </tr>
+                        @empty
+                            <tr>
+                            <td colspan="4" class="px-4 py-6 text-center text-gray-500">
+                                No hay datos disponibles.
+                            </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+ 
             <!-- Sección 5: Análisis de Respuestas por Pregunta -->
             <div class="mb-8 sm:mb-12">
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
@@ -313,7 +336,7 @@
                                 <!-- Promedio NPS -->
                                 <div class="bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200">
                                     <div class="flex items-center justify-between mb-3">
-                                        <h5 class="text-sm font-semibold text-green-900">Promedio NPS</h5>
+                                        <h5 class="text-sm font-semibold text-green-900">Promedio de calidad de servicios</h5>
                                         <div class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-medium">
                                             Promedio
                                         </div>
@@ -467,28 +490,6 @@
                     </div>
                 </div>
 
-                  <!-- Top Asesores -->
-                  <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-purple-50 to-pink-50">
-                        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                            <h3 class="text-base sm:text-lg font-semibold text-gray-900">👥 Top Asesores</h3>
-                            <div class="flex items-center space-x-2">
-                                <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
-                                <span class="text-sm text-gray-600">Rendimiento</span>
-                            </div>
-                        </div>
-                        <p class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2">Asesores con mayor volumen de envíos</p>
-                    </div>
-                    <div class="p-6 sm:p-8">
-                        <div id="listaTopAsesores">
-                            <div class="text-center text-gray-500 py-8">
-                                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-2"></div>
-                                Cargando asesores...
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Gráfica de barras - Envíos por día de la semana -->
                 <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-100 overflow-hidden">
                     <div class="p-4 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-yellow-50 to-orange-50">
@@ -614,15 +615,11 @@
                                      item.nombre_asesor ||
                                      item.asesor_comercial_nombre;
                     
-                    if (asesorItem) {
-                     
-                    }
+                    if (asesorItem) {}
                     
-                    const coincide = asesorItem && asesorItem.toString().trim() === asesor.trim();
+                    const coincide = asesorItem && asesorItem.toString().trim().toLowerCase() === asesor.trim().toLowerCase();
                     
-                    if (coincide) {
-                     
-                    }
+                    if (coincide) {}
                     
                     return coincide;
                 });
@@ -686,7 +683,7 @@
                     { id: 'gaugeRespuesta1_3', data: respuestaDetalle1Filtrada['1_3'], title: 'Trato Asesor' },
                     { id: 'gaugeRespuesta1_4', data: respuestaDetalle1Filtrada['1_4'], title: 'Precio' },
                     { id: 'gaugeRespuesta1_5', data: respuestaDetalle1Filtrada['1_5'], title: 'Rapidez' },
-                    { id: 'gaugeRespuesta1', data: respuesta1Filtrada, title: 'Promedio NPS' },
+                    { id: 'gaugeRespuesta1', data: respuesta1Filtrada, title: 'Promedio Calidad de Servicio' },
                     { id: 'gaugeRespuesta2', data: respuesta2Filtrada, title: 'Recomendación' }
                 ];
 
@@ -793,76 +790,6 @@
                 });
             } else {
                 mostrarMensajeNoDatos('chartEstados', 'Aún no hay envíos registrados');
-            }
-
-            // Función para crear lista de Top Asesores
-            function crearListaTopAsesores() {
-                const contenedor = document.getElementById('listaTopAsesores');
-                
-                if (!tieneDatos(asesoresData)) {
-                    contenedor.innerHTML = `
-                        <div class="text-center text-gray-500 py-8">
-                            <div class="text-4xl mb-2">👥</div>
-                            <p>Aún no hay asesores con envíos registrados</p>
-                        </div>
-                    `;
-                    return;
-                }
-
-                let html = '<div class="space-y-3">';
-                
-                asesoresData.forEach((asesor, index) => {
-                    const posicion = index + 1;
-                    const nombre = asesor.asesor_comercial || 'Asesor sin nombre';
-                    const totalEnvios = asesor.total_envios || 0;
-                    
-                    // Determinar el color del badge según la posición
-                    let badgeColor = 'bg-gray-100 text-gray-800';
-                    let icono = '👤';
-                    
-                    if (posicion === 1) {
-                        badgeColor = 'bg-yellow-100 text-yellow-800';
-                        icono = '🥇';
-                    } else if (posicion === 2) {
-                        badgeColor = 'bg-gray-100 text-gray-800';
-                        icono = '🥈';
-                    } else if (posicion === 3) {
-                        badgeColor = 'bg-orange-100 text-orange-800';
-                        icono = '🥉';
-                    } else if (posicion === 4) {
-                        badgeColor = 'bg-blue-100 text-blue-800';
-                        icono = '🏅';
-                    } else if (posicion === 5) {
-                        badgeColor = 'bg-green-100 text-green-800';
-                        icono = '🏅';
-                    }
-                    
-                    html += `
-                        <div class="flex items-center justify-between p-3 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200 hover:shadow-md transition-all duration-200">
-                            <div class="flex items-center space-x-3">
-                                <div class="flex-shrink-0">
-                                    <div class="w-8 h-8 ${badgeColor} rounded-full flex items-center justify-center font-bold text-sm">
-                                        ${posicion}
-                                    </div>
-                                </div>
-                                <div class="flex-1 min-w-0">
-                                    <div class="flex items-center space-x-2">
-                                        <span class="text-sm">${icono}</span>
-                                        <h4 class="text-xs sm:text-sm font-semibold text-gray-900 truncate">${nombre}</h4>
-                                    </div>
-                                    <p class="text-xs text-gray-600 mt-0.5">Asesor comercial</p>
-                                </div>
-                            </div>
-                            <div class="flex-shrink-0 text-right">
-                                <div class="text-sm sm:text-base font-bold text-purple-600">${totalEnvios}</div>
-                                <div class="text-xs text-gray-500">envíos</div>
-                            </div>
-                        </div>
-                    `;
-                });
-                
-                html += '</div>';
-                contenedor.innerHTML = html;
             }
 
             // Gráfica de línea - Envíos por mes
@@ -1508,16 +1435,17 @@
                 let colores = ['#FF5F57', '#FFBD2E', '#28CA42']; // Rojo, Amarillo, Verde
 
                 if (elementId === 'gaugeRespuesta2') {
-                    // Para pregunta de Recomendación (Si/No), usar escala 0-100
-                    const totalRespuestas = data.reduce((sum, item) => sum + item.total, 0);
-                    const respuestasPositivas = data.find(item => 
-                        item[campoRespuesta] === 'Sí' || 
-                        item[campoRespuesta] === 'Si' || 
-                        item[campoRespuesta] === '1' ||
-                        item[campoRespuesta] === 'true'
-                    );
-                    valorGauge = respuestasPositivas ? (respuestasPositivas.total / totalRespuestas) * 100 : 0;
-                    maxValor = 100;
+                        const totalRespuestas = data.reduce((sum, item) => sum + (item.total || 0), 0);
+                        console.log(totalRespuestas);
+                        const totalPositivas = data
+                            .filter(item => {
+                                const val = (item[campoRespuesta] || '').toString().trim().toLowerCase();
+                                return ['sí', 'si', '1', 'true'].includes(val);
+                            })
+                            .reduce((sum, item) => sum + (item.total || 0), 0);
+                        
+                        valorGauge = totalRespuestas > 0 ? parseFloat(((totalPositivas / totalRespuestas) * 100).toFixed(2)) : 0;
+                        maxValor = 100;
                 } else if (elementId === 'gaugeRespuesta3') {
                     // Para pregunta de Mejoras (texto libre), usar porcentaje
                     const totalRespuestas = data.reduce((sum, item) => sum + item.total, 0);
@@ -1537,7 +1465,7 @@
                         const valor = parseFloat(item[campoRespuesta]) || 0;
                         sumaPonderada += valor * item.total;
                     });
-                    valorGauge = totalRespuestas > 0 ? sumaPonderada / totalRespuestas : 0;
+                    valorGauge = totalRespuestas > 0 ? parseFloat((sumaPonderada / totalRespuestas).toFixed(2)) : 0;
                 }
 
                 Highcharts.chart(elementId, {
@@ -1764,9 +1692,6 @@
             
             // Crear gauge del NPS
             crearGaugeNPS();
-            
-            // Crear lista de Top Asesores
-            crearListaTopAsesores();
             
             // Crear visualizaciones iniciales (todos los asesores) con un pequeño delay
             setTimeout(() => {

@@ -55,9 +55,9 @@
                 <div class="bg-purple-600 rounded-lg sm:rounded-xl shadow-lg p-6 sm:p-8 text-white transform hover:scale-105 transition-all duration-300">
                     <div class="flex items-center justify-between">
                         <div class="flex-1 min-w-0">
-                            <p class="text-purple-100 text-xs sm:text-sm font-medium">Calidad Promedio</p>
+                            <p class="text-purple-100 text-xs sm:text-sm font-medium">Promedio de los Servicios</p>
                             <p class="text-2xl sm:text-3xl font-bold mt-1 sm:mt-2">{{ $estadisticasCalidad['promedio_general'] }}/10</p>
-                            <p class="text-purple-100 text-xs sm:text-sm mt-1 break-words">Calidad del producto</p>
+                            <p class="text-purple-100 text-xs sm:text-sm mt-1 break-words">Promedio de los Servicios</p>
                         </div>
                     </div>
                 </div>

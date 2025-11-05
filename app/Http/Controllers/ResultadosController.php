@@ -21,14 +21,14 @@ class ResultadosController extends Controller
         header('Pragma: no-cache');
         header('Expires: 0');
         // Estadísticas generales
-        $totalEnvios = Envio::count();
-        $enviosCompletados = Envio::where('estado', 'completado')->count();
-        $enviosCancelados = Envio::where('estado', 'cancelado')->count();
-        $enviosPendientes = Envio::whereIn('estado', ['enviado', 'en_proceso'])->count();
+        $totalEnvios = Envio::whereNull('deleted_at')->count();
+        $enviosCompletados = Envio::where('estado', 'completado')->whereNull('deleted_at')->count();
+        $enviosCancelados = Envio::where('estado', 'cancelado')->whereNull('deleted_at')->count();
+        $enviosPendientes = Envio::whereIn('estado', ['enviado', 'en_proceso'])->whereNull('deleted_at')->count();
         //dd($enviosPendientes);
 
         // Tasa de respuesta
-        $tasaRespuesta = $totalEnvios > 0 ? round(($enviosCancelados / $totalEnvios) * 100, 2) : 0;
+        $tasaRespuesta = $totalEnvios > 0 ? round(($enviosCompletados / $totalEnvios) * 100, 2) : 0;
 
         // Envíos por estado (para gráfica de dona)
         $enviosPorEstado = Envio::select(
@@ -285,7 +285,7 @@ class ResultadosController extends Controller
                     ->count();
                 
                 $asesor->tasa_respuesta = $asesor->total_envios > 0 ?
-                    round(($asesor->cancelados / $asesor->total_envios) * 100, 2) : 0;
+                    round(($asesor->completados / $asesor->total_envios) * 100, 2) : 0;
                 
                 return $asesor;
             })
@@ -331,7 +331,7 @@ class ResultadosController extends Controller
             ->get()
             ->map(function ($asesor) {
                 $asesor->tasa_respuesta = $asesor->total_envios > 0 ?
-                    round(($asesor->cancelados / $asesor->total_envios) * 100, 2) : 0;
+                    round(($asesor->completados / $asesor->total_envios) * 100, 2) : 0;
                 return $asesor;
             });
 

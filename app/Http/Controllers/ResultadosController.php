@@ -256,22 +256,44 @@ class ResultadosController extends Controller
         header('Pragma: no-cache');
         header('Expires: 0');
 
-        $estadisticasAsesores = Cliente::select(
-            'asesor_comercial',
-            DB::raw('count(envios.idenvio) as total_envios'),
-            DB::raw('sum(case when envios.estado = "completado" then 1 else 0 end) as completados'),
-            DB::raw('sum(case when envios.estado = "cancelado" then 1 else 0 end) as cancelados'),
-            DB::raw('sum(case when envios.estado = "pendiente" then 1 else 0 end) as pendientes')
-        )
-            ->join('envios', 'clientes.idcliente', '=', 'envios.cliente_id')
-            ->groupBy('asesor_comercial')
-            ->orderByDesc('total_envios')
+        $estadisticasAsesores = Cliente::select('asesor_comercial')
+            ->distinct()
+            ->whereNotNull('asesor_comercial')
             ->get()
             ->map(function ($asesor) {
+                $asesor->total_envios = Envio::join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
+                    ->where('clientes.asesor_comercial', $asesor->asesor_comercial)
+                    ->whereNull('envios.deleted_at')
+                    ->count();
+                
+                $asesor->completados = Envio::join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
+                    ->where('clientes.asesor_comercial', $asesor->asesor_comercial)
+                    ->where('envios.estado', 'completado')
+                    ->whereNull('envios.deleted_at')
+                    ->count();
+                
+                $asesor->cancelados = Envio::join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
+                    ->where('clientes.asesor_comercial', $asesor->asesor_comercial)
+                    ->where('envios.estado', 'cancelado')
+                    ->whereNull('envios.deleted_at')
+                    ->count();
+                
+                $asesor->pendientes = Envio::join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
+                    ->where('clientes.asesor_comercial', $asesor->asesor_comercial)
+                    ->whereIn('envios.estado', ['enviado', 'en_proceso'])
+                    ->whereNull('envios.deleted_at')
+                    ->count();
+                
                 $asesor->tasa_respuesta = $asesor->total_envios > 0 ?
                     round(($asesor->cancelados / $asesor->total_envios) * 100, 2) : 0;
+                
                 return $asesor;
-            });
+            })
+            ->filter(function ($asesor) {
+                return $asesor->total_envios > 0;
+            })
+            ->sortByDesc('total_envios')
+            ->values();
 
         $enviosRecientes = Envio::with('cliente')
             ->whereNull('deleted_at')

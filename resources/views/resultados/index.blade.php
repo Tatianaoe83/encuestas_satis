@@ -177,7 +177,7 @@
                         <tr>
                             <th scope="col" class="px-4 py-3">Asesor Comercial</th>
                             <th scope="col" class="px-4 py-3 text-center">Total Envíos</th>
-                            <th scope="col" class="px-4 py-3 text-center">Promedio Servicio</th>
+                            <th scope="col" class="px-4 py-3 text-center">Promedio Trato de Servicio</th>
                             <th scope="col" class="px-4 py-3 text-center">NPS</th>
                         </tr>
                         </thead>
@@ -683,7 +683,7 @@
                     { id: 'gaugeRespuesta1_3', data: respuestaDetalle1Filtrada['1_3'], title: 'Trato Asesor' },
                     { id: 'gaugeRespuesta1_4', data: respuestaDetalle1Filtrada['1_4'], title: 'Precio' },
                     { id: 'gaugeRespuesta1_5', data: respuestaDetalle1Filtrada['1_5'], title: 'Rapidez' },
-                    { id: 'gaugeRespuesta1', data: respuesta1Filtrada, title: 'Promedio Calidad de Servicio' },
+                    { id: 'gaugeRespuesta1', data: respuesta1Filtrada, title: 'Promedio de los Servicios' },
                     { id: 'gaugeRespuesta2', data: respuesta2Filtrada, title: 'Recomendación' }
                 ];
 

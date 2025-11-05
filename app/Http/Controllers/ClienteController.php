@@ -26,7 +26,15 @@ class ClienteController extends Controller
      */
     public function create()
     {
-        return view('clientes.create');
+        $asesoresExistentes = Cliente::select('asesor_comercial')
+            ->distinct()
+            ->whereNotNull('asesor_comercial')
+            ->orderBy('asesor_comercial')
+            ->pluck('asesor_comercial')
+            ->unique()
+            ->values();
+        
+        return view('clientes.create', compact('asesoresExistentes'));
     }
 
     /**
@@ -66,7 +74,16 @@ class ClienteController extends Controller
     public function edit($id)
     {
         $cliente = Cliente::withTrashed()->findOrFail($id);
-        return view('clientes.edit', compact('cliente'));
+        
+        $asesoresExistentes = Cliente::select('asesor_comercial')
+            ->distinct()
+            ->whereNotNull('asesor_comercial')
+            ->orderBy('asesor_comercial')
+            ->pluck('asesor_comercial')
+            ->unique()
+            ->values();
+        
+        return view('clientes.edit', compact('cliente', 'asesoresExistentes'));
     }
 
     /**

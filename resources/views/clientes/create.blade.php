@@ -25,8 +25,24 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
                             <div>
                                 <x-input-label for="asesor_comercial" :value="__('Asesor Comercial')" />
-                                <x-text-input id="asesor_comercial" class="block mt-1 w-full" type="text" name="asesor_comercial" :value="old('asesor_comercial')" required autofocus />
+                                <x-text-input 
+                                    id="asesor_comercial" 
+                                    class="block mt-1 w-full" 
+                                    type="text" 
+                                    name="asesor_comercial" 
+                                    list="asesores-sugeridos"
+                                    :value="old('asesor_comercial')" 
+                                    required 
+                                    autofocus 
+                                    placeholder="Escribe o selecciona un asesor"
+                                />
+                                <datalist id="asesores-sugeridos">
+                                    @foreach($asesoresExistentes as $asesor)
+                                        <option value="{{ $asesor }}">
+                                    @endforeach
+                                </datalist>
                                 <x-input-error :messages="$errors->get('asesor_comercial')" class="mt-2" />
+                                <p class="text-xs text-gray-500 mt-1">Escribe para buscar o selecciona de la lista</p>
                             </div>
 
                             <div>

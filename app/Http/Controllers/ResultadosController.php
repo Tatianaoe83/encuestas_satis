@@ -91,22 +91,32 @@ class ResultadosController extends Controller
             ->get();
 
 
-        // Detalles de asesores con NPS y promedio de servicio
+        // Detalles de asesores con NPS y promedio de los servicio
         $topAsesores = Cliente::select(
             'clientes.asesor_comercial',
             DB::raw('COUNT(envios.idenvio) AS total_envios'),
 
-            DB::raw('ROUND(AVG(envios.respuesta_1_3), 2) AS promedio_servicio'),
+            DB::raw('
+                ROUND(
+                    AVG(
+                        (COALESCE(envios.respuesta_1_1, 0) +
+                        COALESCE(envios.respuesta_1_2, 0) +
+                        COALESCE(envios.respuesta_1_3, 0) +
+                        COALESCE(envios.respuesta_1_4, 0) +
+                        COALESCE(envios.respuesta_1_5, 0)) / 5
+                    ), 2
+                ) AS promedio_servicio
+            '),
 
             DB::raw('
             ROUND(
                 (
                     (SUM(CASE WHEN envios.promedio_respuesta_1 >= 9 THEN 1 ELSE 0 END) * 100.0 / COUNT(envios.idenvio))
                     -
-                    (SUM(CASE WHEN envios.promedio_respuesta_1 <= 6 THEN 1 ELSE 0 END) * 100.0 / COUNT(envios.idenvio))
+                    (SUM(CASE WHEN envios.promedio_respuesta_1 < 7 THEN 1 ELSE 0 END) * 100.0 / COUNT(envios.idenvio))
                 ), 1
             ) AS nps_score
-            ')
+        ')
         )
             ->join('envios', 'clientes.idcliente', '=', 'envios.cliente_id')
             ->whereNull('clientes.deleted_at')
@@ -115,6 +125,7 @@ class ResultadosController extends Controller
             ->groupBy('clientes.asesor_comercial')
             ->orderByDesc('nps_score')
             ->get();
+
 
         // Envíos por día de la semana
         $enviosPorDia = Envio::select(
@@ -265,25 +276,25 @@ class ResultadosController extends Controller
                     ->where('clientes.asesor_comercial', $asesor->asesor_comercial)
                     ->whereNull('envios.deleted_at')
                     ->count();
-                
+
                 $asesor->completados = Envio::join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
                     ->where('clientes.asesor_comercial', $asesor->asesor_comercial)
                     ->where('envios.estado', 'completado')
                     ->whereNull('envios.deleted_at')
                     ->count();
-                
+
                 $asesor->cancelados = Envio::join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
                     ->where('clientes.asesor_comercial', $asesor->asesor_comercial)
                     ->where('envios.estado', 'cancelado')
                     ->whereNull('envios.deleted_at')
                     ->count();
-                
+
                 $asesor->pendientes = Envio::join('clientes', 'envios.cliente_id', '=', 'clientes.idcliente')
                     ->where('clientes.asesor_comercial', $asesor->asesor_comercial)
                     ->whereIn('envios.estado', ['enviado', 'en_proceso'])
                     ->whereNull('envios.deleted_at')
                     ->count();
-                
+
                 $asesor->tasa_respuesta = $asesor->total_envios > 0 ?
                     round(($asesor->completados / $asesor->total_envios) * 100, 2) : 0;
                 

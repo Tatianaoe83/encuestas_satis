@@ -177,7 +177,7 @@
                         <tr>
                             <th scope="col" class="px-4 py-3">Asesor Comercial</th>
                             <th scope="col" class="px-4 py-3 text-center">Total Envíos</th>
-                            <th scope="col" class="px-4 py-3 text-center">Promedio Trato de Servicio</th>
+                            <th scope="col" class="px-4 py-3 text-center">Promedio de los Servicios</th>
                             <th scope="col" class="px-4 py-3 text-center">NPS</th>
                         </tr>
                         </thead>
